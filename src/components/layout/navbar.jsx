@@ -80,7 +80,6 @@ const Navbar = ({ opened, toggle }) => {
   // const { setColorScheme, colorScheme } = useMantineColorScheme();
   // const computedColorScheme = useComputedColorScheme("light");
 
-  const userRole = JSON.parse(localStorage?.getItem("user"))?.role;
 
   let routeName;
   const currentPath = location.pathname;

@@ -19,7 +19,7 @@ export const useGetUserProfile = () => {
       const userData = res?.data?.data?.user || res?.data;
 
       // Store complete user data including profilePic in localStorage
-      localStorage.setItem("user", JSON.stringify(res.data.data.user));
+      localStorage.setItem("user", JSON.stringify(res.data.data));
 
       return {
         success: res.data.success,

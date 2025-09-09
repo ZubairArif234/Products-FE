@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef, useCallback } from 'react';
 import { useAuth } from '../services/hooks';
 
 const AuthContext = createContext();
@@ -18,36 +18,29 @@ export const AuthProvider = ({ children }) => {
     lastCheck: 0
   });
   
-  const checkAuth = useAuth();
+  const checkAuth = useAuth(); // Assuming this returns a function
   const mountedRef = useRef(true);
   const checkIntervalRef = useRef(null);
   
-  // Listen for logout events and immediately update state
-  useEffect(() => {
-    const handleAuthChange = () => {
+  // Memoized function to check authentication
+  const checkAuthStatus = useCallback(() => {
+    try {
       const token = localStorage.getItem("token");
-      const isAuthenticated = !!token;
+      const isTokenValid = !!token;
       
-      setAuthState(prev => ({
-        isAuthenticated,
-        isLoading: false,
-        lastCheck: Date.now()
-      }));
-    };
-    
-    // Check immediately
-    handleAuthChange();
-    
-    // Listen for auth changes (login/logout)
-    window.addEventListener('authChange', handleAuthChange);
-    
-    return () => {
-      window.removeEventListener('authChange', handleAuthChange);
-    };
-  }, []);
+      // If checkAuth is a function, call it; if it's a boolean, use it directly
+      const authResult = typeof checkAuth === 'function' ? checkAuth() : checkAuth;
+      
+      return isTokenValid && authResult;
+    } catch (error) {
+      console.error('Error checking auth status:', error);
+      return false;
+    }
+  }, [checkAuth]);
   
+  // Main auth state management
   useEffect(() => {
-    mountedRef.current = true;
+    let timeoutId;
     
     const updateAuthState = () => {
       const now = Date.now();
@@ -57,46 +50,78 @@ export const AuthProvider = ({ children }) => {
         return;
       }
       
-      const newAuthState = {
-        isAuthenticated: checkAuth,
-        isLoading: false,
-        lastCheck: now
-      };
+      const isAuthenticated = checkAuthStatus();
       
-      // Only update if component is still mounted and state actually changed
-      if (mountedRef.current && (
-        newAuthState.isAuthenticated !== authState.isAuthenticated ||
-        newAuthState.isLoading !== authState.isLoading
-      )) {
-        setAuthState(newAuthState);
-      }
+      setAuthState(prevState => {
+        // Only update if state actually changed
+        if (prevState.isAuthenticated !== isAuthenticated || prevState.isLoading) {
+          return {
+            isAuthenticated,
+            isLoading: false,
+            lastCheck: now
+          };
+        }
+        return prevState;
+      });
     };
     
-    // Initial check
-    updateAuthState();
+    // Initial check with small delay to prevent race conditions
+    timeoutId = setTimeout(updateAuthState, 100);
     
     // Set up interval for periodic checks (every 60 seconds)
-    checkIntervalRef.current = setInterval(updateAuthState, 60000);
+    checkIntervalRef.current = setInterval(() => {
+      if (mountedRef.current) {
+        updateAuthState();
+      }
+    }, 60000);
     
     return () => {
-      mountedRef.current = false;
+      if (timeoutId) clearTimeout(timeoutId);
       if (checkIntervalRef.current) {
         clearInterval(checkIntervalRef.current);
       }
     };
-  }, [checkAuth, authState.lastCheck]);
+  }, [checkAuthStatus]); // Remove authState.lastCheck from dependencies
+  
+  // Listen for auth change events
+  useEffect(() => {
+    const handleAuthChange = () => {
+      const token = localStorage.getItem("token");
+      const isAuthenticated = !!token && checkAuthStatus();
+      
+      setAuthState(prev => ({
+        ...prev,
+        isAuthenticated,
+        isLoading: false,
+        lastCheck: Date.now()
+      }));
+    };
+    
+    // Listen for auth changes (login/logout)
+    window.addEventListener('authChange', handleAuthChange);
+    
+    return () => {
+      window.removeEventListener('authChange', handleAuthChange);
+    };
+  }, [checkAuthStatus]);
+  
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
   
   const value = {
     ...authState,
-    // Add method to force refresh if needed
-    refreshAuth: () => {
+    // Add method to force refresh
+    refreshAuth: useCallback(() => {
       setAuthState(prev => ({ ...prev, lastCheck: 0 }));
-    },
+    }, []),
     // Add method to force logout
-    logout: () => {
+    logout: useCallback(() => {
       // Clear all data
       localStorage.removeItem("token");
-      localStorage.removeItem("ownerToken");
       localStorage.removeItem("user");
       
       // Immediately update local state
@@ -106,12 +131,11 @@ export const AuthProvider = ({ children }) => {
         lastCheck: Date.now()
       });
       
-      // Force a small delay to ensure all components are updated
+      // Notify other components after a small delay
       setTimeout(() => {
-        // Notify other components
         window.dispatchEvent(new Event('authChange'));
       }, 100);
-    }
+    }, [])
   };
   
   return (

@@ -18,26 +18,26 @@ const DashboardLayout = () => {
   const { isAuthenticated, isLoading: authLoading } = useAuthContext();
   
   // If not authenticated, redirect to login immediately
-  if (!isAuthenticated) {
-    // Clear any remaining data to ensure clean logout
-    localStorage.removeItem("token");
-    localStorage.removeItem("ownerToken");
-    localStorage.removeItem("user");
-    return <Navigate to="/" replace />;
-  }
+  // if (!isAuthenticated) {
+  //   // Clear any remaining data to ensure clean logout
+  //   localStorage.removeItem("token");
+  //   localStorage.removeItem("ownerToken");
+  //   localStorage.removeItem("user");
+  //   return <Navigate to="/" replace />;
+  // }
   
   const { isPending, isError, error } = useGetUserProfile();
   
   // Only redirect to login for actual authentication errors (401, 403)
   // Don't redirect for network errors or server errors
-  if (isError && error?.response && (error.response.status === 401 || error.response.status === 403)) {
-    // Clear invalid tokens
-    localStorage.removeItem("token");
-    localStorage.removeItem("ownerToken");
-    localStorage.removeItem("user");
-    window.dispatchEvent(new Event('authChange'));
-    return <Navigate to="/" replace />;
-  }
+  // if (isError && error?.response && (error.response.status === 401 || error.response.status === 403)) {
+  //   // Clear invalid tokens
+  //   localStorage.removeItem("token");
+  //   localStorage.removeItem("ownerToken");
+  //   localStorage.removeItem("user");
+  //   window.dispatchEvent(new Event('authChange'));
+  //   return <Navigate to="/" replace />;
+  // }
   
   // If there's a network error but we have cached user data, continue with cached data
   const cachedUser = localStorage.getItem("user");

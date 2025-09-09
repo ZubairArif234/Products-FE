@@ -19,9 +19,10 @@ const ProfileMenu = () => {
 
   const isDark = false;
   const { data: userProfileData, isLoading } = useGetUserProfile();
+  console.log(userProfileData," userProfileData?.data");
+  
   // Get user data either from the hook response or from localStorage as fallback
-  const userData =
-    userProfileData?.data || JSON.parse(localStorage?.getItem("user")) || {};
+  const userData = JSON.parse(localStorage?.getItem("user")) || {};
   const role = userData?.role;
   // console.log(userData, userProfileData);
 
@@ -66,7 +67,7 @@ const ProfileMenu = () => {
               w={"100%"}
               radius={10}
             //   onClick={() => setLogoutModalOpen(true)}
-              onClick={handleLogout}
+              // onClick={handleLogout}
               className="!bg-red-500"
             >
              Logout

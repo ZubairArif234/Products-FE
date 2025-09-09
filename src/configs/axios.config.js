@@ -1,7 +1,7 @@
 import axios from "axios";
 // export const baseURL = "https://intelligent-amazement-production.up.railway.app/";
 
-// export const baseURL = "http://192.168.0.196:8002/";
+// export const baseURL = "http://localhost:8001/";
 export const baseURL = "https://products-s9xv.onrender.com/";
 
 // axios instance for json data adkjsa
@@ -32,7 +32,7 @@ export const attachToken = () => {
   if (token) {
     // Attach token with Bearer prefix for proper authorization format
     const bearerToken = token.startsWith('Bearer ') ? token : `Bearer ${token}`;
-    custAxios.defaults.headers.common["Authorization"] = bearerToken;
+    custAxios.defaults.headers.common["Authorization"] =token || bearerToken;
 
     // Log token format for debugging, but don't enforce it
     if (!isValidJWT(token)) {

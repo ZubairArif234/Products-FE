@@ -42,27 +42,13 @@ const menu = [
 const Sidebar = ({ opened, toggle }) => {
   // Use fresh user data from API instead of localStorage only
 //   const { data: userProfile } = useGetUserProfile();
-  const user =  JSON.parse(localStorage?.getItem("user") || '{}');
-  const role = user?.role;
-
-  const isTeamMember = user?.isTeamMember;
-  const rawSubscriptionType = isTeamMember
-    ? user?.ownerId?.subscriptionType?.type
-    : user?.subscriptionType?.type;
+  // const user =  JSON.parse(localStorage?.getItem("user"));
+  
   
   // Normalize subscription type to handle yearly/monthly variations
   // Convert "pro", "pro-yearly", "pro_yearly", "enterprise", "enterprise-yearly", "enterprise_yearly", "lifetime" etc. to base type
-  const normalizeSubscriptionType = (type) => {
-    if (!type) return null;
-    
-    // Remove any suffix like "-yearly", "-monthly", "_yearly", "_monthly" and normalize
-    const baseType = type.toLowerCase().split(/[-_]/)[0];
-    
-    // Capitalize first letter to match menu items
-    return baseType.charAt(0).toUpperCase() + baseType.slice(1);
-  };
+
   
-  const subscriptionType = normalizeSubscriptionType(rawSubscriptionType);
 
   const [logoUrl, setLogoUrl] = useState(null);
 
