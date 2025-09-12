@@ -74,16 +74,16 @@ const DashboardLayout = () => {
          
         </div>
       ) : ( */}
-        <div className="grid grid-cols-1 xl:grid-cols-5 relative duration-700 h-screen ">
-          <Sidebar opened={opened} toggle={toggle} />
+        <div className="bg-slate-100   duration-700 h-screen py-3 ">
+          {/* <Sidebar opened={opened} toggle={toggle} /> */}
           <div
             className={cn(
-              "xl:col-span-4 bg-slate-100 duration-700",
-              isDark ? "bg-[#1d1e30]" : "bg-slate-100"
+              " bg-slate-100 duration-700 mx-auto    ",
+            
             )}
           >
             <Navbar opened={opened} toggle={toggle} />
-            <div className="lg:min-h-[76vh] lg:max-h-[76vh] overflow-auto mx-3  ">
+            <div className="lg:min-h-[82vh] lg:max-h-[82vh] overflow-auto   ">
               <Outlet />
             </div>
             {/* <Footer /> */}

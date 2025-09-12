@@ -1,2 +1,32 @@
-
 @import "tailwindcss";
+
+@theme {
+  /* Hollywood Color Palette */
+  --color-hollywood-50: #f3f8fc;
+  --color-hollywood-100: #e6f0f8;
+  --color-hollywood-200: #c8e0ef;
+  --color-hollywood-300: #98c6e1;
+  --color-hollywood-400: #61a9cf;
+  --color-hollywood-500: #3d8eba;
+  --color-hollywood-600: #317faf;
+  --color-hollywood-700: #255b7f;
+  --color-hollywood-800: #224e6a;
+  --color-hollywood-900: #214259;
+  --color-hollywood-950: #162a3b;
+
+  /* Custom Spacing */
+  --spacing-128: 32rem;
+  --spacing-144: 36rem;
+
+  /* Custom Border Radius */
+  --radius-xl: 1.5rem;
+}
+
+/* Optional: Add any custom CSS rules here */
+.custom-shadow {
+  box-shadow: 0 10px 25px rgba(61, 142, 186, 0.1);
+}
+
+.hollywood-gradient {
+  background: linear-gradient(135deg, var(--color-hollywood-400), var(--color-hollywood-600));
+}

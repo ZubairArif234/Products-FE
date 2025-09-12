@@ -30,7 +30,7 @@ const Router = () => {
        </Route>
         <Route path="/dashboard" element={<DashboardLayout />}>
 
-        <Route path="/dashboard/products" element={<AdminRoute Component={Products} />} />
+        <Route path="/dashboard" element={<AdminRoute Component={Products} />} />
         <Route path="/dashboard/checkout" element={<AdminRoute Component={Checkout} />} />
        </Route>
         <Route path="/home" element={<Home />} />

@@ -1,6 +1,6 @@
-import { Button, Table, Checkbox, Drawer } from '@mantine/core';
+import { Button, Table, Checkbox, Drawer, Divider, TextInput, Select } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { Minus, Plus, SquarePen, Trash } from 'lucide-react';
+import { ChevronDown, Minus, Plus, Search, SquarePen, Trash } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -11,17 +11,87 @@ const Products = () => {
   const [totalPrice, setTotalPrice] = useState(0);
 
   const elements = [
-    {id:1, name: "Black Jacket", description: "A warm black jacket", brand: "Brand A", createdAt: "2023-01-01", price:100},
-    {id:2, name: 'White Shirt', description: 'A plain white shirt', brand: 'Brand B', createdAt: '2023-01-02', price:200},
-    {id:3, name: 'Blue Jeans', description: 'Comfortable blue jeans', brand: 'Brand C', createdAt: '2023-01-03', price:260},
-    {id:4, name: 'Red Dress', description: 'Elegant red dress', brand: 'Brand D', createdAt: '2023-01-04', price:300},
-    {id:5, name: 'Green Sweater', description: 'Cozy green sweater', brand: 'Brand E', createdAt: '2023-01-05', price:150},
-    {id:6, name: "Black Jacket", description: "A warm black jacket", brand: "Brand A", createdAt: "2023-01-01", price:100},
-    {id:7, name: 'White Shirt', description: 'A plain white shirt', brand: 'Brand B', createdAt: '2023-01-02', price:200},
-    {id:8, name: 'Blue Jeans', description: 'Comfortable blue jeans', brand: 'Brand C', createdAt: '2023-01-03', price:260},
-    {id:9, name: 'Red Dress', description: 'Elegant red dress', brand: 'Brand D', createdAt: '2023-01-04', price:300},
-    {id:10, name: 'Green Sweater', description: 'Cozy green sweater', brand: 'Brand E', createdAt: '2023-01-05', price:150},
-  ];
+  {
+    id: 1,
+    name: "Black Jacket",
+    description: "A warm black jacket",
+    brand: "Brand A",
+    createdAt: "2023-01-01",
+    price: 100,
+    moq: 10,
+    upc: "123456789012",
+    asin: "B00ABC1234",
+    amazonBB: "19.6",
+    amazonFees: 15,
+    profit: 25,
+    margin: "20%",
+    roi: "25%"
+  },
+  {
+    id: 2,
+    name: "White Shirt",
+    description: "A plain white shirt",
+    brand: "Brand B",
+    createdAt: "2023-01-02",
+    price: 200,
+    moq: 20,
+    upc: "223456789012",
+    asin: "B00DEF5678",
+    amazonBB: "17.0",
+    amazonFees: 30,
+    profit: 50,
+    margin: "25%",
+    roi: "30%"
+  },
+  {
+    id: 3,
+    name: "Blue Jeans",
+    description: "Comfortable blue jeans",
+    brand: "Brand C",
+    createdAt: "2023-01-03",
+    price: 260,
+    moq: 15,
+    upc: "323456789012",
+    asin: "B00GHI9012",
+    amazonBB: "23.9",
+    amazonFees: 40,
+    profit: 60,
+    margin: "23%",
+    roi: "28%"
+  },
+  {
+    id: 4,
+    name: "Red Dress",
+    description: "Elegant red dress",
+    brand: "Brand D",
+    createdAt: "2023-01-04",
+    price: 300,
+    moq: 12,
+    upc: "423456789012",
+    asin: "B00JKL3456",
+    amazonBB: "14.0",
+    amazonFees: 50,
+    profit: 70,
+    margin: "24%",
+    roi: "27%"
+  },
+  {
+    id: 5,
+    name: "Green Sweater",
+    description: "Cozy green sweater",
+    brand: "Brand E",
+    createdAt: "2023-01-05",
+    price: 150,
+    moq: 8,
+    upc: "523456789012",
+    asin: "B00MNO7890",
+    amazonBB: "10.0",
+    amazonFees: 20,
+    profit: 30,
+    margin: "20%",
+    roi: "22%"
+  }
+];
 
   // Calculate total price whenever itemQuantities changes
   useEffect(() => {
@@ -52,10 +122,10 @@ const Products = () => {
   };
 
   const rows = elements.map((element, i) => (
-    <Table.Tr key={i} className={selectedRows.includes(element.id) ? '!bg-purple-300' : undefined}>
+    <Table.Tr key={i} className={selectedRows.includes(element.id) ? '!bg-hollywood-700/80 text-white' : undefined}>
       <Table.Td>
         <Checkbox
-          color='grape'
+          color='#154d72'
           aria-label="Select row"
           checked={selectedRows.includes(element.id)}
           onChange={(event) =>
@@ -77,29 +147,72 @@ const Products = () => {
           {element.name}
           </div>
           </Table.Td>
-      <Table.Td>{element.description}</Table.Td>
       <Table.Td>{element.brand}</Table.Td>
-      <Table.Td>${element.price}</Table.Td>
-      <Table.Td>{element.createdAt}</Table.Td>
+      <Table.Td>{element.price}</Table.Td>
+      <Table.Td>{element.moq}</Table.Td>
+      <Table.Td>{element.upc}</Table.Td>
+      <Table.Td>{element.asin}</Table.Td>
+      <Table.Td>${element.amazonBB}</Table.Td>
+      <Table.Td>${element.amazonFees}</Table.Td>
+      <Table.Td>${element.profit}</Table.Td>
+      <Table.Td>{element.margin}</Table.Td>
+      <Table.Td>{element.roi}</Table.Td>
     </Table.Tr>
   ));
 
   return (
-    <div className="p-5 bg-white rounded-lg shadow-md">
-      <div className='flex justify-between items-center'>
-        <div>
-          <p className="font-bold text-purple-500 text-lg">Products</p>
-          <p className="text-sm text-gray-500">There are {elements.length} products</p>
+    <div className="py-5 px-20  rounded-lg shadow-md">
+      <div>
+        <p className='text-3xl mb-4'>Welcome ,<span className='ms-2 text-hollywood-700 font-bold'>
+           John Doe
+          </span>
+           </p>
+      <StatsCount/>
+      </div>
+      <Divider my={20}/>
+      <div className='bg-white p-2 rounded-lg shadow-lg'>
+
+        <div className=''>
+          <p className="font-bold text-hollywood-700 text-lg">Products</p>
+          {/* <p className="text-sm text-gray-500">There are {elements.length} products</p> */}
         </div>
-        
+      <div className='flex justify-between items-center'>
+        <div className='flex gap-4 items-center'>
+          <TextInput placeholder='Search Product' leftSection={<Search size={18}  />}/>
+          <Select
+    rightSection={<ChevronDown size={18} />}
+      placeholder="Filter by brand"
+      clearable
+      searchable
+      data={['Brand A', 'Brand B', 'Brand C', 'Brand D' , 'Brand E']}
+    />
+          <Select
+    rightSection={<ChevronDown size={18} />}
+      placeholder="Filter by warehouse"
+      clearable
+      searchable
+      data={['Warehouse A', 'Warehouse B', 'Warehouse C', 'Warehouse D' , 'Warehouse E']}
+    />
+        </div>
+        <div className='flex gap-4 items-center'>
+
         <Button 
           variant="default" 
           onClick={open}
           disabled={selectedRows.length === 0} 
-          className="!bg-purple-500 disabled:!bg-purple-300 !text-white !rounded-lg !mt-3"
+          className="!bg-hollywood-700 disabled:!bg-hollywood-400 !text-white !rounded-lg !mt-3"
           >
           Add to cart ({selectedRows.length})
         </Button> 
+        <Button 
+          variant="default" 
+          // onClick={open}
+          // disabled={selectedRows.length === 0} 
+          className="!bg-hollywood-700 disabled:!bg-purple-300 !text-white !rounded-lg !mt-3"
+          >
+         Download CSV
+        </Button> 
+            </div>
       </div>
 
       <div>
@@ -109,15 +222,23 @@ const Products = () => {
               <Table.Tr>
                 <Table.Th />
                 <Table.Th>Product Name</Table.Th>
-                <Table.Th>Description</Table.Th>
                 <Table.Th>Brand</Table.Th>
                 <Table.Th>Price</Table.Th>
-                <Table.Th>CreatedAt</Table.Th>
+                <Table.Th>MOQ</Table.Th>
+                <Table.Th>UPC</Table.Th>
+                <Table.Th>ASIN</Table.Th>
+                <Table.Th>Amazon BB</Table.Th>
+                <Table.Th>Amazon Fees</Table.Th>
+                <Table.Th>Profit</Table.Th>
+                <Table.Th>Margin</Table.Th>
+                <Table.Th>ROI</Table.Th>
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>{rows}</Table.Tbody>
           </Table>
         </Table.ScrollContainer>
+      </div>
+
       </div>
 
       <Drawer position="right" opened={opened} onClose={close} title="Shopping Cart">
@@ -138,7 +259,7 @@ const Products = () => {
           <div className="mt-4 pt-4 border-t border-gray-300">
             <div className="flex justify-between items-center mb-4">
               <p className="text-lg font-semibold">Total Price:</p>
-              <p className="text-lg font-bold text-purple-500">${totalPrice}</p>
+              <p className="text-lg font-bold text-hollywood-700">${totalPrice}</p>
             </div>
             <Link to="/dashboard/checkout"   state={{
     selectedItems: selectedRows.map((rowId) => ({
@@ -147,7 +268,7 @@ const Products = () => {
     })),
     totalPrice,
   }}>
-            <Button className='!bg-purple-500 !text-white !rounded-lg w-full'>
+            <Button className='!bg-hollywood-700 !text-white !rounded-lg w-full'>
               Checkout (${totalPrice})
             </Button>
             </Link>
@@ -191,16 +312,39 @@ export const ProductItem = ({ data, quantity, onQuantityChange, onRemove }) => {
         <Minus 
           size={15} 
           onClick={() => quantity > 1 && onQuantityChange(quantity - 1)} 
-          className='text-white bg-purple-500 w-6 h-6 rounded-md p-1 cursor-pointer hover:bg-purple-600'
+          className='text-white bg-hollywood-700 w-6 h-6 rounded-md p-1 cursor-pointer hover:bg-purple-600'
         />
         <p className="min-w-[20px] text-center">{quantity}</p>
         <Plus 
           size={15} 
           onClick={() => onQuantityChange(quantity + 1)} 
-          className='text-white bg-purple-500 w-6 h-6 rounded-md p-1 cursor-pointer hover:bg-purple-600'
+          className='text-white bg-hollywood-700 w-6 h-6 rounded-md p-1 cursor-pointer hover:bg-purple-600'
         />
       </div>
       <p className="font-semibold">${data.price * quantity}</p>
     </div>
   );
 };
+
+const StatsCount = () => {
+  return(
+      <div className='grid grid-cols-5 gap-4 '>
+          <div className='rounded-lg shadow-lg bg-white'>
+<p className='bg-hollywood-700 text-white p-2 font-semibold rounded-t-lg'>Brands</p>
+<div className='p-2'>
+
+<p className='text-3xl font-semibold text-slate-400 '>230</p>
+<p className='text-sm font-semibold text-slate-400'>last 30 days</p>
+</div>
+          </div>
+          <div className='rounded-lg shadow-lg bg-white'>
+<p className='bg-hollywood-700 text-white p-2 font-semibold rounded-t-lg'>Product</p>
+<div className='p-2'>
+
+<p className='text-3xl font-semibold text-slate-400 '>572</p>
+<p className='text-sm font-semibold text-slate-400'>last 30 days</p>
+</div>
+          </div>
+        </div>
+  )
+}

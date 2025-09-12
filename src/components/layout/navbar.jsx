@@ -15,7 +15,7 @@ import { useLocation } from "react-router-dom";
 // import { useGetMyAccounts } from "../../hooks/usePlaid";
 import { cn } from "../../utils/cn";
 // import { useColorScheme } from "../../contexts/ColorSchemeContext";
-
+import DashboardLogo from "../../assets/logo.png"
 export const Wallet = () => {
   const { wallet } = useGetMyWallet();
   // PLAID INTEGRATION TEMPORARILY DISABLED
@@ -80,6 +80,32 @@ const Navbar = ({ opened, toggle }) => {
   // const { setColorScheme, colorScheme } = useMantineColorScheme();
   // const computedColorScheme = useComputedColorScheme("light");
 
+  const menu = [
+  
+  
+  {
+    id: 15, 
+    label: "Master Catalouge",
+    link: "/dashboard",
+    type: "route",
+    role: "admin",
+  },
+  {
+    id: 16,
+    label: "Purchase Order & Invoice",
+    link: "/dashboard/order",
+    type: "route",
+    role: "admin",
+  },
+  {
+    id: 17,
+    label: "Shipping Hub",
+    link: "/dashboard/shipping",
+    type: "route",
+    role: "admin",
+  },
+  
+];
 
   let routeName;
   const currentPath = location.pathname;
@@ -109,11 +135,9 @@ const Navbar = ({ opened, toggle }) => {
   return (
     <div
       className={cn(
-        "h-[12vh] flex justify-between p-4 m-3 rounded-2xl border border-slate-200",
-        isDark ? "bg-[#1d1e30]" : "bg-white"
-      )}
+        "h-[12vh] grid grid-cols-4 gap-4 items-center p-2 mx-20 mb-3 bg-white rounded-lg")}
     >
-      <div className="flex items-center gap-2">
+      {/* <div className="flex items-center gap-2">
         <Burger
           className="block xl:hidden"
           opened={opened}
@@ -128,8 +152,49 @@ const Navbar = ({ opened, toggle }) => {
             Welcome to website name 
           </p>
         </div>
+      </div> */}
+      <div>
+          <img
+                 src={DashboardLogo}
+                 alt="Default Dashboard Logo"
+                 className="aspect-auto"
+                 width={150}
+               />
       </div>
-      <div className="flex items-center gap-4">
+
+      <div className="flex gap-4 justify-center col-span-2">
+       {
+  menu?.map((item, i) => {
+    const isActive = currentPath === item?.link;
+
+    return (
+      <div key={i} className="group cursor-pointer relative">
+        <p
+          className={cn(
+            "font-medium",
+            isActive
+              ? "text-hollywood-700"
+              : "text-slate-400 group-hover:text-hollywood-700"
+          )}
+        >
+          {item?.label}
+        </p>
+        <div
+          className={cn(
+            "underlined h-1 w-10 absolute rounded-full",
+            isActive
+              ? "bg-hollywood-600"
+              : "bg-transparent group-hover:bg-hollywood-500"
+          )}
+        />
+      </div>
+    );
+  })
+}
+
+      </div>
+      
+      <div className="flex justify-end items-center gap-4">
         {/* <ActionIcon
           variant="outline"
           onClick={toggleColorScheme}
@@ -143,5 +208,6 @@ const Navbar = ({ opened, toggle }) => {
     </div>
   );
 };
+
 
 export default Navbar;

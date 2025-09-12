@@ -1,7 +1,6 @@
 import { Button, Group, Input, Radio, Stepper, Table, TextInput } from '@mantine/core'
 import React, { useState, useEffect } from 'react'
 import { useLocation } from 'react-router-dom';
-import { ProductItem } from './products';
 import { Minus, Plus, Trash } from 'lucide-react';
 import { useForm } from '@mantine/form';
 
@@ -15,8 +14,9 @@ const Checkout = () => {
   const prevStep = () => setActive((current) => (current > 0 ? current - 1 : current));
 
   return (
+    <div className='py-5 px-20  rounded-lg '>
     <div className="p-5 bg-white rounded-lg shadow-md">
-      <Stepper color="grape" active={active} onStepClick={setActive} allowNextStepsSelect={false}>
+      <Stepper color={"#154d72"} active={active} onStepClick={setActive} allowNextStepsSelect={false}>
         <Stepper.Step label="Review Cart">
           <StepOne selectedItems={selectedItems} />
         </Stepper.Step>
@@ -42,9 +42,11 @@ const Checkout = () => {
 
         <Button variant="default" onClick={prevStep}>Back</Button>
         )}
-        <Button className='!bg-purple-500' onClick={nextStep}>Next step</Button>
+        <Button className='!bg-hollywood-700' onClick={nextStep}>Next step</Button>
       </Group>
     </div>
+    </div>
+      
   )
 }
 
@@ -117,13 +119,13 @@ const StepOne = ({ selectedItems: selectedItemsList }) => {
             <Minus
               size={15} 
               onClick={() => quantity > 1 && updateQuantity(element?.id, quantity - 1)} 
-              className='text-white bg-purple-500 w-6 h-6 rounded-md p-1 cursor-pointer hover:bg-purple-600'
+              className='text-white bg-hollywood-700 w-6 h-6 rounded-md p-1 cursor-pointer hover:bg-purple-600'
             />
             <p className="min-w-[20px] text-center">{quantity}</p>
             <Plus 
               size={15} 
               onClick={() => updateQuantity(element?.id, quantity + 1)} 
-              className='text-white bg-purple-500 w-6 h-6 rounded-md p-1 cursor-pointer hover:bg-purple-600'
+              className='text-white bg-hollywood-700 w-6 h-6 rounded-md p-1 cursor-pointer hover:bg-purple-600'
             />
           </div>
         </Table.Td>
@@ -417,13 +419,13 @@ const StepFive = ({  selectedItems: selectedItemsList}) => {
             <Minus
               size={15} 
               onClick={() => quantity > 1 && updateQuantity(element?.id, quantity - 1)} 
-              className='text-white bg-purple-500 w-6 h-6 rounded-md p-1 cursor-pointer hover:bg-purple-600'
+              className='text-white bg-hollywood-700 w-6 h-6 rounded-md p-1 cursor-pointer hover:bg-purple-600'
             />
             <p className="min-w-[20px] text-center">{quantity}</p>
             <Plus 
               size={15} 
               onClick={() => updateQuantity(element?.id, quantity + 1)} 
-              className='text-white bg-purple-500 w-6 h-6 rounded-md p-1 cursor-pointer hover:bg-purple-600'
+              className='text-white bg-hollywood-700 w-6 h-6 rounded-md p-1 cursor-pointer hover:bg-purple-600'
             />
           </div>
         </Table.Td>
@@ -464,8 +466,8 @@ const StepFive = ({  selectedItems: selectedItemsList}) => {
         <div className='flex flex-col gap-3'>
             <div>
                 {/* client details */}
-                <p className='border border-slate-200 rounded-t-xl py-2 px-3 bg-purple-300 text-purple-900 font-semibold'>Client Details</p>
-                <div className='grid grid-cols-2 gap-4 border border-t-0 py-2 px-3 rounded-b-xl border-slate-200 text-sm text-slate-600'>
+                <p className='border border-slate-200 rounded-t-lg py-2 px-3 bg-hollywood-700 text-white font-semibold'>Client Details</p>
+                <div className='grid grid-cols-2 gap-4 border border-t-0 py-2 px-3 rounded-b-lg border-slate-200 text-sm text-slate-600'>
 
                     <p>First name : Zubair </p>
                     <p>Last name : Arif </p>
@@ -479,8 +481,8 @@ const StepFive = ({  selectedItems: selectedItemsList}) => {
         
             <div>
                 {/* client address */}
-                <p className='border border-slate-200 rounded-t-xl py-2 px-3 bg-purple-300 text-purple-900 font-semibold'>Billing Address</p>
-                <div className='grid grid-cols-2 gap-4 border border-t-0 py-2 px-3 rounded-b-xl border-slate-200 text-sm text-slate-600'>
+                <p className='border border-slate-200 rounded-t-lg py-2 px-3 bg-hollywood-700 text-white font-semibold'>Billing Address</p>
+                <div className='grid grid-cols-2 gap-4 border border-t-0 py-2 px-3 rounded-b-lg border-slate-200 text-sm text-slate-600'>
 
                     <p>Steet Address : HNO#03 main city hospital street near fan club bar. </p>
                     <p>City : Ohio </p>
@@ -494,8 +496,8 @@ const StepFive = ({  selectedItems: selectedItemsList}) => {
 
              <div>
                 {/* prep */}
-                <p className='border border-slate-200 rounded-t-xl py-2 px-3 bg-purple-300 text-purple-900 font-semibold'>Preference</p>
-                <div className='grid grid-cols-2 gap-4 border border-t-0 py-2 px-3 rounded-b-xl border-slate-200 text-sm text-slate-600'>
+                <p className='border border-slate-200 rounded-t-lg py-2 px-3 bg-hollywood-700 text-white font-semibold'>Preference</p>
+                <div className='grid grid-cols-2 gap-4 border border-t-0 py-2 px-3 rounded-b-lg border-slate-200 text-sm text-slate-600'>
 
                     <p>Payment Method : Cash on delivery </p>
                     <p>Prep Required : No </p>
