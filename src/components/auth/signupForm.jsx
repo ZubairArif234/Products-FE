@@ -69,7 +69,7 @@ const SignupForm = () => {
             variant="secondary"
             size="sm"
             radius="sm"
-            className="font-medium !bg-purple-500"
+            className="font-medium !bg-hollywood-700"
           >
             Sign in
           </Button>
@@ -165,7 +165,7 @@ const SignupForm = () => {
             size="md"
             radius="md"
             w="100%"
-            className="!font-medium !bg-purple-500"
+            className="!font-medium !bg-hollywood-700"
             // loading={isPending}
           >
             Sign up

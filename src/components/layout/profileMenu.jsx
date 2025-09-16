@@ -31,9 +31,12 @@ const ProfileMenu = () => {
 
   const handleLogout = () => {
     // Use centralized logout method
-    logout();
+    // logout();
+
+    localStorage.removeItem("token")
+    localStorage.removeItem("user")
     
-    setLogoutModalOpen(false);
+    // setLogoutModalOpen(false);
     // Redirect to login page
     navigate("/");
   };
@@ -67,7 +70,7 @@ const ProfileMenu = () => {
               w={"100%"}
               radius={10}
             //   onClick={() => setLogoutModalOpen(true)}
-              // onClick={handleLogout}
+              onClick={handleLogout}
               className="!bg-red-500"
             >
              Logout

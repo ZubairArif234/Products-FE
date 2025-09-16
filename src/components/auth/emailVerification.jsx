@@ -40,7 +40,7 @@ const EmailVerification = () => {
             variant="secondary"
             size="sm"
             radius="sm"
-            className="font-medium !bg-purple-500"
+            className="font-medium !bg-hollywood-700"
           >
             Sign up
           </Button>
@@ -83,7 +83,7 @@ const EmailVerification = () => {
             size="md"
             radius="md"
             w="100%"
-            className="!font-medium !bg-purple-500"
+            className="!font-medium !bg-hollywood-700"
             loading={isPending}
           >
             Verify Email

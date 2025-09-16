@@ -46,9 +46,9 @@ const LoginForm = () => {
       
       if (res?.data?.user?.role === "admin"){
 
-          navigate(`/dashboard`);
+          navigate(`/admin`);
         }else{
-            navigate(`/home`);
+            navigate(`/dashboard`);
 
         }
       
@@ -73,7 +73,7 @@ const LoginForm = () => {
             variant="secondary"
             size="sm"
             radius="sm"
-            className="font-medium !bg-purple-500"
+            className="font-medium !bg-hollywood-700"
           >
             Sign up
           </Button>
@@ -155,7 +155,7 @@ const LoginForm = () => {
             size="md"
             radius="md"
             w="100%"
-            className="!font-medium !bg-purple-500"
+            className="!font-medium !bg-hollywood-700"
             loading={isPending}
           >
             Login

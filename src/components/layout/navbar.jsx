@@ -16,6 +16,7 @@ import { useLocation } from "react-router-dom";
 import { cn } from "../../utils/cn";
 // import { useColorScheme } from "../../contexts/ColorSchemeContext";
 import DashboardLogo from "../../assets/logo.png"
+import { userGetRole } from "../../services/hooks";
 export const Wallet = () => {
   const { wallet } = useGetMyWallet();
   // PLAID INTEGRATION TEMPORARILY DISABLED
@@ -77,6 +78,7 @@ export const Wallet = () => {
 
 const Navbar = ({ opened, toggle }) => {
   const location = useLocation();
+  const role = userGetRole()
   // const { setColorScheme, colorScheme } = useMantineColorScheme();
   // const computedColorScheme = useComputedColorScheme("light");
 
@@ -88,19 +90,33 @@ const Navbar = ({ opened, toggle }) => {
     label: "Master Catalouge",
     link: "/dashboard",
     type: "route",
-    role: "admin",
+    role: "user",
   },
   {
     id: 16,
     label: "Purchase Order & Invoice",
     link: "/dashboard/order",
     type: "route",
-    role: "admin",
+    role: "user",
   },
   {
     id: 17,
     label: "Shipping Hub",
     link: "/dashboard/shipping",
+    type: "route",
+    role: "user",
+  },
+  {
+    id: 18,
+    label: "Product Management",
+    link: "/admin",
+    type: "route",
+    role: "admin",
+  },
+  {
+    id: 18,
+    label: "Order Management",
+    link: "/admin/orders",
     type: "route",
     role: "admin",
   },
@@ -166,29 +182,31 @@ const Navbar = ({ opened, toggle }) => {
        {
   menu?.map((item, i) => {
     const isActive = currentPath === item?.link;
+if (role == item?.role){
 
-    return (
-      <div key={i} className="group cursor-pointer relative">
-        <p
-          className={cn(
-            "font-medium",
-            isActive
-              ? "text-hollywood-700"
-              : "text-slate-400 group-hover:text-hollywood-700"
-          )}
-        >
-          {item?.label}
-        </p>
-        <div
-          className={cn(
-            "underlined h-1 w-10 absolute rounded-full",
-            isActive
-              ? "bg-hollywood-600"
-              : "bg-transparent group-hover:bg-hollywood-500"
-          )}
-        />
-      </div>
-    );
+  return (
+    <div key={i} className="group cursor-pointer relative">
+      <p
+        className={cn(
+          "font-medium",
+          isActive
+            ? "text-hollywood-700"
+            : "text-slate-400 group-hover:text-hollywood-700"
+        )}
+      >
+        {item?.label}
+      </p>
+      <div
+        className={cn(
+          "underlined h-1 w-10 absolute rounded-full",
+          isActive
+            ? "bg-hollywood-600"
+            : "bg-transparent group-hover:bg-hollywood-500"
+        )}
+      />
+    </div>
+  );
+}
   })
 }
 

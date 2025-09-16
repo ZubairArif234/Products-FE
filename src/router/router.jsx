@@ -12,6 +12,7 @@ import Products from "../pages/dashboardPages/products";
 import AdminRoute from "./AdminRoute";
 import AuthRoute from "./AuthRoute";
 import Checkout from "../pages/dashboardPages/checkout";
+import ProductManagement from "../pages/adminPages/ProductManagement";
 
 const Router = () => {
   return (
@@ -28,11 +29,17 @@ const Router = () => {
         <Route path="/verify-email/:email" element={<AuthRoute Component={VerifyForgotEmail} />} />
         <Route path="/reset-password/:email/:otp" element={<AuthRoute Component={ResetPassword} />} />
        </Route>
+{/* user dashboard */}
         <Route path="/dashboard" element={<DashboardLayout />}>
 
         <Route path="/dashboard" element={<AdminRoute Component={Products} />} />
         <Route path="/dashboard/checkout" element={<AdminRoute Component={Checkout} />} />
        </Route>
+{/* admin dashboard */}
+        <Route path="/admin" element={<DashboardLayout />}>
+
+        <Route path="/admin" element={<AdminRoute Component={ProductManagement} />} />
+        </Route>
         <Route path="/home" element={<Home />} />
       </Routes>
     </BrowserRouter>

@@ -11,7 +11,7 @@ const Banner = () => {
   />
 
   {/* Orange overlay */}
-  <div className="absolute inset-0 bg-purple-500 opacity-50"></div>
+  <div className="absolute inset-0 bg-hollywood-700 opacity-50"></div>
 
   {/* Content on top */}
   <div className="absolute inset-0 flex items-center justify-center text-white text-4xl font-bold">

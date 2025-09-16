@@ -10,11 +10,11 @@ const AdminRoute = ({ Component }) => {
   if (!isAuthenticated) {
     return <Navigate to="/" />;
   } else {
-    if (role === "admin") {
+    // if (role === "admin") {
       return <Component />;
-    } else {
-      return <Navigate to="/not-found" />;
-    }
+    // } else {
+    //   return <Navigate to="/not-found" />;
+    // }
   }
 };
 
