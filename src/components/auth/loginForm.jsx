@@ -98,11 +98,11 @@ const LoginForm = () => {
                 "bg-gradient-to-r from-purple-800 to-purple-400 bg-clip-text text-transparent"
               )}
             >
-              website Name
+              Primewell
             </span>
           </p>
           <p className="font-extralight text-sm text-slate-600 mx-6 text-center my-2">
-            Welcome to Imagitive, please enter login details below to using the
+            Welcome to Primewell, please enter login details below to using the
             app.
           </p>
         </div>

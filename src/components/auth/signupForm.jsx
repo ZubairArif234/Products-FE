@@ -89,7 +89,7 @@ const SignupForm = () => {
               Create your
             </span>
             <span className="mx-2 font-medium bg-gradient-to-r from-[#6D62C3] to-[#9086E2] bg-clip-text text-transparent">
-              Website name
+             Primewell
             </span>
             <span
               className={cn(
@@ -103,7 +103,7 @@ const SignupForm = () => {
             </span>
           </p>
           <p className="font-extralight text-sm text-slate-500 mx-6 text-center ">
-            Welcome to Imagitive, please enter sign up details
+            Welcome to Primewell, please enter sign up details
           </p>
         </div>
 

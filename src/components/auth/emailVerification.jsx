@@ -55,7 +55,7 @@ const EmailVerification = () => {
             </span>
           </p>
           <p className="font-extralight text-md text-slate-500 mx-6 text-center my-2">
-            Welcome to Imagitive, please enter OTP below to verify your account.
+            Welcome to Primewell, please enter OTP below to verify your account.
           </p>
           {email && (
             <p className="text-center text-sm font-medium text-purple-700 mt-2">

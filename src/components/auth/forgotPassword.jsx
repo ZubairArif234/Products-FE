@@ -64,7 +64,7 @@ const ForgotPassword = () => {
             </span>
           </p>
           <p className="font-extralight text-md text-slate-500 mx-6 text-center my-2">
-            Welcome to Imagitive, please enter your email address below to
+            Welcome to Primewell, please enter your email address below to
             receive the OTP.
           </p>
         </div>

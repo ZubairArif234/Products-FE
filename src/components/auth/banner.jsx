@@ -1,5 +1,6 @@
 import React from "react";
 // import authBanner from "/assets/authBanner.png";
+import DashboardLogo from "../../assets/logo.png"
 const Banner = () => {
   return (
   <div className="relative h-screen w-full">
@@ -15,7 +16,15 @@ const Banner = () => {
 
   {/* Content on top */}
   <div className="absolute inset-0 flex items-center justify-center text-white text-4xl font-bold">
-    Logo
+   <div className="bg-white p-4 rounded-lg">
+
+    <img
+                     src={DashboardLogo}
+                     alt="Default Dashboard Logo"
+                     className="aspect-auto"
+                     width={250}
+                     />
+                     </div>
   </div>
 </div>
 
