@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { useProducts } from '../../hooks/useProducts';
 import { userGetData } from '../../services/hooks';
 
-const Products = () => {
+const Orders = () => {
    const [filters, setFilters] = useState({
       title: "",
       page: 1,
@@ -159,10 +159,10 @@ const Products = () => {
           </Table.Td>
       <Table.Td>{element.brand}</Table.Td>
       <Table.Td>{element.price}</Table.Td>
-      <Table.Td>{element.mqc}</Table.Td>
+      <Table.Td>{element.moq}</Table.Td>
       <Table.Td>{element.upc}</Table.Td>
       <Table.Td>{element.asin}</Table.Td>
-      <Table.Td>${element.amazonBb}</Table.Td>
+      <Table.Td>${element.amazonBB}</Table.Td>
       <Table.Td>${element.amazonFees}</Table.Td>
       <Table.Td>${element.profit}</Table.Td>
       <Table.Td>{element.margin}</Table.Td>
@@ -178,59 +178,21 @@ const Products = () => {
   }));
 };
   return (
-    <div className="py-5 px-20  rounded-lg shadow-md">
-      <div>
-        <p className='text-3xl mb-4 capitalize'>Welcome ,<span className='ms-2 text-hollywood-700 font-bold'>
-           {userData?.name}
-          </span>
-           </p>
-      <StatsCount/>
-      </div>
-      <Divider my={20}/>
+    <div className="py-5 px-20  ">
+      
       <div className='bg-white p-2 rounded-lg shadow-lg'>
 
         <div className=''>
-          <p className="font-bold text-hollywood-700 text-lg">Products</p>
+          <p className="font-bold text-hollywood-700 text-lg">Order</p>
           {/* <p className="text-sm text-gray-500">There are {elements.length} products</p> */}
         </div>
       <div className='flex justify-between items-center'>
         <div className='flex gap-4 items-center'>
           <TextInput placeholder='Search Product' value={filters.title}
   onChange={(e) => handleSearch(e.target.value)} leftSection={<Search size={18}  />}/>
-          <Select
-    rightSection={<ChevronDown size={18} />}
-      placeholder="Filter by brand"
-      clearable
-      searchable
-      data={['Brand A', 'Brand B', 'Brand C', 'Brand D' , 'Brand E']}
-    />
-          <Select
-    rightSection={<ChevronDown size={18} />}
-      placeholder="Filter by warehouse"
-      clearable
-      searchable
-      data={['Warehouse A', 'Warehouse B', 'Warehouse C', 'Warehouse D' , 'Warehouse E']}
-    />
+         
         </div>
-        <div className='flex gap-4 items-center'>
-
-        <Button 
-          variant="default" 
-          onClick={open}
-          disabled={selectedRows.length === 0} 
-          className="!bg-hollywood-700 disabled:!bg-hollywood-400 !text-white !rounded-lg !mt-3"
-          >
-          Add to cart ({selectedRows.length})
-        </Button> 
-        <Button 
-          variant="default" 
-          // onClick={open}
-          // disabled={selectedRows.length === 0} 
-          className="!bg-hollywood-700 disabled:!bg-purple-300 !text-white !rounded-lg !mt-3"
-          >
-         Download CSV
-        </Button> 
-            </div>
+      
       </div>
 
       
@@ -273,110 +235,10 @@ const Products = () => {
 
       </div>
 
-      <Drawer position="right" opened={opened} onClose={close} title="Shopping Cart">
-        {selectedRows.length > 0 && selectedRows.map((rowId) => {
-          const data = products?.find(el => el._id === rowId);
-          return (
-            <ProductItem 
-              key={rowId} 
-              data={data} 
-              quantity={itemQuantities[rowId] || 1}
-              onQuantityChange={(newQuantity) => updateQuantity(rowId, newQuantity)}
-              onRemove={() => removeFromCart(rowId)}
-            />
-          );
-        })}
-        
-        {selectedRows.length > 0 && (
-          <div className="mt-4 pt-4 border-t border-gray-300">
-            <div className="flex justify-between items-center mb-4">
-              <p className="text-lg font-semibold">Total Price:</p>
-              <p className="text-lg font-bold text-hollywood-700">${totalPrice}</p>
-            </div>
-            <Link to="/dashboard/checkout"   state={{
-    selectedItems: selectedRows.map((rowId) => ({
-      ...products?.find((el) => el._id === rowId),
-      quantity: itemQuantities[rowId] || 1,
-    })),
-    totalPrice,
-  }}>
-            <Button className='!bg-hollywood-700 !text-white !rounded-lg w-full'>
-              Checkout (${totalPrice})
-            </Button>
-            </Link>
-          </div>
-        )}
-        
-        {selectedRows.length === 0 && (
-          <div className="text-center py-8 text-gray-500">
-            Your cart is empty
-          </div>
-        )}
-      </Drawer>
+     
     </div>
   );
 };
 
-export default Products;
+export default Orders;
 
-export const ProductItem = ({ data, quantity, onQuantityChange, onRemove }) => {
-  return (
-    <div className='flex justify-between items-center border-b border-gray-300 p-3'>
-      <div className='flex gap-3 items-center'>
-        <Trash 
-          size={15} 
-          className='text-red-500 cursor-pointer hover:text-red-700' 
-          onClick={onRemove}
-        />
-        <div className='flex gap-3 items-center'>
-          <img 
-            className='h-14 w-14 aspect-square object-contain bg-slate-200 rounded' 
-           src={"https://images.unsplash.com/photo-1521223890158-f9f7c3d5d504?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8amFja2V0fGVufDB8fDB8fHww"}
-            alt={data.name} 
-          />
-          <div>
-            <p className='text-md font-semibold'>{data.name}</p>
-            <p className='text-sm text-gray-500'>{data.brand}</p>
-          </div>
-        </div>
-      </div>
-      <div className='flex items-center gap-2 bg-slate-200 p-1 rounded-md'>
-        <Minus 
-          size={15} 
-          onClick={() => quantity > 1 && onQuantityChange(quantity - 1)} 
-          className='text-white bg-hollywood-700 w-6 h-6 rounded-md p-1 cursor-pointer hover:bg-purple-600'
-        />
-        <p className="min-w-[20px] text-center">{quantity}</p>
-        <Plus 
-          size={15} 
-          onClick={() => onQuantityChange(quantity + 1)} 
-          className='text-white bg-hollywood-700 w-6 h-6 rounded-md p-1 cursor-pointer hover:bg-purple-600'
-        />
-      </div>
-      <p className="font-semibold">${data.price * quantity}</p>
-    </div>
-  );
-};
-
-const StatsCount = () => {
-  return(
-      <div className='grid grid-cols-5 gap-4 '>
-          <div className='rounded-lg shadow-lg bg-white'>
-<p className='bg-hollywood-700 text-white p-2 font-semibold rounded-t-lg'>Brands</p>
-<div className='p-2'>
-
-<p className='text-3xl font-semibold text-slate-400 '>230</p>
-<p className='text-sm font-semibold text-slate-400'>last 30 days</p>
-</div>
-          </div>
-          <div className='rounded-lg shadow-lg bg-white'>
-<p className='bg-hollywood-700 text-white p-2 font-semibold rounded-t-lg'>Product</p>
-<div className='p-2'>
-
-<p className='text-3xl font-semibold text-slate-400 '>572</p>
-<p className='text-sm font-semibold text-slate-400'>last 30 days</p>
-</div>
-          </div>
-        </div>
-  )
-}

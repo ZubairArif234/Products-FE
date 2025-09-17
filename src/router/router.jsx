@@ -13,6 +13,7 @@ import AdminRoute from "./AdminRoute";
 import AuthRoute from "./AuthRoute";
 import Checkout from "../pages/dashboardPages/checkout";
 import ProductManagement from "../pages/adminPages/ProductManagement";
+import Orders from "../pages/dashboardPages/order";
 
 const Router = () => {
   return (
@@ -34,6 +35,7 @@ const Router = () => {
 
         <Route path="/dashboard" element={<AdminRoute Component={Products} />} />
         <Route path="/dashboard/checkout" element={<AdminRoute Component={Checkout} />} />
+        <Route path="/dashboard/order" element={<AdminRoute Component={Orders} />} />
        </Route>
 {/* admin dashboard */}
         <Route path="/admin" element={<DashboardLayout />}>

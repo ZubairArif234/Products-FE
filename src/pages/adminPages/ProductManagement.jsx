@@ -1,10 +1,19 @@
-import { Button, Table, Checkbox,Drawer, Divider, TextInput, Select,Modal } from '@mantine/core';
+import { Button, Table, Checkbox,Drawer, Divider, TextInput, Select,Modal, Loader } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { ChevronDown, FileAxis3d, Minus, Plus, Upload, CheckCircle2, X, Search, SquarePen, Trash } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { useProducts } from '../../hooks/useProducts';
 
 const ProductManagement = () => {
+     const [filters, setFilters] = useState({
+    title: "",
+    page: 1,
+    limit: 6,
+  });
+    const {products, isPending} = useProducts(filters)
+   
+    
   const [opened, { open, close }] = useDisclosure(false);
   const [openedUpload, { open:openUpload, close:closeUpload }] = useDisclosure(false);
   const [selectedRows, setSelectedRows] = useState([]);
@@ -122,7 +131,7 @@ const ProductManagement = () => {
     });
   };
 
-  const rows = elements.map((element, i) => (
+  const rows = products?.map((element, i) => (
     <Table.Tr key={i} className={selectedRows.includes(element.id) ? '!bg-hollywood-700/80 text-white' : undefined}>
       {/* <Table.Td>
         <Checkbox
@@ -150,16 +159,24 @@ const ProductManagement = () => {
           </Table.Td>
       <Table.Td>{element.brand}</Table.Td>
       <Table.Td>{element.price}</Table.Td>
-      <Table.Td>{element.moq}</Table.Td>
+      <Table.Td>{element.mqc}</Table.Td>
       <Table.Td>{element.upc}</Table.Td>
       <Table.Td>{element.asin}</Table.Td>
-      <Table.Td>${element.amazonBB}</Table.Td>
+      <Table.Td>${element.amazonBb}</Table.Td>
       <Table.Td>${element.amazonFees}</Table.Td>
       <Table.Td>${element.profit}</Table.Td>
       <Table.Td>{element.margin}</Table.Td>
       <Table.Td>{element.roi}</Table.Td>
     </Table.Tr>
   ));
+
+ const handleSearch = (value) => {
+  setFilters((prev) => ({
+    ...prev,
+    title: value,   // update title
+    page: 1         // reset page to 1 when searching
+  }));
+};
 
 //   const productData =aync () => {
 //     const apiKeyId = "8c7b051f-b0ad-4e70-9280-652f4b09c721";
@@ -200,7 +217,8 @@ const ProductManagement = () => {
         </div>
       <div className='flex justify-between items-center'>
         <div className='flex gap-4 items-center'>
-          <TextInput placeholder='Search Product' leftSection={<Search size={18}  />}/>
+          <TextInput placeholder='Search Product' value={filters.title}
+  onChange={(e) => handleSearch(e.target.value)} leftSection={<Search size={18}  />}/>
           {/* <Select
     rightSection={<ChevronDown size={18} />}
       placeholder="Filter by brand"
@@ -237,8 +255,15 @@ const ProductManagement = () => {
             </div>
       </div>
 
-      <div>
-        <Table.ScrollContainer minWidth={500} type="native">
+      <div className='capitalize'>
+        {isPending  ? 
+        <div className='my-20 flex justify-center'>
+
+            <Loader color="#255b7f" />
+        </div>
+         :
+         products?.length > 0  ?
+        <Table.ScrollContainer  minWidth={500} type="native">
           <Table>
             <Table.Thead>
               <Table.Tr>
@@ -258,7 +283,12 @@ const ProductManagement = () => {
             </Table.Thead>
             <Table.Tbody>{rows}</Table.Tbody>
           </Table>
-        </Table.ScrollContainer>
+        </Table.ScrollContainer>:
+        <div className='my-20 flex flex-col justify-center items-center'>
+<p className='text-xl font-semibold'>No Products Found</p>
+<p className='text-sm text-slate-400'>There are no product based on the search</p>
+        </div>
+        }
       </div>
 
       </div>

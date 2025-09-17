@@ -8,12 +8,14 @@ import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
 // import "mantine-react-table/styles.css";
 import QueryProvider from "./configs/query.config.jsx";
+import { Toaster } from "sonner";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <MantineProvider >
       <QueryProvider>
             <App />
+             <Toaster richColors />
       </QueryProvider>
     </MantineProvider>
   </StrictMode>

@@ -9,7 +9,7 @@ import React, { useState, useEffect } from "react";
 // import { FaBell, FaMoon, FaSun } from "react-icons/fa";
 // import { IoEye, IoEyeOffSharp, IoWallet } from "react-icons/io5";
 import ProfileMenu from "./profileMenu";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 // import { useGetMyWallet } from "../../hooks/useWallet";
 // PLAID INTEGRATION TEMPORARILY DISABLED
 // import { useGetMyAccounts } from "../../hooks/usePlaid";
@@ -186,7 +186,8 @@ if (role == item?.role){
 
   return (
     <div key={i} className="group cursor-pointer relative">
-      <p
+      <Link
+      to={item?.link}
         className={cn(
           "font-medium",
           isActive
@@ -195,7 +196,7 @@ if (role == item?.role){
         )}
       >
         {item?.label}
-      </p>
+      </Link>
       <div
         className={cn(
           "underlined h-1 w-10 absolute rounded-full",
