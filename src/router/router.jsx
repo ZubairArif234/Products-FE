@@ -14,6 +14,7 @@ import AuthRoute from "./AuthRoute";
 import Checkout from "../pages/dashboardPages/checkout";
 import ProductManagement from "../pages/adminPages/ProductManagement";
 import Orders from "../pages/dashboardPages/order";
+import OrdersManagement from "../pages/adminPages/orderManagement";
 
 const Router = () => {
   return (
@@ -41,6 +42,7 @@ const Router = () => {
         <Route path="/admin" element={<DashboardLayout />}>
 
         <Route path="/admin" element={<AdminRoute Component={ProductManagement} />} />
+        <Route path="/admin/orders" element={<AdminRoute Component={OrdersManagement} />} />
         </Route>
         <Route path="/home" element={<Home />} />
       </Routes>

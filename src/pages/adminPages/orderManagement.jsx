@@ -5,17 +5,17 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useProducts } from '../../hooks/useProducts';
 import { userGetData } from '../../services/hooks';
-import { useMyOrders, useOrders } from '../../hooks/useOrder';
+import { changeOrderStatus, useOrders } from '../../hooks/useOrder';
 import moment from 'moment/moment';
 
-const Orders = () => {
-    
+const OrdersManagement = () => {
+    const { mutateAsync } = changeOrderStatus();
    const [filters, setFilters] = useState({
       title: "",
       page: 1,
       limit: 6,
     });
-      const {orders, isPending} = useMyOrders(filters)
+      const {orders, isPending} = useOrders(filters)
       console.log(orders);
       
       const userData = userGetData()
@@ -138,6 +138,10 @@ const Orders = () => {
     });
   };
 
+  const handleChangeOrderStatus = (value, id) => {
+    mutateAsync({status:value,id:id},)
+  }
+
   const rows = orders?.map((element, i) => (
     <Table.Tr key={i} className={selectedRows.includes(element._id) ? '!bg-hollywood-700/80 text-white' : undefined}>
       {/* <Table.Td>
@@ -159,7 +163,15 @@ const Orders = () => {
       <Table.Td>{element.products?.length}</Table.Td>
       <Table.Td>{element.clientDetails?.firstName + " " + element.clientDetails?.lastName}</Table.Td>
       <Table.Td>${element.totalPrice}</Table.Td>
-      <Table.Td>{element.status}</Table.Td>
+      <Table.Td><Select
+      onChange={(value)=>handleChangeOrderStatus(value , element?._id)}
+      className='!capitalize'
+      size='sm'
+    rightSection={<ChevronDown size={18} />}
+      placeholder="Filter by brand"
+      defaultValue={element.status}
+      data={[{label:"Pending",value:'pending'}, {label:"Confirmed",value:'confirmed'}, {label:"Shipped",value:'shipped'}, {label:"Cancelled",value:'cancelled'} ]}
+    /></Table.Td>
       <Table.Td>{moment(element.createdAt).format('DD-MMM-YYYY')}</Table.Td>
       <Table.Td ><Eye onClick={()=>{setSingleOrder(element); open()}} size={15} className='hover:text-green-500 cursor-pointer' /></Table.Td>
     
@@ -272,5 +284,5 @@ const Orders = () => {
   );
 };
 
-export default Orders;
+export default OrdersManagement;
 

@@ -88,7 +88,7 @@ const SignupForm = () => {
             >
               Create your
             </span>
-            <span className="mx-2 font-medium bg-gradient-to-r from-[#6D62C3] to-[#9086E2] bg-clip-text text-transparent">
+            <span className="mx-2 font-medium bg-gradient-to-r from-hollywood-800 to-hollywood-400 bg-clip-text text-transparent">
              Primewell
             </span>
             <span

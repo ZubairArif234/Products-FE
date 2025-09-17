@@ -95,7 +95,7 @@ const LoginForm = () => {
             </span>
             <span
               className={cn(
-                "bg-gradient-to-r from-purple-800 to-purple-400 bg-clip-text text-transparent"
+                "bg-gradient-to-r from-hollywood-800 to-hollywood-400 bg-clip-text text-transparent"
               )}
             >
               Primewell
@@ -145,7 +145,7 @@ const LoginForm = () => {
           />
           <Link
             to={"/forgot-password"}
-            className="text-purple-500 font-medium text-center"
+            className="text-hollywood-500 font-medium text-center"
           >
             Forgot the password?
           </Link>
