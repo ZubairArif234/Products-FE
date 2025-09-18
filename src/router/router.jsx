@@ -15,6 +15,8 @@ import Checkout from "../pages/dashboardPages/checkout";
 import ProductManagement from "../pages/adminPages/ProductManagement";
 import Orders from "../pages/dashboardPages/order";
 import OrdersManagement from "../pages/adminPages/orderManagement";
+import WarehouseManagements from "../pages/adminPages/warehouseManagements";
+import WarehouseDetails from "../pages/adminPages/warehouseDetails";
 
 const Router = () => {
   return (
@@ -43,6 +45,9 @@ const Router = () => {
 
         <Route path="/admin" element={<AdminRoute Component={ProductManagement} />} />
         <Route path="/admin/orders" element={<AdminRoute Component={OrdersManagement} />} />
+        <Route path="/admin/warehouse" element={<AdminRoute Component={WarehouseManagements} />} />
+        <Route path="/admin/warehouse-details" element={<AdminRoute Component={WarehouseDetails
+        } />} />
         </Route>
         <Route path="/home" element={<Home />} />
       </Routes>

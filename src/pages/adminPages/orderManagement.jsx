@@ -18,7 +18,6 @@ const OrdersManagement = () => {
       const {orders, isPending} = useOrders(filters)
       console.log(orders);
       
-      const userData = userGetData()
        
   const [opened, { open, close }] = useDisclosure(false);
 
@@ -120,44 +119,14 @@ const OrdersManagement = () => {
     setTotalPrice(total);
   }, [selectedRows, itemQuantities]);
 
-  // Function to update item quantity
-  const updateQuantity = (itemId, newQuantity) => {
-    setItemQuantities(prev => ({
-      ...prev,
-      [itemId]: newQuantity
-    }));
-  };
-
-  // Function to remove item from cart
-  const removeFromCart = (itemId) => {
-    setSelectedRows(prev => prev.filter(id => id !== itemId));
-    setItemQuantities(prev => {
-      const newQuantities = { ...prev };
-      delete newQuantities[itemId];
-      return newQuantities;
-    });
-  };
 
   const handleChangeOrderStatus = (value, id) => {
     mutateAsync({status:value,id:id},)
   }
 
-  const rows = orders?.map((element, i) => (
+  const rows = orders?.orders?.map((element, i) => (
     <Table.Tr key={i} className={selectedRows.includes(element._id) ? '!bg-hollywood-700/80 text-white' : undefined}>
-      {/* <Table.Td>
-        <Checkbox
-          color='#154d72'
-          aria-label="Select row"
-          checked={selectedRows.includes(element._id)}
-          onChange={(event) =>
-            setSelectedRows(
-              event.currentTarget.checked
-                ? [...selectedRows, element._id]
-                : selectedRows.filter((id) => id !== element._id)
-            )
-          }
-        />
-      </Table.Td> */}
+    
      
       <Table.Td>#{element._id}</Table.Td>
       <Table.Td>{element.products?.length}</Table.Td>
@@ -212,7 +181,7 @@ const OrdersManagement = () => {
             <Loader color="#255b7f" />
         </div>
          :
-         orders?.length > 0  ?
+         orders?.orders?.length > 0  ?
         <Table.ScrollContainer minWidth={500} type="native">
           <Table>
             <Table.Thead>
@@ -258,16 +227,17 @@ const OrdersManagement = () => {
                 <div key={i} className='flex justify-between items-center  border-b-1 p-2 border-slate-200 '>
                     <div className='flex gap-2 items-center'>
 
-                     <img 
+                    <img 
             className='h-10 w-10 aspect-square object-contain bg-slate-200 rounded' 
-            src={"https://images.unsplash.com/photo-1521223890158-f9f7c3d5d504?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8amFja2V0fGVufDB8fDB8fHww"}
-            
+            src={item?.product?.images?.length > 0 ? item?.product?.images[0] : "https://images.unsplash.com/photo-1521223890158-f9f7c3d5d504?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8amFja2V0fGVufDB8fDB8fHww"}
+           
             />
-            <p>{item?.product?.name}</p>
+            <p className='line-clamp-1 w-28' title={item?.product?.name}>{item?.product?.name}</p>
+            
             </div>
             <p>{item?.qnt}  x </p>
-            <p>${item?.unitPrice} </p>
-            <p>= ${item?.qnt * item?.unitPrice}</p>
+            <p>{item?.unitPrice} </p>
+            <p>= ${item?.qnt * item?.unitPrice?.split("$")[1]}</p>
                 </div>
     )
 })}

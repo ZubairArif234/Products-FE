@@ -1,5 +1,6 @@
-import { useQuery } from "@tanstack/react-query";
-import custAxios, { attachToken } from "../configs/axios.config";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import custAxios, { attachToken, attachTokenWithFormAxios, formAxios } from "../configs/axios.config";
+import { errorMessage, successMessage } from "../lib/toast";
 
 export const useProducts = (filters) => {
   const { data, ...rest } = useQuery({
@@ -9,7 +10,7 @@ export const useProducts = (filters) => {
         params: filters,
       });
 
-      return data?.data?.data?.products;
+      return data?.data?.data;
     },
 queryKey: ["products", filters],
     staleTime: Infinity,
@@ -17,4 +18,24 @@ queryKey: ["products", filters],
     retry: true,
   });
   return { products: data, ...rest };
+};
+
+export const createProductsByCSV = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (value) => {
+      attachTokenWithFormAxios();
+      const res = await formAxios.post(`/product/csv`, value);
+      return res?.data;
+    },
+    onSuccess: (data) => {
+      if (data?.success) {
+        successMessage("Products addedd successfully");
+        queryClient.invalidateQueries("products");
+      }
+    },
+    onError: (error) => {
+      errorMessage(error?.response?.data?.message);
+    },
+  });
 };

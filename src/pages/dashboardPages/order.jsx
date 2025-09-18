@@ -110,6 +110,8 @@ const Orders = () => {
   }
 ];
 
+console.log(singleOrder);
+
   // Calculate total price whenever itemQuantities changes
   useEffect(() => {
     const total = selectedRows.reduce((sum, rowId) => {
@@ -248,14 +250,14 @@ const Orders = () => {
 
                      <img 
             className='h-10 w-10 aspect-square object-contain bg-slate-200 rounded' 
-            src={"https://images.unsplash.com/photo-1521223890158-f9f7c3d5d504?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8amFja2V0fGVufDB8fDB8fHww"}
-            
+            src={item?.product?.images?.length > 0 ? item?.product?.images[0] : "https://images.unsplash.com/photo-1521223890158-f9f7c3d5d504?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8amFja2V0fGVufDB8fDB8fHww"}
+           
             />
-            <p>{item?.product?.name}</p>
+            <p className='line-clamp-1 w-28' title={item?.product?.name}>{item?.product?.name}</p>
             </div>
             <p>{item?.qnt}  x </p>
-            <p>${item?.unitPrice} </p>
-            <p>= ${item?.qnt * item?.unitPrice}</p>
+            <p>{item?.unitPrice} </p>
+            <p>= ${item?.qnt * item?.unitPrice?.split("$")[1]}</p>
                 </div>
     )
 })}

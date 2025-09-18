@@ -1,24 +1,31 @@
-import { Button, Table, Checkbox,Drawer, Divider, TextInput, Select,Modal, Loader } from '@mantine/core';
+import { Button, Table, Checkbox,Drawer, Divider, TextInput, Select,Modal, Loader, Pagination } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { ChevronDown, FileAxis3d, Minus, Plus, Upload, CheckCircle2, X, Search, SquarePen, Trash } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { useProducts } from '../../hooks/useProducts';
+import { createProductsByCSV, useProducts } from '../../hooks/useProducts';
+import { useWarehouse } from '../../hooks/useWarehouse';
 
 const ProductManagement = () => {
      const [filters, setFilters] = useState({
     title: "",
+    warehouse: "",
     page: 1,
     limit: 6,
   });
     const {products, isPending} = useProducts(filters)
+    const {warehouse, isPending:isPendingWarehouse} = useWarehouse({})
+   console.log(warehouse);
    
-    
-  const [opened, { open, close }] = useDisclosure(false);
-  const [openedUpload, { open:openUpload, close:closeUpload }] = useDisclosure(false);
-  const [selectedRows, setSelectedRows] = useState([]);
+  
+   const { isPending: isCreateProductPending, mutateAsync } = createProductsByCSV();
+   const [opened, { open, close }] = useDisclosure(false);
+   const [selectedRows, setSelectedRows] = useState([]);
   const [itemQuantities, setItemQuantities] = useState({});
   const [totalPrice, setTotalPrice] = useState(0);
+  const [selectedWarehouse, setSelectedWarehouse] = useState(null);
+  const [file, setFile] = useState(null);
+  const [errors, setErrors] = useState({});
 
   const elements = [
   {
@@ -113,48 +120,21 @@ const ProductManagement = () => {
     setTotalPrice(total);
   }, [selectedRows, itemQuantities]);
 
-  // Function to update item quantity
-  const updateQuantity = (itemId, newQuantity) => {
-    setItemQuantities(prev => ({
-      ...prev,
-      [itemId]: newQuantity
-    }));
-  };
 
-  // Function to remove item from cart
-  const removeFromCart = (itemId) => {
-    setSelectedRows(prev => prev.filter(id => id !== itemId));
-    setItemQuantities(prev => {
-      const newQuantities = { ...prev };
-      delete newQuantities[itemId];
-      return newQuantities;
-    });
-  };
-
-  const rows = products?.map((element, i) => (
+  const rows = products?.products?.map((element, i) => (
     <Table.Tr key={i} className={selectedRows.includes(element.id) ? '!bg-hollywood-700/80 text-white' : undefined}>
-      {/* <Table.Td>
-        <Checkbox
-          color='#154d72'
-          aria-label="Select row"
-          checked={selectedRows.includes(element.id)}
-          onChange={(event) =>
-            setSelectedRows(
-              event.currentTarget.checked
-                ? [...selectedRows, element.id]
-                : selectedRows.filter((id) => id !== element.id)
-            )
-          }
-        />
-      </Table.Td> */}
+      
       <Table.Td>
-        <div className='flex items-center gap-2'>
+        <div className='flex items-center gap-2 capitalize'>
            <img 
             className='h-14 w-14 aspect-square object-contain bg-slate-200 rounded' 
-           src={"https://images.unsplash.com/photo-1521223890158-f9f7c3d5d504?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8amFja2V0fGVufDB8fDB8fHww"}
+           src={element?.images?.length > 0 ? element?.images[0] : "https://images.unsplash.com/photo-1521223890158-f9f7c3d5d504?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8amFja2V0fGVufDB8fDB8fHww"}
             alt={element.name} 
           />
+          <p title={element.name} className='text-md font-semibold line-clamp-2'>
+
           {element.name}
+          </p>
           </div>
           </Table.Td>
       <Table.Td>{element.brand}</Table.Td>
@@ -163,7 +143,7 @@ const ProductManagement = () => {
       <Table.Td>{element.upc}</Table.Td>
       <Table.Td>{element.asin}</Table.Td>
       <Table.Td>${element.amazonBb}</Table.Td>
-      <Table.Td>${element.amazonFees}</Table.Td>
+      <Table.Td>${Number(element.amazonFees).toFixed(2)}</Table.Td>
       <Table.Td>${element.profit}</Table.Td>
       <Table.Td>{element.margin}</Table.Td>
       <Table.Td>{element.roi}</Table.Td>
@@ -176,6 +156,32 @@ const ProductManagement = () => {
     title: value,   // update title
     page: 1         // reset page to 1 when searching
   }));
+};
+const handleWarehouse = (value) => {
+  setFilters((prev) => ({
+    ...prev,
+    warehouse: value,
+    page: 1,
+  }));
+};
+const handleUpload = () => {
+  const validationErrors = {};
+  if (!selectedWarehouse) {
+    validationErrors.warehouse = "Please select a warehouse";
+  }
+  if (!file) {
+    validationErrors.file = "Please upload a CSV file";
+  }
+  setErrors(validationErrors);
+  if (Object.keys(validationErrors).length > 0) return;
+
+  // ✅ Both validations passed - provide values (replace with API call as needed)
+  console.log({ warehouseId: selectedWarehouse, file });
+  const formData = new FormData();
+  formData.append("warehouse", selectedWarehouse);
+  formData.append("file", file);
+  mutateAsync(formData);
+  // close();
 };
 
 //   const productData =aync () => {
@@ -219,20 +225,18 @@ const ProductManagement = () => {
         <div className='flex gap-4 items-center'>
           <TextInput placeholder='Search Product' value={filters.title}
   onChange={(e) => handleSearch(e.target.value)} leftSection={<Search size={18}  />}/>
-          {/* <Select
-    rightSection={<ChevronDown size={18} />}
-      placeholder="Filter by brand"
-      clearable
-      searchable
-      data={['Brand A', 'Brand B', 'Brand C', 'Brand D' , 'Brand E']}
-    />
-          <Select
+   <Select
     rightSection={<ChevronDown size={18} />}
       placeholder="Filter by warehouse"
       clearable
       searchable
-      data={['Warehouse A', 'Warehouse B', 'Warehouse C', 'Warehouse D' , 'Warehouse E']}
-    /> */}
+      value={filters.warehouse}
+      onChange={handleWarehouse}
+      data={warehouse?.warehouses?.map((element)=>{return({
+        label:element.name,
+        value:element._id
+      })})} />
+         
         </div>
         <div className='flex gap-4 items-center'>
 
@@ -262,7 +266,9 @@ const ProductManagement = () => {
             <Loader color="#255b7f" />
         </div>
          :
-         products?.length > 0  ?
+         products?.products?.length > 0  ?
+         <div>
+
         <Table.ScrollContainer  minWidth={500} type="native">
           <Table>
             <Table.Thead>
@@ -283,7 +289,13 @@ const ProductManagement = () => {
             </Table.Thead>
             <Table.Tbody>{rows}</Table.Tbody>
           </Table>
-        </Table.ScrollContainer>:
+        </Table.ScrollContainer>
+        <div className='flex justify-end mt-4'>
+        <Pagination color='#255b7f' total={products?.pagination?.totalPages/6}  value={filters.page}
+  onChange={(page) => setFilters((prev) => ({ ...prev, page }))}  mt="sm" />
+        </div>
+         </div>
+        :
         <div className='my-20 flex flex-col justify-center items-center'>
 <p className='text-xl font-semibold'>No Products Found</p>
 <p className='text-sm text-slate-400'>There are no product based on the search</p>
@@ -302,13 +314,19 @@ const ProductManagement = () => {
       placeholder="Filter by warehouse"
       clearable
       searchable
-      data={['Warehouse A', 'Warehouse B', 'Warehouse C', 'Warehouse D' , 'Warehouse E']}
+      value={selectedWarehouse}
+      onChange={setSelectedWarehouse}
+      data={warehouse?.warehouses?.map((element)=>{return({
+        label:element.name,
+        value:element._id
+      })})}
+      error={errors.warehouse}
     />
       </div>
-      <EnhancedUpload/>
+      <EnhancedUpload value={file} onChange={setFile} error={errors.file}/>
 
       <div className='flex justify-end'>
-        <Button onClick={openUpload} className="!bg-hollywood-700 disabled:!bg-purple-300 !text-white !rounded-lg !mt-3"
+        <Button loading={isCreateProductPending} onClick={handleUpload} className="!bg-hollywood-700 disabled:!bg-purple-300 !text-white !rounded-lg !mt-3"
         >Upload</Button>
       </div>
       </div>
@@ -383,9 +401,8 @@ const StatsCount = () => {
   )
 }
 
-const EnhancedUpload = () => {
+const EnhancedUpload = ({ value, onChange, error }) => {
   const [isDragOver, setIsDragOver] = useState(false);
-  const [uploadedFile, setUploadedFile] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef(null);
 
@@ -408,15 +425,18 @@ const EnhancedUpload = () => {
     }
   };
 
-  const handleFileSelect = (file) => {
-    if (file && file.type === 'text/csv') {
+  const handleFileSelect = (selectedFile) => {
+    if (!selectedFile) return;
+    const isCsvMime = selectedFile.type === 'text/csv' || selectedFile.type === 'application/vnd.ms-excel';
+    const isCsvName = selectedFile.name?.toLowerCase().endsWith('.csv');
+    if (isCsvMime || isCsvName) {
       setIsUploading(true);
-      // Simulate upload process
       setTimeout(() => {
-        setUploadedFile(file);
+        onChange?.(selectedFile);
         setIsUploading(false);
-      }, 1500);
+      }, 500);
     } else {
+      onChange?.(null);
       alert('Please select a valid CSV file');
     }
   };
@@ -433,7 +453,7 @@ const EnhancedUpload = () => {
   };
 
   const removeFile = () => {
-    setUploadedFile(null);
+    onChange?.(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -455,7 +475,7 @@ const EnhancedUpload = () => {
           border-2 border-dashed rounded-xl p-8 transition-all duration-300 cursor-pointer
           ${isDragOver 
             ? 'border-blue-400 bg-blue-50 scale-105' 
-            : uploadedFile 
+            : value 
               ? 'border-green-400 bg-green-50' 
               : 'border-slate-300 bg-slate-50 hover:border-slate-400 hover:bg-slate-100'
           }
@@ -464,7 +484,7 @@ const EnhancedUpload = () => {
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        onClick={!uploadedFile ? handleClick : undefined}
+        onClick={!value ? handleClick : undefined}
       >
         <input
           ref={fileInputRef}
@@ -480,12 +500,12 @@ const EnhancedUpload = () => {
             <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
             <p className="text-sm text-slate-600">Uploading...</p>
           </div>
-        ) : uploadedFile ? (
+        ) : value ? (
           <div className="flex flex-col items-center gap-3 w-full">
             <CheckCircle2 className="w-12 h-12 text-green-500" />
             <div className="text-center">
-              <p className="font-medium text-green-700">{uploadedFile.name}</p>
-              <p className="text-sm text-slate-500">{formatFileSize(uploadedFile.size)}</p>
+              <p className="font-medium text-green-700">{value.name}</p>
+              <p className="text-sm text-slate-500">{formatFileSize(value.size)}</p>
             </div>
             <button
               onClick={removeFile}
@@ -521,13 +541,16 @@ const EnhancedUpload = () => {
         )}
       </div>
       
-      {uploadedFile && (
+      {value && (
         <div className="mt-4 p-4 bg-white border border-green-200 rounded-lg">
           <h3 className="font-medium text-green-800 mb-2">File Ready</h3>
           <p className="text-sm text-slate-600">
             Your CSV file has been uploaded successfully and is ready for processing.
           </p>
         </div>
+      )}
+      {error && (
+        <p className="text-sm text-red-600 mt-2">{error}</p>
       )}
     </div>
   );

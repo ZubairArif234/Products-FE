@@ -47,11 +47,14 @@ export const attachToken = () => {
 
 // attaching token to form axios without strict format validation
 export const attachTokenWithFormAxios = () => {
-  const token =
-    sessionStorage.getItem("token") || localStorage.getItem("token");
+  const user = JSON.parse(localStorage?.getItem("user"));
+  const isTeamMember = user?.isTeamMember;
+  const token = isTeamMember
+  ? localStorage.getItem("ownerToken")
+  : localStorage.getItem("token");
   if (token) {
     const bearerToken = token.startsWith('Bearer ') ? token : `Bearer ${token}`;
-    formAxios.defaults.headers.common["Authorization"] = bearerToken;
+    formAxios.defaults.headers.common["Authorization"] =token || bearerToken;
   }
 };
 

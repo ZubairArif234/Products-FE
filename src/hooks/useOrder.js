@@ -6,10 +6,12 @@ export const useOrders = (filters) => {
   const { data, ...rest } = useQuery({
     queryFn: async () => {
       attachToken();
-      const data = await custAxios.get("/order",);
-console.log(data?.data);
+      const data = await custAxios.get("/order",{
+        params: filters,
+      });
+console.log(data?.data , "order output") ;
 
-      return data?.data?.orders;
+      return data?.data;
     },
 queryKey: ["orders"],
     staleTime: Infinity,

@@ -80,7 +80,7 @@ const Checkout = () => {
           // Calculate total cart value
           const cartTotal = cartItems.reduce((total, item) => {
             const quantity = itemQuantities[item._id] || 1;
-            return total + (item.price * quantity);
+            return total + (item.price?.split("$")[1] * quantity);
           }, 0);
 
           const payload = {
@@ -89,7 +89,7 @@ const Checkout = () => {
             
             products: cartItems.map(item => ({
               product: item._id, // This should be the MongoDB ObjectId
-              qnt: itemQuantities[item.id] || 1,
+              qnt: itemQuantities[item._id] || 1,
               unitPrice: item.price
             })),
             
@@ -226,7 +226,7 @@ const StepOne = ({ selectedItems, setSelectedItems, itemQuantities, setItemQuant
 
   const rows = selectedItems.map((element, i) => {
     const quantity = itemQuantities[element._id] || 1;
-    const totalPrice = (element.price * quantity).toFixed(2);
+    const totalPrice = (element.price?.split("$")[1] * quantity).toFixed(2);
 
     return (
       <Table.Tr key={element.id || i}>
@@ -239,10 +239,13 @@ const StepOne = ({ selectedItems, setSelectedItems, itemQuantities, setItemQuant
           <div className='flex items-center gap-3'>
             <img 
               className='h-14 w-14 aspect-square object-contain bg-slate-200 rounded' 
-            src={"https://images.unsplash.com/photo-1521223890158-f9f7c3d5d504?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8amFja2V0fGVufDB8fDB8fHww"}
+              src={element?.images?.length > 0 ? element?.images[0] : "https://images.unsplash.com/photo-1521223890158-f9f7c3d5d504?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8amFja2V0fGVufDB8fDB8fHww"}
               alt={element.name} 
             />
+            <p className='line-clamp-1' title={element.name}>
+
             {element.name}
+            </p>
           </div>
         </Table.Td>
         <Table.Td>{element.brand}</Table.Td>
@@ -261,7 +264,7 @@ const StepOne = ({ selectedItems, setSelectedItems, itemQuantities, setItemQuant
             />
           </div>
         </Table.Td>
-        <Table.Td>${element.price}</Table.Td>
+        <Table.Td>{element.price}</Table.Td>
         <Table.Td>${totalPrice}</Table.Td>
       </Table.Tr>
     );
@@ -270,7 +273,7 @@ const StepOne = ({ selectedItems, setSelectedItems, itemQuantities, setItemQuant
   // Calculate total cart value
   const cartTotal = selectedItems.reduce((total, item) => {
     const quantity = itemQuantities[item._id] || 1;
-    return total + (item.price * quantity);
+    return total + (item.price?.split("$")[1] * quantity);
   }, 0).toFixed(2);
 
   return (
@@ -465,13 +468,16 @@ const StepFive = ({ selectedItems, form, itemQuantities, setItemQuantities }) =>
 
   const rows = selectedItems.map((element, i) => {
     const quantity = itemQuantities[element._id] || 1;
-    const totalPrice = (element.price * quantity).toFixed(2);
+    const totalPrice = (element.price?.split("$")[1] * quantity).toFixed(2);
 
     return (
       <Table.Tr key={element._id || i}>
         <Table.Td>
           <div className='flex items-center gap-3 line-clamp-1'>
+            <p className='line-clamp-1'>
+
             {element.name}
+            </p>
           </div>
         </Table.Td>
         <Table.Td>{element.brand}</Table.Td>
@@ -490,7 +496,7 @@ const StepFive = ({ selectedItems, form, itemQuantities, setItemQuantities }) =>
             />
           </div>
         </Table.Td>
-        <Table.Td>${element.price}</Table.Td>
+        <Table.Td>${element.price?.split("$")[1]}</Table.Td>
         <Table.Td>${totalPrice}</Table.Td>
       </Table.Tr>
     );
@@ -499,7 +505,7 @@ const StepFive = ({ selectedItems, form, itemQuantities, setItemQuantities }) =>
   // Calculate total cart value
   const cartTotal = selectedItems.reduce((total, item) => {
     const quantity = itemQuantities[item._id] || 1;
-    return total + (item.price * quantity);
+    return total + (item.price?.split("$")[1] * quantity);
   }, 0).toFixed(2);
 
     return(

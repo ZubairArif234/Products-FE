@@ -120,6 +120,13 @@ const Navbar = ({ opened, toggle }) => {
     type: "route",
     role: "admin",
   },
+  {
+    id: 19,
+    label: "Warehouse Management",
+    link: "/admin/warehouse",
+    type: "route",
+    role: "admin",
+  },
   
 ];
 

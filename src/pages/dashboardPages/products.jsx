@@ -1,10 +1,11 @@
-import { Button, Table, Checkbox, Drawer, Divider, TextInput, Select, Loader } from '@mantine/core';
+import { Button, Table, Checkbox, Drawer, Divider, TextInput, Select, Loader, Pagination } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { ChevronDown, Minus, Plus, Search, SquarePen, Trash } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useProducts } from '../../hooks/useProducts';
 import { userGetData } from '../../services/hooks';
+import { useWarehouse } from '../../hooks/useWarehouse';
 
 const Products = () => {
    const [filters, setFilters] = useState({
@@ -13,12 +14,16 @@ const Products = () => {
       limit: 6,
     });
       const {products, isPending} = useProducts(filters)
+      
+    const {warehouse, isPending:isPendingWarehouse} = useWarehouse({})
       const userData = userGetData()
-       
-  const [opened, { open, close }] = useDisclosure(false);
-  const [selectedRows, setSelectedRows] = useState([]);
-  const [itemQuantities, setItemQuantities] = useState({});
-  const [totalPrice, setTotalPrice] = useState(0);
+      
+      const [opened, { open, close }] = useDisclosure(false);
+      const [selectedRows, setSelectedRows] = useState([]);
+      const [itemQuantities, setItemQuantities] = useState({});
+      const [totalPrice, setTotalPrice] = useState(0);
+      const [activePage, setActivePage] = useState(1);
+      console.log(activePage,"activePage");
 
   const elements = [
   {
@@ -106,9 +111,9 @@ const Products = () => {
   // Calculate total price whenever itemQuantities changes
   useEffect(() => {
     const total = selectedRows.reduce((sum, rowId) => {
-      const item = products?.find(el => el._id === rowId);
+      const item = products?.products?.find(el => el._id === rowId);
       const quantity = itemQuantities[rowId] || 1;
-      return sum + (item.price * quantity);
+      return sum + (item.price?.split("$")[1] * quantity);
     }, 0);
     setTotalPrice(total);
   }, [selectedRows, itemQuantities]);
@@ -131,7 +136,7 @@ const Products = () => {
     });
   };
 
-  const rows = products?.map((element, i) => (
+  const rows = products?.products?.map((element, i) => (
     <Table.Tr key={i} className={selectedRows.includes(element._id) ? '!bg-hollywood-700/80 text-white' : undefined}>
       <Table.Td>
         <Checkbox
@@ -151,10 +156,13 @@ const Products = () => {
         <div className='flex items-center gap-2 capitalize'>
            <img 
             className='h-14 w-14 aspect-square object-contain bg-slate-200 rounded' 
-           src={"https://images.unsplash.com/photo-1521223890158-f9f7c3d5d504?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8amFja2V0fGVufDB8fDB8fHww"}
+           src={element?.images?.length > 0 ? element?.images[0] : "https://images.unsplash.com/photo-1521223890158-f9f7c3d5d504?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8amFja2V0fGVufDB8fDB8fHww"}
             alt={element.name} 
           />
+          <p title={element.name} className='text-md font-semibold line-clamp-2'>
+
           {element.name}
+          </p>
           </div>
           </Table.Td>
       <Table.Td>{element.brand}</Table.Td>
@@ -175,6 +183,14 @@ const Products = () => {
     ...prev,
     title: value,   // update title
     page: 1         // reset page to 1 when searching
+  }));
+};
+
+const handleWarehouse = (value) => {
+  setFilters((prev) => ({
+    ...prev,
+    warehouse: value,
+    page: 1,
   }));
 };
   return (
@@ -204,13 +220,18 @@ const Products = () => {
       searchable
       data={['Brand A', 'Brand B', 'Brand C', 'Brand D' , 'Brand E']}
     />
-          <Select
+         <Select
     rightSection={<ChevronDown size={18} />}
       placeholder="Filter by warehouse"
       clearable
       searchable
-      data={['Warehouse A', 'Warehouse B', 'Warehouse C', 'Warehouse D' , 'Warehouse E']}
-    />
+      value={filters.warehouse}
+      onChange={handleWarehouse}
+      data={warehouse?.warehouses?.map((element)=>{return({
+        label:element.name,
+        value:element._id
+      })})} />
+         
         </div>
         <div className='flex gap-4 items-center'>
 
@@ -242,7 +263,9 @@ const Products = () => {
             <Loader color="#255b7f" />
         </div>
          :
-         products?.length > 0  ?
+         products?.products?.length > 0  ?
+         <div>
+
         <Table.ScrollContainer minWidth={500} type="native">
           <Table>
             <Table.Thead>
@@ -263,7 +286,13 @@ const Products = () => {
             </Table.Thead>
             <Table.Tbody>{rows}</Table.Tbody>
           </Table>
-        </Table.ScrollContainer>:
+        </Table.ScrollContainer>
+        <div className='flex justify-end mt-4'>
+        <Pagination color='#255b7f' total={products?.pagination?.totalPages/6}  value={filters.page}
+  onChange={(page) => setFilters((prev) => ({ ...prev, page }))}  mt="sm" />
+        </div>
+         </div>
+        :
         <div className='my-20 flex flex-col justify-center items-center'>
 <p className='text-xl font-semibold'>No Products Found</p>
 <p className='text-sm text-slate-400'>There are no product based on the search</p>
@@ -275,7 +304,7 @@ const Products = () => {
 
       <Drawer position="right" opened={opened} onClose={close} title="Shopping Cart">
         {selectedRows.length > 0 && selectedRows.map((rowId) => {
-          const data = products?.find(el => el._id === rowId);
+          const data = products?.products?.find(el => el._id === rowId);
           return (
             <ProductItem 
               key={rowId} 
@@ -295,7 +324,7 @@ const Products = () => {
             </div>
             <Link to="/dashboard/checkout"   state={{
     selectedItems: selectedRows.map((rowId) => ({
-      ...products?.find((el) => el._id === rowId),
+      ...products?.products?.find((el) => el._id === rowId),
       quantity: itemQuantities[rowId] || 1,
     })),
     totalPrice,
@@ -320,22 +349,26 @@ const Products = () => {
 export default Products;
 
 export const ProductItem = ({ data, quantity, onQuantityChange, onRemove }) => {
+ console.log(data , "data");
+ const price = data?.price?.split("$")[1]
+ console.log(price , "price");
+ 
   return (
-    <div className='flex justify-between items-center border-b border-gray-300 p-3'>
+    <div className='flex justify-between gap-4 items-center border-b border-gray-300 p-3'>
       <div className='flex gap-3 items-center'>
         <Trash 
           size={15} 
           className='text-red-500 cursor-pointer hover:text-red-700' 
           onClick={onRemove}
         />
-        <div className='flex gap-3 items-center'>
+        <div className='flex gap-3 items-center w-[72%]'>
           <img 
             className='h-14 w-14 aspect-square object-contain bg-slate-200 rounded' 
-           src={"https://images.unsplash.com/photo-1521223890158-f9f7c3d5d504?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8amFja2V0fGVufDB8fDB8fHww"}
+            src={data?.images?.length > 0 ? data?.images[0] : "https://images.unsplash.com/photo-1521223890158-f9f7c3d5d504?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8amFja2V0fGVufDB8fDB8fHww"}
             alt={data.name} 
           />
           <div>
-            <p className='text-md font-semibold'>{data.name}</p>
+            <p className='text-md font-semibold line-clamp-1' title={data.name}>{data.name}</p>
             <p className='text-sm text-gray-500'>{data.brand}</p>
           </div>
         </div>
@@ -353,7 +386,7 @@ export const ProductItem = ({ data, quantity, onQuantityChange, onRemove }) => {
           className='text-white bg-hollywood-700 w-6 h-6 rounded-md p-1 cursor-pointer hover:bg-purple-600'
         />
       </div>
-      <p className="font-semibold">${data.price * quantity}</p>
+      <p className="font-semibold w-14">${Number(price) * quantity}</p>
     </div>
   );
 };
