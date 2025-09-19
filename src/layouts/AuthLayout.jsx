@@ -17,7 +17,7 @@ const AuthLayout = () => {
 //   }, [isAuthenticated, isLoading, navigate]);
   return (
   <div className=" grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
-  <div className="xl:col-span-2">
+  <div className="hidden lg:block xl:col-span-2">
     <Banner />
   </div>
   <div>

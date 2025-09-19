@@ -17,6 +17,10 @@ import Orders from "../pages/dashboardPages/order";
 import OrdersManagement from "../pages/adminPages/orderManagement";
 import WarehouseManagements from "../pages/adminPages/warehouseManagements";
 import WarehouseDetails from "../pages/adminPages/warehouseDetails";
+import ShippingOrders from "../pages/dashboardPages/shipping";
+import ProfileSettings from "../pages/dashboardPages/profileSetting";
+import CustomerManagement from "../pages/adminPages/customerManagemet";
+import CustomerDetails from "../pages/adminPages/customerDetails";
 
 const Router = () => {
   return (
@@ -39,6 +43,8 @@ const Router = () => {
         <Route path="/dashboard" element={<AdminRoute Component={Products} />} />
         <Route path="/dashboard/checkout" element={<AdminRoute Component={Checkout} />} />
         <Route path="/dashboard/order" element={<AdminRoute Component={Orders} />} />
+        <Route path="/dashboard/shipping" element={<AdminRoute Component={ShippingOrders} />} />
+        <Route path="/dashboard/setting" element={<AdminRoute Component={ProfileSettings} />} />
        </Route>
 {/* admin dashboard */}
         <Route path="/admin" element={<DashboardLayout />}>
@@ -48,6 +54,8 @@ const Router = () => {
         <Route path="/admin/warehouse" element={<AdminRoute Component={WarehouseManagements} />} />
         <Route path="/admin/warehouse-details" element={<AdminRoute Component={WarehouseDetails
         } />} />
+        <Route path="/admin/customer" element={<AdminRoute Component={CustomerManagement} />} />
+        <Route path="/admin/customer-details" element={<AdminRoute Component={CustomerDetails} />} />
         </Route>
         <Route path="/home" element={<Home />} />
       </Routes>

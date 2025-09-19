@@ -219,10 +219,10 @@ const WarehouseDetails = () => {
     </Table.Tr>
   ));
   return (
-    <div className="py-5 px-20 rounded-lg ">
+    <div className="py-5 md:px-20 px-2 rounded-lg ">
       <div className='flex items-center justify-between'>
         <div>
-          <p className='text-3xl mb-1'>{warehouseState?.name}</p>
+          <p className='text-3xl mb-1 capitalize'>{warehouseState?.name}</p>
           <p className='text-sm text-slate-500'>{warehouseState?.description}</p>
         </div>
         {/* <Button onClick={onAdd} leftSection={<Plus size={16}/>} className='!bg-hollywood-700 !text-white !rounded-lg'>Add warehouse</Button> */}

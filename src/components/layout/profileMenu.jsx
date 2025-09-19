@@ -27,7 +27,7 @@ const ProfileMenu = () => {
   // console.log(userData, userProfileData);
 
   // Use profile picture from API if available, otherwise use default
-  const profilePic = userData?.profilePic || "";
+  const profilePic = userData?.profileImage || "";
 
   const handleLogout = () => {
     // Use centralized logout method
@@ -49,7 +49,7 @@ const ProfileMenu = () => {
         </Menu.Target>
 
         <Menu.Dropdown>
-          <Link to={role === "admin" ? "/dashboard/profile-setting" : "/dashboard/setting"}>
+          <Link to={role === "admin" ? "/dashboard/setting" : "/dashboard/setting"}>
             <Menu.Item >
               <span
                 className={cn(

@@ -5,20 +5,21 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useProducts } from '../../hooks/useProducts';
 import { userGetData } from '../../services/hooks';
-import { changeOrderStatus, useOrders } from '../../hooks/useOrder';
+import { useMyOrders, useOrders } from '../../hooks/useOrder';
 import moment from 'moment/moment';
 
-const OrdersManagement = () => {
-    const { mutateAsync } = changeOrderStatus();
+const ShippingOrders = () => {
+    
    const [filters, setFilters] = useState({
       title: "",
-      orderId: "",
+      status:"shipped",
       page: 1,
       limit: 6,
     });
-      const {orders, isPending} = useOrders(filters)
+      const {orders, isPending} = useMyOrders(filters)
       console.log(orders);
       
+      const userData = userGetData()
        
   const [opened, { open, close }] = useDisclosure(false);
 
@@ -110,6 +111,8 @@ const OrdersManagement = () => {
   }
 ];
 
+console.log(singleOrder);
+
   // Calculate total price whenever itemQuantities changes
   useEffect(() => {
     const total = selectedRows.reduce((sum, rowId) => {
@@ -120,28 +123,46 @@ const OrdersManagement = () => {
     setTotalPrice(total);
   }, [selectedRows, itemQuantities]);
 
+  // Function to update item quantity
+  const updateQuantity = (itemId, newQuantity) => {
+    setItemQuantities(prev => ({
+      ...prev,
+      [itemId]: newQuantity
+    }));
+  };
 
-  const handleChangeOrderStatus = (value, id) => {
-    mutateAsync({status:value,id:id},)
-  }
+  // Function to remove item from cart
+  const removeFromCart = (itemId) => {
+    setSelectedRows(prev => prev.filter(id => id !== itemId));
+    setItemQuantities(prev => {
+      const newQuantities = { ...prev };
+      delete newQuantities[itemId];
+      return newQuantities;
+    });
+  };
 
-  const rows = orders?.orders?.map((element, i) => (
+  const rows = orders?.map((element, i) => (
     <Table.Tr key={i} className={selectedRows.includes(element._id) ? '!bg-hollywood-700/80 text-white' : undefined}>
-    
+      {/* <Table.Td>
+        <Checkbox
+          color='#154d72'
+          aria-label="Select row"
+          checked={selectedRows.includes(element._id)}
+          onChange={(event) =>
+            setSelectedRows(
+              event.currentTarget.checked
+                ? [...selectedRows, element._id]
+                : selectedRows.filter((id) => id !== element._id)
+            )
+          }
+        />
+      </Table.Td> */}
      
       <Table.Td>#{element._id}</Table.Td>
       <Table.Td>{element.products?.length}</Table.Td>
       <Table.Td>{element.clientDetails?.firstName + " " + element.clientDetails?.lastName}</Table.Td>
       <Table.Td>${element.totalPrice}</Table.Td>
-      <Table.Td><Select
-      onChange={(value)=>handleChangeOrderStatus(value , element?._id)}
-      className='!capitalize'
-      size='sm'
-    rightSection={<ChevronDown size={18} />}
-      placeholder="Filter by brand"
-      defaultValue={element.status}
-      data={[{label:"Pending",value:'pending'}, {label:"Confirmed",value:'confirmed'}, {label:"Shipped",value:'shipped'}, {label:"Cancelled",value:'cancelled'} ]}
-    /></Table.Td>
+      <Table.Td>{element.status}</Table.Td>
       <Table.Td>{moment(element.createdAt).format('DD-MMM-YYYY')}</Table.Td>
       <Table.Td ><Eye onClick={()=>{setSingleOrder(element); open()}} size={15} className='hover:text-green-500 cursor-pointer' /></Table.Td>
     
@@ -151,7 +172,7 @@ const OrdersManagement = () => {
   const handleSearch = (value) => {
   setFilters((prev) => ({
     ...prev,
-    orderId: value,   // update title
+    title: value,   // update title
     page: 1         // reset page to 1 when searching
   }));
 };
@@ -161,15 +182,11 @@ const OrdersManagement = () => {
       <div className='bg-white p-2 rounded-lg shadow-lg'>
 
         <div className=''>
-          <p className="font-bold text-hollywood-700 text-lg">Order</p>
+          <p className="font-bold text-hollywood-700 text-lg">Shipped Orders</p>
           {/* <p className="text-sm text-gray-500">There are {elements.length} products</p> */}
         </div>
       <div className='flex justify-between items-center'>
-        {/* <div className='flex gap-4 items-center'>
-          <TextInput placeholder='Search order by ID' value={filters.orderId}
-  onChange={(e) => handleSearch(e.target.value)} leftSection={<Search size={18}  />}/>
-         
-        </div> */}
+       
       
       </div>
 
@@ -182,7 +199,7 @@ const OrdersManagement = () => {
             <Loader color="#255b7f" />
         </div>
          :
-         orders?.orders?.length > 0  ?
+         orders?.length > 0  ?
         <Table.ScrollContainer minWidth={500} type="native">
           <Table>
             <Table.Thead>
@@ -202,8 +219,8 @@ const OrdersManagement = () => {
           </Table>
         </Table.ScrollContainer>:
         <div className='my-20 flex flex-col justify-center items-center'>
-<p className='text-xl font-semibold'>No Orders Found</p>
-<p className='text-sm text-slate-400'>There are no order based on the search</p>
+<p className='text-xl font-semibold'>No Shipped Orders Found</p>
+<p className='text-sm text-slate-400'>There are no shipped order based on the search</p>
         </div>
         }
       </div>
@@ -228,13 +245,12 @@ const OrdersManagement = () => {
                 <div key={i} className='flex justify-between items-center  border-b-1 p-2 border-slate-200 '>
                     <div className='flex gap-2 items-center'>
 
-                    <img 
+                     <img 
             className='h-10 w-10 aspect-square object-contain bg-slate-200 rounded' 
             src={item?.product?.images?.length > 0 ? item?.product?.images[0] : "https://images.unsplash.com/photo-1521223890158-f9f7c3d5d504?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8amFja2V0fGVufDB8fDB8fHww"}
            
             />
             <p className='line-clamp-1 w-28' title={item?.product?.name}>{item?.product?.name}</p>
-            
             </div>
             <p>{item?.qnt}  x </p>
             <p>{item?.unitPrice} </p>
@@ -255,5 +271,5 @@ const OrdersManagement = () => {
   );
 };
 
-export default OrdersManagement;
+export default ShippingOrders;
 

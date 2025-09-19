@@ -13,7 +13,7 @@ export const useProducts = (filters) => {
       return data?.data?.data;
     },
 queryKey: ["products", filters],
-    staleTime: Infinity,
+    // staleTime: Infinity,
     refetchOnWindowFocus: false,
     retry: true,
   });

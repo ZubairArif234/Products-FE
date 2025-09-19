@@ -7,8 +7,9 @@ import { useProducts } from '../../hooks/useProducts';
 import { userGetData } from '../../services/hooks';
 import { changeOrderStatus, useOrders } from '../../hooks/useOrder';
 import moment from 'moment/moment';
+import { useUsers } from '../../hooks/useUser';
 
-const OrdersManagement = () => {
+const CustomerManagement = () => {
     const { mutateAsync } = changeOrderStatus();
    const [filters, setFilters] = useState({
       title: "",
@@ -16,8 +17,9 @@ const OrdersManagement = () => {
       page: 1,
       limit: 6,
     });
+      const {user} = useUsers(filters)
       const {orders, isPending} = useOrders(filters)
-      console.log(orders);
+      console.log(user);
       
        
   const [opened, { open, close }] = useDisclosure(false);
@@ -125,25 +127,21 @@ const OrdersManagement = () => {
     mutateAsync({status:value,id:id},)
   }
 
-  const rows = orders?.orders?.map((element, i) => (
+  const rows = user?.users?.map((element, i) => (
     <Table.Tr key={i} className={selectedRows.includes(element._id) ? '!bg-hollywood-700/80 text-white' : undefined}>
     
      
       <Table.Td>#{element._id}</Table.Td>
-      <Table.Td>{element.products?.length}</Table.Td>
-      <Table.Td>{element.clientDetails?.firstName + " " + element.clientDetails?.lastName}</Table.Td>
-      <Table.Td>${element.totalPrice}</Table.Td>
-      <Table.Td><Select
-      onChange={(value)=>handleChangeOrderStatus(value , element?._id)}
-      className='!capitalize'
-      size='sm'
-    rightSection={<ChevronDown size={18} />}
-      placeholder="Filter by brand"
-      defaultValue={element.status}
-      data={[{label:"Pending",value:'pending'}, {label:"Confirmed",value:'confirmed'}, {label:"Shipped",value:'shipped'}, {label:"Cancelled",value:'cancelled'} ]}
-    /></Table.Td>
+      <Table.Td>{element.name}</Table.Td>
+      <Table.Td>{element.email}</Table.Td>
+      <Table.Td>{element.phone || " - "}</Table.Td>
+      <Table.Td>{element.bio || " - "}</Table.Td>
       <Table.Td>{moment(element.createdAt).format('DD-MMM-YYYY')}</Table.Td>
-      <Table.Td ><Eye onClick={()=>{setSingleOrder(element); open()}} size={15} className='hover:text-green-500 cursor-pointer' /></Table.Td>
+      <Table.Td > 
+      <Link to="/admin/customer-details" state={{ data: element }}>
+  <Eye size={15} className="hover:text-green-500 cursor-pointer" />
+</Link>
+        </Table.Td>
     
     </Table.Tr>
   ));
@@ -156,12 +154,12 @@ const OrdersManagement = () => {
   }));
 };
   return (
-    <div className="py-5 md:px-20 px-2  ">
+    <div className="py-5 md:px-20 px-2 ">
       
       <div className='bg-white p-2 rounded-lg shadow-lg'>
 
         <div className=''>
-          <p className="font-bold text-hollywood-700 text-lg">Order</p>
+          <p className="font-bold text-hollywood-700 text-lg">Customers</p>
           {/* <p className="text-sm text-gray-500">There are {elements.length} products</p> */}
         </div>
       <div className='flex justify-between items-center'>
@@ -182,18 +180,18 @@ const OrdersManagement = () => {
             <Loader color="#255b7f" />
         </div>
          :
-         orders?.orders?.length > 0  ?
+         user?.users?.length > 0  ?
         <Table.ScrollContainer minWidth={500} type="native">
           <Table>
             <Table.Thead>
               <Table.Tr>
                 {/* <Table.Th /> */}
                 <Table.Th>Id</Table.Th>
-                <Table.Th>No of products</Table.Th>
-                <Table.Th>Client name</Table.Th>
-                <Table.Th>Total price</Table.Th>
-                <Table.Th>Status</Table.Th>
-                <Table.Th>Order at</Table.Th>
+                <Table.Th>Name</Table.Th>
+                <Table.Th>Email</Table.Th>
+                <Table.Th>Phone Number</Table.Th>
+                <Table.Th>Bio</Table.Th>
+                <Table.Th>Created At</Table.Th>
                 <Table.Th/>
                
               </Table.Tr>
@@ -255,5 +253,5 @@ const OrdersManagement = () => {
   );
 };
 
-export default OrdersManagement;
+export default CustomerManagement;
 

@@ -145,7 +145,7 @@ const Checkout = () => {
   const prevStep = () => setActive((current) => (current > 0 ? current - 1 : current));
 
   return (
-    <div className='py-5 px-20  rounded-lg '>
+    <div className='py-5 md:px-20 px-2  rounded-lg '>
     <div className="p-5 bg-white rounded-lg shadow-md">
       <Stepper color={"#154d72"} active={active} onStepClick={setActive} allowNextStepsSelect={false}>
         <Stepper.Step label="Review Cart">

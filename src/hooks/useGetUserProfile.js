@@ -26,11 +26,11 @@ export const useGetUserProfile = () => {
         data: userData,
       };
     },
-    staleTime: 1000 * 60 * 10, // Consider data fresh for 10 minutes
-    cacheTime: 1000 * 60 * 30, // Keep in cache for 30 minutes
-    refetchOnWindowFocus: false, // Don't refetch on window focus to reduce API calls
-    refetchOnMount: false, // Don't refetch on every mount, use cached data
-    refetchOnReconnect: false, // Don't refetch on network reconnect
+    // staleTime: 1000 * 60 * 10, // Consider data fresh for 10 minutes
+    // cacheTime: 1000 * 60 * 30, // Keep in cache for 30 minutes
+    // refetchOnWindowFocus: false, // Don't refetch on window focus to reduce API calls
+    // refetchOnMount: false, // Don't refetch on every mount, use cached data
+    // refetchOnReconnect: false, // Don't refetch on network reconnect
     retry: 1, // Retry once on failure
     enabled: !!localStorage.getItem("token"), // Only run if token exists
     // Add debounce to prevent rapid API calls

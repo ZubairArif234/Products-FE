@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { createProductsByCSV, useProducts } from '../../hooks/useProducts';
 import { useWarehouse } from '../../hooks/useWarehouse';
+import { userGetData } from '../../services/hooks';
 
 const ProductManagement = () => {
      const [filters, setFilters] = useState({
@@ -13,6 +14,7 @@ const ProductManagement = () => {
     page: 1,
     limit: 6,
   });
+  const userData = userGetData()
     const {products, isPending} = useProducts(filters)
     const {warehouse, isPending:isPendingWarehouse} = useWarehouse({})
    console.log(warehouse);
@@ -206,13 +208,13 @@ const handleUpload = () => {
 
 //   },[])
   return (
-    <div className="py-5 px-20  rounded-lg shadow-md">
+    <div className="py-5 md:px-20 px-2   rounded-lg shadow-md">
       <div>
-        <p className='text-3xl mb-4'>Welcome ,<span className='ms-2 text-hollywood-700 font-bold'>
-           John Doe
+        <p className='text-3xl mb-4 capitalize'>Welcome ,<span className='ms-2 text-hollywood-700 font-bold'>
+           {userData?.name}
           </span>
            </p>
-      <StatsCount/>
+      <StatsCount productsCount={products?.pagination?.total} warehouseCount={warehouse?.warehouses?.length} />
       </div>
       <Divider my={20}/>
       <div className='bg-white p-2 rounded-lg shadow-lg'>
@@ -221,8 +223,8 @@ const handleUpload = () => {
           <p className="font-bold text-hollywood-700 text-lg">Products</p>
           {/* <p className="text-sm text-gray-500">There are {elements.length} products</p> */}
         </div>
-      <div className='flex justify-between items-center'>
-        <div className='flex gap-4 items-center'>
+      <div className='flex justify-between items-center flex-wrap'>
+        <div className='flex gap-4 items-center '>
           <TextInput placeholder='Search Product' value={filters.title}
   onChange={(e) => handleSearch(e.target.value)} leftSection={<Search size={18}  />}/>
    <Select
@@ -378,14 +380,14 @@ export const ProductItem = ({ data, quantity, onQuantityChange, onRemove }) => {
   );
 };
 
-const StatsCount = () => {
+const StatsCount = ({productsCount,warehouseCount}) => {
   return(
-      <div className='grid grid-cols-5 gap-4 '>
+      <div className='grid grid-cols-2 md:grid-cols-5 gap-4 '>
           <div className='rounded-lg shadow-lg bg-white'>
-<p className='bg-hollywood-700 text-white p-2 font-semibold rounded-t-lg'>Brands</p>
+<p className='bg-hollywood-700 text-white p-2 font-semibold rounded-t-lg'>Warehouse</p>
 <div className='p-2'>
 
-<p className='text-3xl font-semibold text-slate-400 '>230</p>
+<p className='text-3xl font-semibold text-slate-400 '>{warehouseCount}</p>
 <p className='text-sm font-semibold text-slate-400'>last 30 days</p>
 </div>
           </div>
@@ -393,7 +395,7 @@ const StatsCount = () => {
 <p className='bg-hollywood-700 text-white p-2 font-semibold rounded-t-lg'>Product</p>
 <div className='p-2'>
 
-<p className='text-3xl font-semibold text-slate-400 '>572</p>
+<p className='text-3xl font-semibold text-slate-400 '>{productsCount}</p>
 <p className='text-sm font-semibold text-slate-400'>last 30 days</p>
 </div>
           </div>

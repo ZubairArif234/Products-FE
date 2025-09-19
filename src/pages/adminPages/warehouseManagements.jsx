@@ -153,7 +153,7 @@ const WarehouseManagements = () => {
   const isBusy = isPending || createMutation.isPending || updateMutation.isPending || deleteMutation.isPending;
 
   return (
-    <div className="py-5 px-20 rounded-lg ">
+    <div className="py-5 md:px-20 px-2 rounded-lg ">
       <div className='flex items-center justify-between'>
         <div>
           <p className='text-3xl mb-1'>Warehouses</p>

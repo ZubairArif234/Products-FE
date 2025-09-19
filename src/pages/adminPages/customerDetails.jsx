@@ -2,21 +2,24 @@ import { Button, Table, Checkbox, Drawer, Divider, TextInput, Select, Loader, Mo
 import { useDisclosure } from '@mantine/hooks';
 import { ChevronDown, Eye, Minus, Plus, Search, SquarePen, Trash } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useProducts } from '../../hooks/useProducts';
 import { userGetData } from '../../services/hooks';
 import { changeOrderStatus, useOrders } from '../../hooks/useOrder';
 import moment from 'moment/moment';
 
-const OrdersManagement = () => {
+const CustomerDetails = () => {
     const { mutateAsync } = changeOrderStatus();
+    const {state} = useLocation()
+    console.log(state , "state");
+    
    const [filters, setFilters] = useState({
       title: "",
       orderId: "",
       page: 1,
       limit: 6,
     });
-      const {orders, isPending} = useOrders(filters)
+      const {orders, isPending} = useOrders({...filters,user:state?.data?._id})
       console.log(orders);
       
        
@@ -157,7 +160,10 @@ const OrdersManagement = () => {
 };
   return (
     <div className="py-5 md:px-20 px-2  ">
-      
+       <div className='my-4 '>
+          <p className='text-3xl mb-1 capitalize'>{state?.data?.name}</p>
+          <p className='text-sm text-slate-500'>{state?.data?.email}</p>
+        </div>
       <div className='bg-white p-2 rounded-lg shadow-lg'>
 
         <div className=''>
@@ -255,5 +261,5 @@ const OrdersManagement = () => {
   );
 };
 
-export default OrdersManagement;
+export default CustomerDetails;
 

@@ -1,6 +1,6 @@
 import { Button, Table, Checkbox, Drawer, Divider, TextInput, Select, Loader, Pagination } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { ChevronDown, Minus, Plus, Search, SquarePen, Trash } from 'lucide-react';
+import { ChevronDown, Minus, Plus, Search, SquarePen, Tag, Trash } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useProducts } from '../../hooks/useProducts';
@@ -193,14 +193,112 @@ const handleWarehouse = (value) => {
     page: 1,
   }));
 };
+const handleBrand = (value) => {
+  setFilters((prev) => ({
+    ...prev,
+    brand: value,
+    page: 1,
+  }));
+};
+
+
+const convertToCSV = (data) => {
+  if (!data || data.length === 0) return '';
+  
+  // Define headers
+  const headers = [
+    'Product Name',
+    'Brand', 
+    'Price',
+    'MOQ',
+    'UPC',
+    'ASIN',
+    'Amazon BB',
+    'Amazon Fees',
+    'Profit',
+    'Margin',
+    'ROI',
+  ];
+  
+  // Create CSV content
+  const csvContent = [
+    headers.join(','), // Header row
+    ...data.map(product => [
+      `"${product.name || ''}"`,
+      `"${product.brand || ''}"`,
+      `"${product.price || ''}"`,
+      `"${product.mqc || ''}"`,
+      `"${product.upc || ''}"`,
+      `"${product.asin || ''}"`,
+      `"$${product.amazonBb || ''}"`,
+      `"$${product.amazonFees || ''}"`,
+      `"$${product.profit || ''}"`,
+      `"${product.margin || ''}"`,
+      `"${product.roi || ''}"`,
+    ].join(','))
+  ].join('\n');
+  
+  return csvContent;
+};
+
+// Function to download CSV file
+const downloadCSV = (csvContent, filename) => {
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  
+  if (link.download !== undefined) {
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', filename);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+};
+
+// Function to handle CSV download for selected products
+const handleDownloadSelectedCSV = () => {
+  if (selectedRows.length === 0) {
+    // Show notification that no products are selected
+    alert('Please select products to download');
+    return;
+  }
+  
+  // Get selected products data
+  const selectedProducts = products?.products?.filter(product => 
+    selectedRows.includes(product._id)
+  );
+  
+  const csvContent = convertToCSV(selectedProducts);
+  const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+  const filename = `selected-products-${timestamp}.csv`;
+  
+  downloadCSV(csvContent, filename);
+};
+
+// Function to handle CSV download for all products
+const handleDownloadAllCSV = () => {
+  if (!products?.products || products.products.length === 0) {
+    alert('No products available to download');
+    return;
+  }
+  
+  const csvContent = convertToCSV(products.products);
+  const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+  const filename = `all-products-${timestamp}.csv`;
+  
+  downloadCSV(csvContent, filename);
+};
   return (
-    <div className="py-5 px-20  rounded-lg shadow-md">
+    <div className="py-5 md:px-20 px-2  rounded-lg shadow-md">
       <div>
         <p className='text-3xl mb-4 capitalize'>Welcome ,<span className='ms-2 text-hollywood-700 font-bold'>
            {userData?.name}
           </span>
            </p>
-      <StatsCount/>
+           <StatsCount productsCount={products?.pagination?.total} warehouseCount={warehouse?.warehouses?.length} />
+     
       </div>
       <Divider my={20}/>
       <div className='bg-white p-2 rounded-lg shadow-lg'>
@@ -209,17 +307,13 @@ const handleWarehouse = (value) => {
           <p className="font-bold text-hollywood-700 text-lg">Products</p>
           {/* <p className="text-sm text-gray-500">There are {elements.length} products</p> */}
         </div>
-      <div className='flex justify-between items-center'>
+      <div className='flex justify-between items-center flex-wrap'>
         <div className='flex gap-4 items-center'>
           <TextInput placeholder='Search Product' value={filters.title}
   onChange={(e) => handleSearch(e.target.value)} leftSection={<Search size={18}  />}/>
-          <Select
-    rightSection={<ChevronDown size={18} />}
-      placeholder="Filter by brand"
-      clearable
-      searchable
-      data={['Brand A', 'Brand B', 'Brand C', 'Brand D' , 'Brand E']}
-    />
+          <TextInput placeholder='Search Brand' value={filters.brand}
+  onChange={(e) => handleBrand(e.target.value)} leftSection={<Tag  size={18}  />}/>
+        
          <Select
     rightSection={<ChevronDown size={18} />}
       placeholder="Filter by warehouse"
@@ -245,9 +339,9 @@ const handleWarehouse = (value) => {
         </Button> 
         <Button 
           variant="default" 
-          // onClick={open}
-          // disabled={selectedRows.length === 0} 
-          className="!bg-hollywood-700 disabled:!bg-purple-300 !text-white !rounded-lg !mt-3"
+          onClick={handleDownloadSelectedCSV}
+          disabled={selectedRows.length === 0} 
+          className="!bg-hollywood-700 disabled:!bg-hollywood-400 !text-white !rounded-lg !mt-3"
           >
          Download CSV
         </Button> 
@@ -391,14 +485,14 @@ export const ProductItem = ({ data, quantity, onQuantityChange, onRemove }) => {
   );
 };
 
-const StatsCount = () => {
+const StatsCount = ({productsCount,warehouseCount}) => {
   return(
-      <div className='grid grid-cols-5 gap-4 '>
+      <div className='grid grid-cols-2 md:grid-cols-5 gap-4 '>
           <div className='rounded-lg shadow-lg bg-white'>
-<p className='bg-hollywood-700 text-white p-2 font-semibold rounded-t-lg'>Brands</p>
+<p className='bg-hollywood-700 text-white p-2 font-semibold rounded-t-lg'>Warehouse</p>
 <div className='p-2'>
 
-<p className='text-3xl font-semibold text-slate-400 '>230</p>
+<p className='text-3xl font-semibold text-slate-400 '>{warehouseCount}</p>
 <p className='text-sm font-semibold text-slate-400'>last 30 days</p>
 </div>
           </div>
@@ -406,7 +500,7 @@ const StatsCount = () => {
 <p className='bg-hollywood-700 text-white p-2 font-semibold rounded-t-lg'>Product</p>
 <div className='p-2'>
 
-<p className='text-3xl font-semibold text-slate-400 '>572</p>
+<p className='text-3xl font-semibold text-slate-400 '>{productsCount}</p>
 <p className='text-sm font-semibold text-slate-400'>last 30 days</p>
 </div>
           </div>

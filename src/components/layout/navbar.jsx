@@ -4,6 +4,7 @@ import {
   ActionIcon,
   useMantineColorScheme,
   useComputedColorScheme,
+  Menu,
 } from "@mantine/core";
 import React, { useState, useEffect } from "react";
 // import { FaBell, FaMoon, FaSun } from "react-icons/fa";
@@ -17,6 +18,7 @@ import { cn } from "../../utils/cn";
 // import { useColorScheme } from "../../contexts/ColorSchemeContext";
 import DashboardLogo from "../../assets/logo.png"
 import { userGetRole } from "../../services/hooks";
+import { MenuIcon } from "lucide-react";
 export const Wallet = () => {
   const { wallet } = useGetMyWallet();
   // PLAID INTEGRATION TEMPORARILY DISABLED
@@ -108,22 +110,29 @@ const Navbar = ({ opened, toggle }) => {
   },
   {
     id: 18,
-    label: "Product Management",
+    label: "Products",
     link: "/admin",
     type: "route",
     role: "admin",
   },
   {
     id: 18,
-    label: "Order Management",
+    label: "Orders",
     link: "/admin/orders",
     type: "route",
     role: "admin",
   },
   {
     id: 19,
-    label: "Warehouse Management",
+    label: "Warehouses",
     link: "/admin/warehouse",
+    type: "route",
+    role: "admin",
+  },
+  {
+    id: 19,
+    label: "Customers",
+    link: "/admin/customer",
     type: "route",
     role: "admin",
   },
@@ -158,7 +167,7 @@ const Navbar = ({ opened, toggle }) => {
   return (
     <div
       className={cn(
-        "h-[12vh] grid grid-cols-4 gap-4 items-center p-2 mx-20 mb-3 bg-white rounded-lg")}
+        "h-[12vh] grid grid-cols-2 md:grid-cols-4 gap-4 items-center p-2 md:mx-20 mx-2 mb-3 bg-white rounded-lg")}
     >
       {/* <div className="flex items-center gap-2">
         <Burger
@@ -185,7 +194,7 @@ const Navbar = ({ opened, toggle }) => {
                />
       </div>
 
-      <div className="flex gap-4 justify-center col-span-2">
+      <div className="md:flex gap-4 justify-center col-span-2 hidden">
        {
   menu?.map((item, i) => {
     const isActive = currentPath === item?.link;
@@ -228,8 +237,43 @@ if (role == item?.role){
         >
           {colorScheme === "light" ? <FaMoon size={18} /> : <FaSun size={18} />}
         </ActionIcon> */}
+        <div className=" md:hidden">
+        <Menu shadow="md" width={200} radius={10} position="bottom-end">
+        <Menu.Target>
+        <MenuIcon />
+     </Menu.Target>
+
+        <Menu.Dropdown>
+          {
+            menu?.map((item,i)=>{
+              if (role == item?.role){
+
+                return(
+  
+            <Link key={i} to={item?.link} >
+              <Menu.Item >
+                <span
+                  className={cn(
+                    "text-[#687CAD]",
+                    isDark ? "text-slate-200" : "text-[#687CAD]"
+                  )}
+                >
+                  {item?.label}
+                </span>
+              </Menu.Item>
+            </Link>
+                )
+              }
+            })
+          }
+       
+          
+        </Menu.Dropdown>
+      </Menu>
+        </div>
        
         <ProfileMenu />
+
       </div>
     </div>
   );

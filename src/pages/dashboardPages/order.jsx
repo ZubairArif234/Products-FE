@@ -12,6 +12,7 @@ const Orders = () => {
     
    const [filters, setFilters] = useState({
       title: "",
+      orderId:"",
       page: 1,
       limit: 6,
     });
@@ -171,12 +172,12 @@ console.log(singleOrder);
   const handleSearch = (value) => {
   setFilters((prev) => ({
     ...prev,
-    title: value,   // update title
+    orderId: value,   // update title
     page: 1         // reset page to 1 when searching
   }));
 };
   return (
-    <div className="py-5 px-20  ">
+    <div className="py-5 md:px-20 px-2  ">
       
       <div className='bg-white p-2 rounded-lg shadow-lg'>
 
@@ -186,7 +187,7 @@ console.log(singleOrder);
         </div>
       <div className='flex justify-between items-center'>
         <div className='flex gap-4 items-center'>
-          <TextInput placeholder='Search order by ID' value={filters.title}
+          <TextInput placeholder='Search order by ID' value={filters.orderId}
   onChange={(e) => handleSearch(e.target.value)} leftSection={<Search size={18}  />}/>
          
         </div>
