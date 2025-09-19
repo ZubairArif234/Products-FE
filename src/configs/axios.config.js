@@ -1,8 +1,8 @@
 import axios from "axios";
 // export const baseURL = "https://intelligent-amazement-production.up.railway.app/";
 
-export const baseURL = "http://localhost:8001/";
-// export const baseURL = "https://products-s9xv.onrender.com/";
+// export const baseURL = "http://localhost:8001/";
+export const baseURL = "https://products-s9xv.onrender.com/";
 
 // axios instance for json data adkjsa
 const custAxios = axios.create({
