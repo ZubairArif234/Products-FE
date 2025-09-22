@@ -136,7 +136,10 @@ const Products = () => {
     });
   };
 
-  const rows = products?.products?.map((element, i) => (
+  const rows = products?.products?.map((element, i) => 
+  {
+    const profit = Number(Number(element.amazonBb) - (Number(element.price?.split("$")[1]) + Number(element.amazonFees))).toFixed(2)
+    return(
     <Table.Tr key={i} className={selectedRows.includes(element._id) ? '!bg-hollywood-700/80 text-white' : undefined}>
       <Table.Td>
         <Checkbox
@@ -171,12 +174,13 @@ const Products = () => {
       <Table.Td>{element.upc}</Table.Td>
       <Table.Td>{element.asin}</Table.Td>
       <Table.Td>${element.amazonBb}</Table.Td>
-      <Table.Td>${element.amazonFees}</Table.Td>
-      <Table.Td>${element.profit}</Table.Td>
-      <Table.Td>{element.margin}</Table.Td>
-      <Table.Td>{element.roi}</Table.Td>
+      <Table.Td>${Number(element.amazonFees).toFixed(2)}</Table.Td>
+      <Table.Td  style={{ color: profit < 0 ? "red" : "green" }}>${profit}</Table.Td>
+      <Table.Td>{Number((Number(profit) / Number(element.amazonBb)) * 100).toFixed(2)}</Table.Td>
+      <Table.Td>{Number((Number(profit) / Number(element.price?.split('$')[1])) * 100).toFixed(2)}</Table.Td>
     </Table.Tr>
-  ));
+  )}
+);
 
   const handleSearch = (value) => {
   setFilters((prev) => ({

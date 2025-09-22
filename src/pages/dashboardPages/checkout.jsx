@@ -1,9 +1,10 @@
-import { Button, Group, Input, Radio, Stepper, Table, TextInput } from '@mantine/core'
+import { Button, Group, Input, Radio, Select, Stepper, Table, TextInput } from '@mantine/core'
 import React, { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Minus, Plus, Trash } from 'lucide-react';
+import { ChevronDown, Minus, Plus, Trash } from 'lucide-react';
 import { useForm } from '@mantine/form';
 import { createOrder } from '../../hooks/useOrder';
+import custAxios, { attachToken } from '../../configs/axios.config';
 
 const Checkout = () => {
   const location = useLocation();
@@ -118,12 +119,20 @@ const Checkout = () => {
             },
             
             tax: "10.89", // You can calculate this dynamically
-            totalPrice: (cartTotal + 10.89).toFixed(2) // Adding tax
+            totalPrice: (cartTotal + 10.89).toFixed(2), // Adding tax
+            total: (cartTotal + 10.89).toFixed(2) // Adding tax
           };
 
           console.log("Order payload:", payload);
           
           // Submit the order
+          // attachToken()
+          // const res = await custAxios.post("/payment/checkout",payload) 
+          // console.log(res);
+          
+          // if(res.data.url){
+          //  window.location.href = res.data.url;
+          // }
           await mutateAsync(payload);
           
           // Move to completion step
@@ -133,7 +142,7 @@ const Checkout = () => {
           // Handle error (show notification, etc.)
         }
         finally{
-          navigate("/dashboard/order")
+          // navigate("/dashboard/order")
         }
       } else {
         // Regular step progression
@@ -306,20 +315,38 @@ const StepTwo = ({form}) => {
   return (
     <div className='w-2/3 mx-auto py-8'>
       <form  className="flex flex-col gap-4">
-        <TextInput
-        label="Payment method"
+        {/* <TextInput
                    size="sm"
-                              radius="sm"
-                    placeholder="Payment method"
-                     {...form.getInputProps("paymentMethod")}
-                  />
-                  <TextInput
-                  label="Prep required"
+                   radius="sm"
+                      placeholder="Filter by warehouse"
+                   /> */}
+                  <Select
+                      rightSection={<ChevronDown size={18} />}
+                      label="Payment method"
+                      placeholder="Payment method"
+                      // clearable
+                      searchable
+                      
+                      data={["Wire/ACH"]}
+                      {...form.getInputProps("paymentMethod")}
+                       />
+                  <Select
+                      rightSection={<ChevronDown size={18} />}
+                      // label="Payment method"
+                      // placeholder="Payment method"
+                      label="Prep required"
+                      // clearable
+                      searchable
+                      placeholder="Prep required"
+                      
+                      data={["Amazon FBA Prep" , "Walmart WFS Prep" , "No Prep"]}
+                      {...form.getInputProps("prepRequired")}
+                      />
+                  {/* <TextInput
                               size="sm"
                               radius="sm"
-                              placeholder="Prep required"
-                               {...form.getInputProps("prepRequired")}
-                            />
+                              {...form.getInputProps("paymentMethod")}
+                            /> */}
 
                              <Radio.Group
                             
