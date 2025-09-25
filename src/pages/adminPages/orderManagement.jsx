@@ -138,9 +138,9 @@ const OrdersManagement = () => {
       className='!capitalize'
       size='sm'
     rightSection={<ChevronDown size={18} />}
-      placeholder="Filter by brand"
+      placeholder="Change status"
       defaultValue={element.status}
-      data={[{label:"Pending",value:'pending'}, {label:"Confirmed",value:'confirmed'}, {label:"Shipped",value:'shipped'}, {label:"Cancelled",value:'cancelled'} ]}
+      data={[{label:"Review",value:'review'},{label:"Pending",value:'pending'},{label:"Paid",value:'paid'}, {label:"Confirmed",value:'confirmed'}, {label:"Shipped",value:'shipped'}, {label:"Cancelled",value:'cancelled'} ]}
     /></Table.Td>
       <Table.Td>{moment(element.createdAt).format('DD-MMM-YYYY')}</Table.Td>
       <Table.Td ><Eye onClick={()=>{setSingleOrder(element); open()}} size={15} className='hover:text-green-500 cursor-pointer' /></Table.Td>

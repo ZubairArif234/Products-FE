@@ -5,14 +5,17 @@ import { ChevronDown, Minus, Plus, Trash } from 'lucide-react';
 import { useForm } from '@mantine/form';
 import { createOrder } from '../../hooks/useOrder';
 import custAxios, { attachToken } from '../../configs/axios.config';
+// import { createPayment } from '../../hooks/usePayment';
 
 const Checkout = () => {
   const location = useLocation();
   const { selectedItems } = location.state || {};
   console.log(selectedItems, location?.state?.selectedItems, "selectedItem");
-  const { isPending, mutateAsync } = createOrder();
+  // const [ isPending,setIsPending] = useState(false)
   const [active, setActive] = useState(0);
   const navigate = useNavigate()
+  
+   const { isPending, mutateAsync } = createOrder();
   // State to track updated quantities from StepOne and StepFive
   const [cartItems, setCartItems] = useState(selectedItems || []);
   const [itemQuantities, setItemQuantities] = useState({});
@@ -126,12 +129,14 @@ const Checkout = () => {
           console.log("Order payload:", payload);
           
           // Submit the order
+          // setIsPending(true)
           // attachToken()
           // const res = await custAxios.post("/payment/checkout",payload) 
           // console.log(res);
           
           // if(res.data.url){
-          //  window.location.href = res.data.url;
+          //   setIsPending(false)
+          //   window.location.href = res.data.url;
           // }
           await mutateAsync(payload);
           
@@ -140,9 +145,11 @@ const Checkout = () => {
         } catch (error) {
           console.error("Error creating order:", error);
           // Handle error (show notification, etc.)
+          // setIsPending(false)
         }
         finally{
-          // navigate("/dashboard/order")
+          // setIsPending(false)
+          navigate("/dashboard/order")
         }
       } else {
         // Regular step progression

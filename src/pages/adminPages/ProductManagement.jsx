@@ -123,7 +123,25 @@ const ProductManagement = () => {
   }, [selectedRows, itemQuantities]);
 
 
-  const rows = products?.products?.map((element, i) => (
+  const rows = products?.products?.map((element, i) => {
+     let basePrice = Number(element.price?.split("$")[1]) || 0;
+  let amazonBb = Number(element.amazonBb) || 0;
+  let amazonFees = Number(element.amazonFees) || 0;
+
+  // initial profit, margin, roi
+  let profit = amazonBb - (basePrice + amazonFees);
+  let margin = ((profit / amazonBb) * 100);
+  let roi = ((profit / basePrice) * 100);
+
+  // check ROI cap
+  if (roi > 40) {
+    const exceedingPercent = roi - 40;
+    basePrice = basePrice * (1 + exceedingPercent / 100); // increase price
+    profit = amazonBb - (basePrice + amazonFees); // recalc profit
+    margin = ((profit / amazonBb) * 100);
+    roi = ((profit / basePrice) * 100);
+  }
+    return(
     <Table.Tr key={i} className={selectedRows.includes(element.id) ? '!bg-hollywood-700/80 text-white' : undefined}>
       
       <Table.Td>
@@ -146,11 +164,12 @@ const ProductManagement = () => {
       <Table.Td>{element.asin}</Table.Td>
       <Table.Td>${element.amazonBb}</Table.Td>
       <Table.Td>${Number(element.amazonFees).toFixed(2)}</Table.Td>
-      <Table.Td>${element.profit}</Table.Td>
-      <Table.Td>{element.margin}</Table.Td>
-      <Table.Td>{element.roi}</Table.Td>
+      <Table.Td style={{ color: profit < 0 ? "red" : "green" }}>${profit.toFixed(2)}</Table.Td>
+      <Table.Td>{margin.toFixed(2)}%</Table.Td>
+      <Table.Td>{roi.toFixed(2)}%</Table.Td>
     </Table.Tr>
-  ));
+    )
+});
 
  const handleSearch = (value) => {
   setFilters((prev) => ({

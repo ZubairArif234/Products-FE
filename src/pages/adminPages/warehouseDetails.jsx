@@ -167,7 +167,26 @@ const WarehouseDetails = () => {
   const isBusy = isPending || createMutation.isPending || updateMutation.isPending || deleteMutation.isPending;
 
 
-  const rows = products?.products?.map((element, i) => (
+  const rows = products?.products?.map((element, i) => {
+     let basePrice = Number(element.price?.split("$")[1]) || 0;
+  let amazonBb = Number(element.amazonBb) || 0;
+  let amazonFees = Number(element.amazonFees) || 0;
+
+  // initial profit, margin, roi
+  let profit = amazonBb - (basePrice + amazonFees);
+  let margin = ((profit / amazonBb) * 100);
+  let roi = ((profit / basePrice) * 100);
+
+  // check ROI cap
+  if (roi > 40) {
+    const exceedingPercent = roi - 40;
+    basePrice = basePrice * (1 + exceedingPercent / 100); // increase price
+    profit = amazonBb - (basePrice + amazonFees); // recalc profit
+    margin = ((profit / amazonBb) * 100);
+    roi = ((profit / basePrice) * 100);
+  }
+return (
+
     <Table.Tr key={i} >
       
       <Table.Td>
@@ -190,11 +209,13 @@ const WarehouseDetails = () => {
       <Table.Td>{element.asin}</Table.Td>
       <Table.Td>${element.amazonBb}</Table.Td>
       <Table.Td>${Number(element.amazonFees).toFixed(2)}</Table.Td>
-      <Table.Td>${element.profit}</Table.Td>
-      <Table.Td>{element.margin}</Table.Td>
-      <Table.Td>{element.roi}</Table.Td>
+     <Table.Td style={{ color: profit < 0 ? "red" : "green" }}>${profit.toFixed(2)}</Table.Td>
+      <Table.Td>{margin.toFixed(2)}%</Table.Td>
+      <Table.Td>{roi.toFixed(2)}%</Table.Td>
     </Table.Tr>
-  ));
+)
+  
+});
 
   const ordersRows = orders?.orders?.map((element, i) => (
     <Table.Tr key={i} >
@@ -211,8 +232,8 @@ const WarehouseDetails = () => {
     rightSection={<ChevronDown size={18} />}
       placeholder="Filter by brand"
       defaultValue={element.status}
-      data={[{label:"Pending",value:'pending'}, {label:"Confirmed",value:'confirmed'}, {label:"Shipped",value:'shipped'}, {label:"Cancelled",value:'cancelled'} ]}
-    /></Table.Td>
+      data={[{label:"Review",value:'review'},{label:"Pending",value:'pending'},{label:"Paid",value:'paid'}, {label:"Confirmed",value:'confirmed'}, {label:"Shipped",value:'shipped'}, {label:"Cancelled",value:'cancelled'} ]}
+     /></Table.Td>
       <Table.Td>{moment(element.createdAt).format('DD-MMM-YYYY')}</Table.Td>
       {/* <Table.Td ><Eye onClick={()=>{setSingleOrder(element); open()}} size={15} className='hover:text-green-500 cursor-pointer' /></Table.Td> */}
     

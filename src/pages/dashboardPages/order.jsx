@@ -1,12 +1,13 @@
-import { Button, Table, Checkbox, Drawer, Divider, TextInput, Select, Loader, Modal } from '@mantine/core';
+import { Button, Table, Checkbox, Drawer, Divider, TextInput, Select, Loader, Modal, Tooltip } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { ChevronDown, Eye, Minus, Plus, Search, SquarePen, Trash } from 'lucide-react';
+import { BadgeDollarSign, ChevronDown, Eye, Minus, Plus, Search, SquarePen, Trash } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useProducts } from '../../hooks/useProducts';
 import { userGetData } from '../../services/hooks';
 import { useMyOrders, useOrders } from '../../hooks/useOrder';
 import moment from 'moment/moment';
+import custAxios, { attachToken } from '../../configs/axios.config';
 
 const Orders = () => {
     
@@ -141,6 +142,16 @@ console.log(singleOrder);
     });
   };
 
+  const handlePayNow = async (payload) => {
+     attachToken()
+          const res = await custAxios.post("/payment/checkout",payload) 
+          console.log(res);
+          
+          if(res.data.url){
+            window.location.href = res.data.url;
+          }
+  }
+
   const rows = orders?.map((element, i) => (
     <Table.Tr key={i} className={selectedRows.includes(element._id) ? '!bg-hollywood-700/80 text-white' : undefined}>
       {/* <Table.Td>
@@ -164,7 +175,21 @@ console.log(singleOrder);
       <Table.Td>${element.totalPrice}</Table.Td>
       <Table.Td>{element.status}</Table.Td>
       <Table.Td>{moment(element.createdAt).format('DD-MMM-YYYY')}</Table.Td>
-      <Table.Td ><Eye onClick={()=>{setSingleOrder(element); open()}} size={15} className='hover:text-green-500 cursor-pointer' /></Table.Td>
+      <Table.Td >
+        <div className='flex gap-2 items-center'>
+
+           <Tooltip label="View details" withArrow>
+         <Eye onClick={()=>{setSingleOrder(element); open()}} size={15} className='hover:text-green-500 cursor-pointer' />
+           </Tooltip>
+        {element.status == "pending" && (
+          <Tooltip label="Pay now" withArrow>
+
+          <BadgeDollarSign onClick={()=>handlePayNow(element)}  size={15} className='hover:text-green-500 cursor-pointer' title="Pay now"/>
+          </Tooltip>
+        )}
+
+        </div>
+         </Table.Td>
     
     </Table.Tr>
   ));

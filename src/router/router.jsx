@@ -21,6 +21,8 @@ import ShippingOrders from "../pages/dashboardPages/shipping";
 import ProfileSettings from "../pages/dashboardPages/profileSetting";
 import CustomerManagement from "../pages/adminPages/customerManagemet";
 import CustomerDetails from "../pages/adminPages/customerDetails";
+import PaymentSuccess from "../pages/dashboardPages/paymentSuccess";
+import PaymentFailed from "../pages/dashboardPages/paymentFailed";
 
 const Router = () => {
   return (
@@ -45,6 +47,8 @@ const Router = () => {
         <Route path="/dashboard/order" element={<AdminRoute Component={Orders} />} />
         <Route path="/dashboard/shipping" element={<AdminRoute Component={ShippingOrders} />} />
         <Route path="/dashboard/setting" element={<AdminRoute Component={ProfileSettings} />} />
+        <Route path="/dashboard/payment-success" element={<AdminRoute Component={PaymentSuccess} />} />
+        <Route path="/dashboard/payment-failed" element={<AdminRoute Component={PaymentFailed} />} />
        </Route>
 {/* admin dashboard */}
         <Route path="/admin" element={<DashboardLayout />}>

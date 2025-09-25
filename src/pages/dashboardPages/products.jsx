@@ -136,11 +136,30 @@ const Products = () => {
     });
   };
 
-  const rows = products?.products?.map((element, i) => 
-  {
-    const profit = Number(Number(element.amazonBb) - (Number(element.price?.split("$")[1]) + Number(element.amazonFees))).toFixed(2)
-    return(
-    <Table.Tr key={i} className={selectedRows.includes(element._id) ? '!bg-hollywood-700/80 text-white' : undefined}>
+  const rows = products?.products?.map((element, i) => {
+  let basePrice = Number(element.price?.split("$")[1]) || 0;
+  let amazonBb = Number(element.amazonBb) || 0;
+  let amazonFees = Number(element.amazonFees) || 0;
+
+  // initial profit, margin, roi
+  let profit = amazonBb - (basePrice + amazonFees);
+  let margin = ((profit / amazonBb) * 100);
+  let roi = ((profit / basePrice) * 100);
+
+  // check ROI cap
+  if (roi > 40) {
+    const exceedingPercent = roi - 40;
+    basePrice = basePrice * (1 + exceedingPercent / 100); // increase price
+    profit = amazonBb - (basePrice + amazonFees); // recalc profit
+    margin = ((profit / amazonBb) * 100);
+    roi = ((profit / basePrice) * 100);
+  }
+
+  return (
+    <Table.Tr
+      key={i}
+      className={selectedRows.includes(element._id) ? '!bg-hollywood-700/80 text-white' : undefined}
+    >
       <Table.Td>
         <Checkbox
           color='#154d72'
@@ -157,30 +176,34 @@ const Products = () => {
       </Table.Td>
       <Table.Td>
         <div className='flex items-center gap-2 capitalize'>
-           <img 
-            className='h-14 w-14 aspect-square object-contain bg-slate-200 rounded' 
-           src={element?.images?.length > 0 ? element?.images[0] : "https://images.unsplash.com/photo-1521223890158-f9f7c3d5d504?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8amFja2V0fGVufDB8fDB8fHww"}
-            alt={element.name} 
+          <img
+            className='h-14 w-14 aspect-square object-contain bg-slate-200 rounded'
+            src={
+              element?.images?.length > 0
+                ? element?.images[0]
+                : "https://images.unsplash.com/photo-1521223890158-f9f7c3d5d504?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8amFja2V0fGVufDB8fDB8fHww"
+            }
+            alt={element.name}
           />
           <p title={element.name} className='text-md font-semibold line-clamp-2'>
-
-          {element.name}
+            {element.name}
           </p>
-          </div>
-          </Table.Td>
+        </div>
+      </Table.Td>
       <Table.Td>{element.brand}</Table.Td>
-      <Table.Td>{element.price}</Table.Td>
+      <Table.Td>${basePrice.toFixed(2)}</Table.Td>
       <Table.Td>{element.mqc}</Table.Td>
       <Table.Td>{element.upc}</Table.Td>
       <Table.Td>{element.asin}</Table.Td>
-      <Table.Td>${element.amazonBb}</Table.Td>
-      <Table.Td>${Number(element.amazonFees).toFixed(2)}</Table.Td>
-      <Table.Td  style={{ color: profit < 0 ? "red" : "green" }}>${profit}</Table.Td>
-      <Table.Td>{Number((Number(profit) / Number(element.amazonBb)) * 100).toFixed(2)}</Table.Td>
-      <Table.Td>{Number((Number(profit) / Number(element.price?.split('$')[1])) * 100).toFixed(2)}</Table.Td>
+      <Table.Td>${amazonBb.toFixed(2)}</Table.Td>
+      <Table.Td>${amazonFees.toFixed(2)}</Table.Td>
+      <Table.Td style={{ color: profit < 0 ? "red" : "green" }}>${profit.toFixed(2)}</Table.Td>
+      <Table.Td>{margin.toFixed(2)}%</Table.Td>
+      <Table.Td>{roi.toFixed(2)}%</Table.Td>
     </Table.Tr>
-  )}
-);
+  );
+});
+
 
   const handleSearch = (value) => {
   setFilters((prev) => ({
