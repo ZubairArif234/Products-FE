@@ -1,10 +1,11 @@
-import { Button, Group, Input, Radio, Select, Stepper, Table, TextInput } from '@mantine/core'
+import { Button, Group, Input, NumberInput, Radio, Select, Stepper, Table, TextInput } from '@mantine/core'
 import React, { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ChevronDown, Minus, Plus, Trash } from 'lucide-react';
 import { useForm } from '@mantine/form';
 import { createOrder } from '../../hooks/useOrder';
 import custAxios, { attachToken } from '../../configs/axios.config';
+import { calculateMetrics } from './products';
 // import { createPayment } from '../../hooks/usePayment';
 
 const Checkout = () => {
@@ -37,15 +38,14 @@ const Checkout = () => {
         initialValues: {
           paymentMethod: "",
           prepRequired: "",
-          assistance: "",
 
           firstName:"",
           lastName:"",
           email:"",
           phone:"",
           company:"",
-          market:"",
-          storeFront:"",
+          // market:"",
+          // storeFront:"",
 
           street:"",
           city:"",
@@ -63,8 +63,8 @@ const Checkout = () => {
           email: (value) => (active == 2 && value?.trim()?.length < 1  ? "Email is required" : null),
           phone: (value) => (active == 2 && value?.trim()?.length < 1  ? "Phone is required" : null),
           company: (value) => (active == 2 && value?.trim()?.length < 1  ? "Company is required" : null),
-          market: (value) => (active == 2 && value?.trim()?.length < 1  ? "Market is required" : null),
-          storeFront: (value) => (active == 2 && value?.trim()?.length < 1  ? "Store front is required" : null),
+          // market: (value) => (active == 2 && value?.trim()?.length < 1  ? "Market is required" : null),
+          // storeFront: (value) => (active == 2 && value?.trim()?.length < 1  ? "Store front is required" : null),
           
           street: (value) => (active == 3 && value?.trim()?.length < 1  ? "Street is required" : null),
           city: (value) => (active == 3 && value?.trim()?.length < 1  ? "City is required" : null),
@@ -242,7 +242,8 @@ const StepOne = ({ selectedItems, setSelectedItems, itemQuantities, setItemQuant
 
   const rows = selectedItems.map((element, i) => {
     const quantity = itemQuantities[element._id] || 1;
-    const totalPrice = (element.price?.split("$")[1] * quantity).toFixed(2);
+    const { basePrice } = calculateMetrics(element);
+    const totalPrice = (basePrice * quantity).toFixed(2);
 
     return (
       <Table.Tr key={element.id || i}>
@@ -266,13 +267,15 @@ const StepOne = ({ selectedItems, setSelectedItems, itemQuantities, setItemQuant
         </Table.Td>
         <Table.Td>{element.brand}</Table.Td>
         <Table.Td>
-          <div className='flex items-center justify-between bg-slate-200 p-1 rounded-md'>
+          <div className='flex gap-3 items-center justify-between bg-slate-200 p-1 rounded-md'>
             <Minus
               size={15} 
               onClick={() => quantity > 1 && updateQuantity(element?._id, quantity - 1)} 
               className='text-white bg-hollywood-700 w-6 h-6 rounded-md p-1 cursor-pointer hover:bg-purple-600'
             />
-            <p className="min-w-[20px] text-center">{quantity}</p>
+            <NumberInput hideControls size='sm' className=" w-14 text-center" value={quantity} onChange={(value)=>updateQuantity(element?._id,value)}/>
+                   
+            {/* <p className="min-w-[20px] text-center">{quantity}</p> */}
             <Plus 
               size={15} 
               onClick={() => updateQuantity(element?._id, quantity + 1)} 
@@ -280,7 +283,7 @@ const StepOne = ({ selectedItems, setSelectedItems, itemQuantities, setItemQuant
             />
           </div>
         </Table.Td>
-        <Table.Td>{element.price}</Table.Td>
+        <Table.Td>{basePrice}</Table.Td>
         <Table.Td>${totalPrice}</Table.Td>
       </Table.Tr>
     );
@@ -288,8 +291,9 @@ const StepOne = ({ selectedItems, setSelectedItems, itemQuantities, setItemQuant
 
   // Calculate total cart value
   const cartTotal = selectedItems.reduce((total, item) => {
+     const { basePrice } = calculateMetrics(item);
     const quantity = itemQuantities[item._id] || 1;
-    return total + (item.price?.split("$")[1] * quantity);
+     return total + (basePrice * quantity);
   }, 0).toFixed(2);
 
   return (
@@ -355,18 +359,7 @@ const StepTwo = ({form}) => {
                               {...form.getInputProps("paymentMethod")}
                             /> */}
 
-                             <Radio.Group
                             
-                            label="Ungetting Assistance"
-                            {...form.getInputProps("assistance")}
-      
-    >
-      <Group mt="xs">
-        <Radio value="yes" label="Yes"
-      color="grape" />
-        <Radio value="no" label="No"color="grape" />
-      </Group>
-    </Radio.Group>
       </form>
     </div>
   )
@@ -398,7 +391,8 @@ const StepThree = ({form}) => {
                               placeholder="Email"
                                {...form.getInputProps("email")}
                             />
-                  <TextInput
+                  <NumberInput
+                  hideControls
                   label="Phone number"
                              size="sm"
                               radius="sm"
@@ -412,7 +406,7 @@ const StepThree = ({form}) => {
                               placeholder="Company"
                                {...form.getInputProps("company")}
                             />
-                            <div className='grid grid-cols-2 gap-4'>
+                            {/* <div className='grid grid-cols-2 gap-4'>
 
                   <TextInput
                   label="Market"
@@ -428,7 +422,7 @@ const StepThree = ({form}) => {
                   placeholder="Storefront"
                   {...form.getInputProps("storeFront")}
                   />
-                  </div>
+                  </div> */}
 
                             
       </form>
@@ -516,13 +510,14 @@ const StepFive = ({ selectedItems, form, itemQuantities, setItemQuantities }) =>
         </Table.Td>
         <Table.Td>{element.brand}</Table.Td>
         <Table.Td>
-          <div className='flex items-center justify-between bg-slate-200 p-1 rounded-md'>
+          <div className='flex gap-4 items-center justify-between bg-slate-200 p-1 rounded-md'>
             <Minus
               size={15} 
               onClick={() => quantity > 1 && updateQuantity(element?._id, quantity - 1)} 
               className='text-white bg-hollywood-700 w-6 h-6 rounded-md p-1 cursor-pointer hover:bg-purple-600'
             />
-            <p className="min-w-[20px] text-center">{quantity}</p>
+            <NumberInput hideControls size='sm' className=" w-14 text-center" value={quantity} onChange={(value)=>updateQuantity(element?._id,value)}/>
+             
             <Plus 
               size={15} 
               onClick={() => updateQuantity(element?._id, quantity + 1)} 

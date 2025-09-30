@@ -5,6 +5,7 @@ import {
   useMantineColorScheme,
   useComputedColorScheme,
   Menu,
+  Modal,
 } from "@mantine/core";
 import React, { useState, useEffect } from "react";
 // import { FaBell, FaMoon, FaSun } from "react-icons/fa";
@@ -18,7 +19,8 @@ import { cn } from "../../utils/cn";
 // import { useColorScheme } from "../../contexts/ColorSchemeContext";
 import DashboardLogo from "../../assets/logo.png"
 import { userGetRole } from "../../services/hooks";
-import { MenuIcon } from "lucide-react";
+import { MenuIcon, HelpCircle, InfoIcon } from "lucide-react";
+import { useDisclosure } from "@mantine/hooks";
 export const Wallet = () => {
   const { wallet } = useGetMyWallet();
   // PLAID INTEGRATION TEMPORARILY DISABLED
@@ -79,6 +81,7 @@ export const Wallet = () => {
 };
 
 const Navbar = ({ opened, toggle }) => {
+  const [openedHelp, { open, close }] = useDisclosure(false);
   const location = useLocation();
   const role = userGetRole()
   // const { setColorScheme, colorScheme } = useMantineColorScheme();
@@ -237,6 +240,112 @@ if (role == item?.role){
         >
           {colorScheme === "light" ? <FaMoon size={18} /> : <FaSun size={18} />}
         </ActionIcon> */}
+<HelpCircle size={20} onClick={open} className="text-slate-500 cursor-pointer"/>
+<Modal size={"xl"} opened={openedHelp} onClose={close} centered title="Shipping Hub Assistance">
+      <div className="grid grid-cols-2 gap-4">
+{/* prep service */}
+        <div className="border-hollywood-700 border-1 rounded-lg p-4">
+<p className="text-hollywood-800 text-xl text-center mb-4"><b className="me-2">
+   Prep
+  </b>
+    Service</p>
+
+<div>
+
+    <div className="flex items-start gap-3">
+      <InfoIcon  className="text-hollywood-700"/>
+      <p><b>Lorem ipsem of that</b> Lorem ipsem of that way dummy text here.</p>
+    </div>
+
+    <div className="flex items-start gap-3">
+      <InfoIcon className="text-hollywood-700"/>
+      <p><b>Lorem ipsem of that</b> Lorem ipsem of that way dummy text here.</p>
+    </div>
+
+    <div className="flex items-start gap-3">
+      <InfoIcon className="text-hollywood-700"/>
+      <p><b>Lorem ipsem of that</b> Lorem ipsem of that way dummy text here.</p>
+    </div>
+</div>
+        </div>
+
+{/* no prep */}
+        <div className="border-hollywood-700 border-1 rounded-lg p-4">
+<p className="text-hollywood-800 text-xl text-center mb-4"><b className="me-2">
+   No
+  </b>
+    Prep</p>
+
+<div>
+
+    <div className="flex items-start gap-3">
+      <InfoIcon  className="text-hollywood-700"/>
+      <p><b>Lorem ipsem of that</b> Lorem ipsem of that way dummy text here.</p>
+    </div>
+
+    <div className="flex items-start gap-3">
+      <InfoIcon className="text-hollywood-700"/>
+      <p><b>Lorem ipsem of that</b> Lorem ipsem of that way dummy text here.</p>
+    </div>
+
+    <div className="flex items-start gap-3">
+      <InfoIcon className="text-hollywood-700"/>
+      <p><b>Lorem ipsem of that</b> Lorem ipsem of that way dummy text here.</p>
+    </div>
+</div>
+        </div>
+
+{/* shipment statuses */}
+        <div className="border-hollywood-700 border-1 rounded-lg p-4">
+<p className="text-hollywood-800 text-xl text-center mb-4"><b className="me-2">
+   Shipment
+  </b>
+    Statuses</p>
+
+<div>
+
+    <div className="flex items-center gap-3">
+      <p className="bg-red-600 text-center text-white px-4 py-1 w-[240px] rounded-full">status 1</p>
+      <p><b>Lorem ipsem of that</b> Lorem ipsem of that way dummy text here.</p>
+    </div>
+
+    <div className="flex items-center gap-3">
+      <p className="bg-gray-600 text-center text-white px-4 py-1 w-[240px] rounded-full">status 2</p>
+       <p><b>Lorem ipsem of that</b> Lorem ipsem of that way dummy text here.</p>
+    </div>
+
+    <div className="flex items-center gap-3">
+      <p className="bg-red-600 text-center text-white px-4 py-1 w-[240px] rounded-full">status 3</p>
+      <p><b>Lorem ipsem of that</b> Lorem ipsem of that way dummy text here.</p>
+    </div>
+
+    <div className="flex items-center gap-3">
+      <p className="bg-gray-600 text-center text-white px-4 py-1 w-[240px] rounded-full">status 4</p>
+      <p><b>Lorem ipsem of that</b> Lorem ipsem of that way dummy text here.</p>
+    </div>
+</div>
+        </div>
+    
+    {/* Watch video */}
+    <div>
+
+    
+        <div className="border-hollywood-700 border-1 rounded-lg p-4">
+{/* <p className="text-hollywood-800 text-xl text0center"><b className="me-2">
+   No
+  </b>
+    Prep</p> */}
+
+<div>
+
+  <p className="text-hollywood-700">Lorem ipsm of that way dummy data</p>
+  <Link>Click Video</Link>
+</div>
+</div>
+        </div>
+      </div>
+      </Modal>
+
         <div className=" md:hidden">
         <Menu shadow="md" width={200} radius={10} position="bottom-end">
         <Menu.Target>

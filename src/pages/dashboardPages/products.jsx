@@ -1,4 +1,4 @@
-import { Button, Table, Checkbox, Drawer, Divider, TextInput, Select, Loader, Pagination } from '@mantine/core';
+import { Button, Table, Checkbox, Drawer, Divider, TextInput, Select, Loader, Pagination, Input, NumberInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { ChevronDown, Minus, Plus, Search, SquarePen, Tag, Trash } from 'lucide-react';
 import { useState, useEffect } from 'react';
@@ -7,11 +7,39 @@ import { useProducts } from '../../hooks/useProducts';
 import { userGetData } from '../../services/hooks';
 import { useWarehouse } from '../../hooks/useWarehouse';
 
+export const calculateMetrics = (product) => {
+    console.log(product , "products in calculate");
+    
+  let basePrice = Number(
+       product.price.split("$")[1]
+     
+  ) || 0;
+
+  let amazonBb = Number(product.amazonBb) || 0;
+  let amazonFees = Number(product.amazonFees) || 0;
+
+  // initial profit, margin, roi
+  let profit = amazonBb - (basePrice + amazonFees);
+  let margin = (profit / amazonBb) * 100;
+  let roi = (profit / basePrice) * 100;
+
+  // cap ROI at 40%
+  if (roi > 40) {
+    const exceedingPercent = roi - 40;
+    basePrice = basePrice * (1 + exceedingPercent / 100); // increase price
+    profit = amazonBb - (basePrice + amazonFees); // recalc profit
+    margin = ((profit / amazonBb) * 100);
+    roi = ((profit / basePrice) * 100);
+  }
+
+  return { basePrice, profit, margin, roi };
+};
+
 const Products = () => {
    const [filters, setFilters] = useState({
       title: "",
       page: 1,
-      limit: 6,
+      limit: "5",
     });
       const {products, isPending} = useProducts(filters)
       
@@ -113,7 +141,9 @@ const Products = () => {
     const total = selectedRows.reduce((sum, rowId) => {
       const item = products?.products?.find(el => el._id === rowId);
       const quantity = itemQuantities[rowId] || 1;
-      return sum + (item.price?.split("$")[1] * quantity);
+    if (!item) return sum;
+const { basePrice } = calculateMetrics(item);
+return sum + basePrice * quantity;
     }, 0);
     setTotalPrice(total);
   }, [selectedRows, itemQuantities]);
@@ -136,6 +166,9 @@ const Products = () => {
     });
   };
 
+  
+
+
   const rows = products?.products?.map((element, i) => {
   let basePrice = Number(element.price?.split("$")[1]) || 0;
   let amazonBb = Number(element.amazonBb) || 0;
@@ -143,16 +176,16 @@ const Products = () => {
 
   // initial profit, margin, roi
   let profit = amazonBb - (basePrice + amazonFees);
-  let margin = ((profit / amazonBb) * 100);
-  let roi = ((profit / basePrice) * 100);
+  let margin = amazonBb > 0 ? ((profit / amazonBb) * 100) : 0;
+  let roi = basePrice > 0 ? ((profit / basePrice) * 100) : 0;
 
   // check ROI cap
   if (roi > 40) {
     const exceedingPercent = roi - 40;
     basePrice = basePrice * (1 + exceedingPercent / 100); // increase price
     profit = amazonBb - (basePrice + amazonFees); // recalc profit
-    margin = ((profit / amazonBb) * 100);
-    roi = ((profit / basePrice) * 100);
+    margin = amazonBb > 0 ? ((profit / amazonBb) * 100) : 0;
+    roi = basePrice > 0 ? ((profit / basePrice) * 100) : 0;
   }
 
   return (
@@ -227,12 +260,18 @@ const handleBrand = (value) => {
     page: 1,
   }));
 };
+const handlePageLimit = (value) => {
+  setFilters((prev) => ({
+    ...prev,
+    limit: value,
+    page: 1,
+  }));
+};
 
 
 const convertToCSV = (data) => {
   if (!data || data.length === 0) return '';
   
-  // Define headers
   const headers = [
     'Product Name',
     'Brand', 
@@ -247,26 +286,30 @@ const convertToCSV = (data) => {
     'ROI',
   ];
   
-  // Create CSV content
   const csvContent = [
-    headers.join(','), // Header row
-    ...data.map(product => [
-      `"${product.name || ''}"`,
-      `"${product.brand || ''}"`,
-      `"${product.price || ''}"`,
-      `"${product.mqc || ''}"`,
-      `"${product.upc || ''}"`,
-      `"${product.asin || ''}"`,
-      `"$${product.amazonBb || ''}"`,
-      `"$${product.amazonFees || ''}"`,
-      `"$${product.profit || ''}"`,
-      `"${product.margin || ''}"`,
-      `"${product.roi || ''}"`,
-    ].join(','))
+    headers.join(','), 
+    ...data.map(product => {
+      const { basePrice, profit, margin, roi } = calculateMetrics(product);
+
+      return [
+        `"${product.name || ''}"`,
+        `"${product.brand || ''}"`,
+        `"$${basePrice.toFixed(2)}"`,
+        `"${product.mqc || ''}"`,
+        `"${product.upc || ''}"`,
+        `"${product.asin || ''}"`,
+        `"$${Number(product.amazonBb || 0).toFixed(2)}"`,
+        `"$${Number(product.amazonFees || 0).toFixed(2)}"`,
+        `"$${profit.toFixed(2)}"`,
+        `"${margin.toFixed(2)}%"`,
+        `"${roi.toFixed(2)}%"`,
+      ].join(',');
+    })
   ].join('\n');
   
   return csvContent;
 };
+
 
 // Function to download CSV file
 const downloadCSV = (csvContent, filename) => {
@@ -408,8 +451,22 @@ const handleDownloadAllCSV = () => {
             <Table.Tbody>{rows}</Table.Tbody>
           </Table>
         </Table.ScrollContainer>
-        <div className='flex justify-end mt-4'>
-        <Pagination color='#255b7f' total={products?.pagination?.totalPages/6}  value={filters.page}
+        <div className='flex justify-between mt-4 flex-wrap'>
+
+<div className='flex items-center gap-2'>
+  <Select
+  className='w-18'
+  rightSection={<ChevronDown size={18} />}
+      placeholder="Items per page"
+      onChange={handlePageLimit}
+      value={filters.limit}
+      data={["5","10","15","20"]}
+
+  />
+  <p className='text-slate-600 text-sm'>items per page</p>
+</div>
+
+        <Pagination color='#255b7f' total={products?.pagination?.totalPages/filters.limit}  value={filters.page}
   onChange={(page) => setFilters((prev) => ({ ...prev, page }))}  mt="sm" />
         </div>
          </div>
@@ -423,19 +480,23 @@ const handleDownloadAllCSV = () => {
 
       </div>
 
-      <Drawer position="right" opened={opened} onClose={close} title="Shopping Cart">
-        {selectedRows.length > 0 && selectedRows.map((rowId) => {
-          const data = products?.products?.find(el => el._id === rowId);
-          return (
-            <ProductItem 
-              key={rowId} 
-              data={data} 
-              quantity={itemQuantities[rowId] || 1}
-              onQuantityChange={(newQuantity) => updateQuantity(rowId, newQuantity)}
-              onRemove={() => removeFromCart(rowId)}
-            />
-          );
-        })}
+      <Drawer size={"lg"} position="right" opened={opened} onClose={close} title="Shopping Cart">
+       {selectedRows.length > 0 && selectedRows.map((rowId) => {
+  const product = products?.products?.find(el => el._id === rowId);
+  if (!product) return null;
+  
+  const { basePrice, profit, margin, roi } = calculateMetrics(product);
+
+  return (
+    <ProductItem 
+      key={rowId} 
+      data={{ ...product, basePrice, profit, margin, roi }} 
+      quantity={itemQuantities[rowId] || 1}
+      onQuantityChange={(newQuantity) => updateQuantity(rowId, newQuantity)}
+      onRemove={() => removeFromCart(rowId)}
+    />
+  );
+})}
         
         {selectedRows.length > 0 && (
           <div className="mt-4 pt-4 border-t border-gray-300">
@@ -482,7 +543,7 @@ export const ProductItem = ({ data, quantity, onQuantityChange, onRemove }) => {
           className='text-red-500 cursor-pointer hover:text-red-700' 
           onClick={onRemove}
         />
-        <div className='flex gap-3 items-center w-[72%]'>
+        <div className='flex gap-3 items-center w-[95%]'>
           <img 
             className='h-14 w-14 aspect-square object-contain bg-slate-200 rounded' 
             src={data?.images?.length > 0 ? data?.images[0] : "https://images.unsplash.com/photo-1521223890158-f9f7c3d5d504?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8amFja2V0fGVufDB8fDB8fHww"}
@@ -500,14 +561,15 @@ export const ProductItem = ({ data, quantity, onQuantityChange, onRemove }) => {
           onClick={() => quantity > 1 && onQuantityChange(quantity - 1)} 
           className='text-white bg-hollywood-700 w-6 h-6 rounded-md p-1 cursor-pointer hover:bg-purple-600'
         />
-        <p className="min-w-[20px] text-center">{quantity}</p>
+        <NumberInput hideControls size='sm' className=" w-16 text-center" value={quantity} onChange={onQuantityChange}/>
+        {/* <p className="min-w-[20px] text-center">{quantity}</p> */}
         <Plus 
           size={15} 
           onClick={() => onQuantityChange(quantity + 1)} 
           className='text-white bg-hollywood-700 w-6 h-6 rounded-md p-1 cursor-pointer hover:bg-purple-600'
         />
       </div>
-      <p className="font-semibold w-14">${Number(price) * quantity}</p>
+      <p className="font-semibold w-14">${(Number(data?.basePrice) * quantity).toFixed(2)}</p>
     </div>
   );
 };
