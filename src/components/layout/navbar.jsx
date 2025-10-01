@@ -19,7 +19,7 @@ import { cn } from "../../utils/cn";
 // import { useColorScheme } from "../../contexts/ColorSchemeContext";
 import DashboardLogo from "../../assets/logo.png"
 import { userGetRole } from "../../services/hooks";
-import { MenuIcon, HelpCircle, InfoIcon } from "lucide-react";
+import { MenuIcon, HelpCircle, InfoIcon, Play } from "lucide-react";
 import { useDisclosure } from "@mantine/hooks";
 export const Wallet = () => {
   const { wallet } = useGetMyWallet();
@@ -81,6 +81,74 @@ export const Wallet = () => {
 };
 
 const Navbar = ({ opened, toggle }) => {
+  const prepServiceText =[
+    {
+      id:1,
+bold:"If you selected prep",
+text:"for your Purchase Order, please upload FNSKU labels after paying your invoice."
+
+    },
+    {
+      id:2,
+bold:"Wait,",
+text:"Please allow 10-40 bussiness days for our warehouse to pick,prep, & pack your order. Once packed, the warehouse will post dimensions & you will be notified via email once dimensions are added to the portal."
+
+    },
+    {
+      id:3,
+bold:"You will use the dimensions",
+text:"to create a shipment & generate shipment labels via Seller Central You will then upload those labels & the warehouse will dispatch your shipment."
+
+    },
+  ]
+
+  const noPrepText = [
+    {
+      id:1,
+bold:"If you did not select prep",
+text:"no action is required after paying your invoice."
+
+    },
+    {
+      id:2,
+bold:"Wait,",
+text:"Please allow 10-14 business days for our warehouse to pick your order & post dimensions. You will be notified via email once dimensions are added to the portal."
+
+    },
+     {
+      id:3,
+bold:"You will use the dimensions",
+text:"to generate shipment labels to you/your warehouse , via your preferred carrier (UPS Fedex, USPS etc). You will then upload those labels & the warehouse will dispatch your shipment."
+
+    },
+  ]
+
+  const shipmentText = [
+    {
+      id:1,
+      status:"Upload FNSKU",
+      bold:"Upload",
+      text:"FNSKU labels for the warehouse to affix to your products."
+    },
+    {
+      id:2,
+      status:"Await Warehouse Dims",
+      bold:"Now",
+      text:"wait for the warehouse to provide dimensions for your products."
+    },
+    {
+      id:3,
+      status:"Upload Shipping Labels",
+      bold:"Our",
+      text:"warehouse has costed dimensions, please use the dimensions to create a shipment & upload labels to the portal."
+    },
+    {
+      id:4,
+      status:"Awaiting Pickup",
+      bold:"We've",
+      text:"received your shipping labels and your products will be picked up by the desihnated carrier."
+    },
+  ]
   const [openedHelp, { open, close }] = useDisclosure(false);
   const location = useLocation();
   const role = userGetRole()
@@ -241,7 +309,7 @@ if (role == item?.role){
           {colorScheme === "light" ? <FaMoon size={18} /> : <FaSun size={18} />}
         </ActionIcon> */}
 <HelpCircle size={20} onClick={open} className="text-slate-500 cursor-pointer"/>
-<Modal size={"xl"} opened={openedHelp} onClose={close} centered title="Shipping Hub Assistance">
+<Modal size={"2xl"} opened={openedHelp} onClose={close} centered title="Shipping Hub Assistance">
       <div className="grid grid-cols-2 gap-4">
 {/* prep service */}
         <div className="border-hollywood-700 border-1 rounded-lg p-4">
@@ -251,21 +319,17 @@ if (role == item?.role){
     Service</p>
 
 <div>
-
-    <div className="flex items-start gap-3">
-      <InfoIcon  className="text-hollywood-700"/>
-      <p><b>Lorem ipsem of that</b> Lorem ipsem of that way dummy text here.</p>
+{prepServiceText?.map((item)=>{
+  return(
+    <div key={item?.id} className="flex items-start gap-3">
+      <p className="w-7 h-7 rounded-full flex justify-center items-center font-semibold border-2 border-hollywood-700 text-hollywood-700">{item?.id}</p>
+      <p className="w-[80%]"><b className="me-1">{item?.bold}</b>{item?.text}</p>
     </div>
 
-    <div className="flex items-start gap-3">
-      <InfoIcon className="text-hollywood-700"/>
-      <p><b>Lorem ipsem of that</b> Lorem ipsem of that way dummy text here.</p>
-    </div>
+  )
+})}
 
-    <div className="flex items-start gap-3">
-      <InfoIcon className="text-hollywood-700"/>
-      <p><b>Lorem ipsem of that</b> Lorem ipsem of that way dummy text here.</p>
-    </div>
+   
 </div>
         </div>
 
@@ -277,21 +341,18 @@ if (role == item?.role){
     Prep</p>
 
 <div>
+  {noPrepText?.map((item)=>{
+    return(
 
-    <div className="flex items-start gap-3">
-      <InfoIcon  className="text-hollywood-700"/>
-      <p><b>Lorem ipsem of that</b> Lorem ipsem of that way dummy text here.</p>
+    <div key={item?.id} className="flex items-start gap-3">
+     <p className="w-7 h-7 rounded-full flex justify-center items-center font-semibold border-2 border-hollywood-700 text-hollywood-700">{item?.id}</p>
+      <p className="w-[80%]"><b className="me-1">{item?.bold}</b>{item?.text}</p>
     </div>
+    )
+  })}
 
-    <div className="flex items-start gap-3">
-      <InfoIcon className="text-hollywood-700"/>
-      <p><b>Lorem ipsem of that</b> Lorem ipsem of that way dummy text here.</p>
-    </div>
 
-    <div className="flex items-start gap-3">
-      <InfoIcon className="text-hollywood-700"/>
-      <p><b>Lorem ipsem of that</b> Lorem ipsem of that way dummy text here.</p>
-    </div>
+  
 </div>
         </div>
 
@@ -303,26 +364,18 @@ if (role == item?.role){
     Statuses</p>
 
 <div>
+  {shipmentText?.map((item)=>{
+    return(
 
-    <div className="flex items-center gap-3">
-      <p className="bg-red-600 text-center text-white px-4 py-1 w-[240px] rounded-full">status 1</p>
-      <p><b>Lorem ipsem of that</b> Lorem ipsem of that way dummy text here.</p>
+    <div key={item?.id} className="flex items-center gap-3 mb-2">
+      <p className={cn(item?.id % 2 ? "bg-red-600" : "bg-gray-500","w-[50%] text-center text-white px-4 py-1 rounded-full")}>{item?.status}</p>
+      <p className="w-[50%]"><b className="me-1">{item?.bold}</b>{item?.text}</p>
     </div>
 
-    <div className="flex items-center gap-3">
-      <p className="bg-gray-600 text-center text-white px-4 py-1 w-[240px] rounded-full">status 2</p>
-       <p><b>Lorem ipsem of that</b> Lorem ipsem of that way dummy text here.</p>
-    </div>
+    )
+  })}
 
-    <div className="flex items-center gap-3">
-      <p className="bg-red-600 text-center text-white px-4 py-1 w-[240px] rounded-full">status 3</p>
-      <p><b>Lorem ipsem of that</b> Lorem ipsem of that way dummy text here.</p>
-    </div>
-
-    <div className="flex items-center gap-3">
-      <p className="bg-gray-600 text-center text-white px-4 py-1 w-[240px] rounded-full">status 4</p>
-      <p><b>Lorem ipsem of that</b> Lorem ipsem of that way dummy text here.</p>
-    </div>
+  
 </div>
         </div>
     
@@ -336,10 +389,10 @@ if (role == item?.role){
   </b>
     Prep</p> */}
 
-<div>
-
-  <p className="text-hollywood-700">Lorem ipsm of that way dummy data</p>
-  <Link>Click Video</Link>
+<div className="flex flex-col gap-2">
+<Play/>
+  <p className="text-hollywood-700 font-bold">Creating A shipment For Amazon FBA & Uploading Labels to the Portal</p>
+  <Link className="mt-4 font-bold">Click to Watch</Link>
 </div>
 </div>
         </div>

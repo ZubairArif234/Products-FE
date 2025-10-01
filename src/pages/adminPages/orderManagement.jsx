@@ -124,6 +124,7 @@ const OrdersManagement = () => {
   const handleChangeOrderStatus = (value, id) => {
     mutateAsync({status:value,id:id},)
   }
+const totalQuantity = singleOrder?.products.reduce((sum, item) => sum + item.qnt, 0);
 
   const rows = orders?.orders?.map((element, i) => (
     <Table.Tr key={i} className={selectedRows.includes(element._id) ? '!bg-hollywood-700/80 text-white' : undefined}>
@@ -247,6 +248,10 @@ const OrdersManagement = () => {
 
             <div className=' mt-4 text-end'>
                 <p className='text-md text-slate-600'>Tax : ${singleOrder?.tax}</p>
+                 {singleOrder?.preference?.prepRequired != "No Prep" && (
+
+          <p>Prep Charges : ${totalQuantity }</p>
+        )}
                 <p className='text-xl '>Total Price : ${singleOrder?.totalPrice}</p>
             </div>
         </div>

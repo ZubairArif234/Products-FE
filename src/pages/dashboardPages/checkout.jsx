@@ -21,6 +21,10 @@ const Checkout = () => {
   const [cartItems, setCartItems] = useState(selectedItems || []);
   const [itemQuantities, setItemQuantities] = useState({});
 
+  const totalQuantity = Object.values(itemQuantities).reduce(
+  (sum, qty) => sum + qty,
+  0
+);
   // Initialize quantities when selectedItems change
   useEffect(() => {
     if (selectedItems) {
@@ -61,7 +65,7 @@ const Checkout = () => {
           firstName: (value) => (active == 2 && value?.trim()?.length < 1  ? "First name is required" : null),
           lastName: (value) => (active == 2 && value?.trim()?.length < 1  ? "Last name is required" : null),
           email: (value) => (active == 2 && value?.trim()?.length < 1  ? "Email is required" : null),
-          phone: (value) => (active == 2 && value?.trim()?.length < 1  ? "Phone is required" : null),
+          phone: (value) => (active == 2 && value.length < 1  ? "Phone is required" : null),
           company: (value) => (active == 2 && value?.trim()?.length < 1  ? "Company is required" : null),
           // market: (value) => (active == 2 && value?.trim()?.length < 1  ? "Market is required" : null),
           // storeFront: (value) => (active == 2 && value?.trim()?.length < 1  ? "Store front is required" : null),
@@ -103,8 +107,6 @@ const Checkout = () => {
               email: form?.values?.email,
               phone: form?.values?.phone,
               company: form?.values?.company,
-              market: form?.values?.market,
-              storeFront: form?.values?.storeFront,
             },
             
             billingAddress: {
@@ -118,12 +120,11 @@ const Checkout = () => {
             preference: {
               paymentMethod: form.values?.paymentMethod,
               prepRequired: form?.values?.prepRequired,
-              assistance: form?.values?.assistance
             },
             
             tax: "10.89", // You can calculate this dynamically
-            totalPrice: (cartTotal + 10.89).toFixed(2), // Adding tax
-            total: (cartTotal + 10.89).toFixed(2) // Adding tax
+            totalPrice: (cartTotal + 10.89 + totalQuantity).toFixed(2), // Adding tax
+            total: (cartTotal + 10.89 + totalQuantity).toFixed(2) // Adding tax
           };
 
           console.log("Order payload:", payload);
@@ -493,6 +494,12 @@ const StepFive = ({ selectedItems, form, itemQuantities, setItemQuantities }) =>
   if (!selectedItems || selectedItems.length === 0) {
     return <div>No items selected for checkout.</div>;
   }
+ const totalQuantity = Object.values(itemQuantities).reduce(
+  (sum, qty) => sum + qty,
+  0
+);
+
+console.log(totalQuantity); // e.g. 3
 
   const rows = selectedItems.map((element, i) => {
     const quantity = itemQuantities[element._id] || 1;
@@ -568,7 +575,7 @@ const StepFive = ({ selectedItems, form, itemQuantities, setItemQuantities }) =>
                     <p>Email : {form?.values?.email} </p>
                     <p>Phone : {form?.values?.phone} </p>
                     <p>Company : {form?.values?.company} </p>
-                    <p>Market : {form?.values?.market} </p>
+                    
 
                 </div>
             </div>
@@ -595,7 +602,7 @@ const StepFive = ({ selectedItems, form, itemQuantities, setItemQuantities }) =>
 
                     <p>Payment Method : {form?.values?.paymentMethod} </p>
                     <p>Prep Required : {form?.values?.prepRequired} </p>
-                    <p>Assistance : {form?.values?.assistance} </p>
+                   
                     
 
                 </div>
@@ -607,8 +614,19 @@ const StepFive = ({ selectedItems, form, itemQuantities, setItemQuantities }) =>
 
     <div className='text-end text-slate-600 mt-8'>
         <p>Total items : {selectedItems?.length}</p>
+        {form?.values?.prepRequired != "No Prep" && (
+
+          <p>Prep Charges : ${totalQuantity }</p>
+        )}
         <p>Tax : $10.89</p>
-        <p className='text-xl font-semibold'>Total Price : ${(parseFloat(cartTotal) + 10.89).toFixed(2)} </p>
+         {form?.values?.prepRequired != "No Prep" ? (
+
+          <p className='text-xl font-semibold'>Total Price : ${(parseFloat(cartTotal) + 10.89 + totalQuantity).toFixed(2)} </p>
+        ):
+        (
+
+        <p className='text-xl font-semibold'>Total Price : ${(parseFloat(cartTotal) + 10.89 ).toFixed(2)} </p>
+        )}
     </div>
     </div>
     )
