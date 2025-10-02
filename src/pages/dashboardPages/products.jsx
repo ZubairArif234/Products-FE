@@ -1,6 +1,6 @@
-import { Button, Table, Checkbox, Drawer, Divider, TextInput, Select, Loader, Pagination, Input, NumberInput } from '@mantine/core';
+import { Button, Table, Checkbox, Drawer, Divider, TextInput, Select, Loader, Pagination, Input, NumberInput, ActionIcon } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { ChevronDown, Minus, Plus, Search, SquarePen, Tag, Trash } from 'lucide-react';
+import { ChevronDown, LoaderCircle, Minus, Plus, Search, ShoppingCart, SquarePen, Tag, ThumbsUp, Trash } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useProducts } from '../../hooks/useProducts';
@@ -218,9 +218,9 @@ return sum + basePrice * quantity;
             }
             alt={element.name}
           />
-          <p title={element.name} className='text-md font-semibold line-clamp-2'>
+          <Link to={`http://amazon.com/dp/${element.asin}`} target='_blank' title={element.name} className='text-md font-semibold line-clamp-2 hover:text-hollywood-600'>
             {element.name}
-          </p>
+          </Link>
         </div>
       </Table.Td>
       <Table.Td>{element.brand}</Table.Td>
@@ -361,20 +361,24 @@ const handleDownloadAllCSV = () => {
   downloadCSV(csvContent, filename);
 };
   return (
-    <div className="py-5 md:px-20 px-2  rounded-lg shadow-md">
-      <div>
-        <p className='text-3xl mb-4 capitalize'>Welcome ,<span className='ms-2 text-hollywood-700 font-bold'>
-           {userData?.name}
+    <div className="py-5    rounded-lg shadow-md">
+      <div className=' bg-gradient-to-r from-hollywood-700 via-hollywood-700  to-white py-12 px-20'>
+      {/* <LoaderCircle size={80}  className='text-white'/> */}
+       <div>
+
+        <p className='text-3xl mb-4 capitalize text-white'>Welcome ,<span className='ms-2 '>
+           {userData?.name}!
           </span>
            </p>
            <StatsCount productsCount={products?.pagination?.total} warehouseCount={warehouse?.warehouses?.length} />
+       </div>
      
       </div>
       <Divider my={20}/>
       <div className='bg-white p-2 rounded-lg shadow-lg'>
 
         <div className=''>
-          <p className="font-bold text-hollywood-700 text-lg">Products</p>
+          {/* <p className="font-bold text-hollywood-700 text-lg">Products</p> */}
           {/* <p className="text-sm text-gray-500">There are {elements.length} products</p> */}
         </div>
       <div className='flex justify-between items-center flex-wrap'>
@@ -395,26 +399,40 @@ const handleDownloadAllCSV = () => {
         label:element.name,
         value:element._id
       })})} />
-         
+          <Button 
+          variant="transparent" 
+          onClick={handleDownloadSelectedCSV}
+          disabled={selectedRows.length === 0} 
+          className="!border-1 !border-slate-300 !bg-transparent  !rounded-sm "
+          >
+         Download CSV
+        </Button> 
         </div>
         <div className='flex gap-4 items-center'>
 
+<div className='relative'>
+  <ActionIcon variant="white" aria-label="Cart" >
+
+  <span className='!z-20 bg-red-500 flex justify-center items-center w-4 h-4 rounded-full text-white p-2 text-sm absolute -right-1 -top-1'>{selectedRows.length}</span>
+  <ShoppingCart size={30}  className='text-black'/>
+  </ActionIcon>
+</div>
         <Button 
-          variant="default" 
+          variant="ghost" 
           onClick={open}
           disabled={selectedRows.length === 0} 
           className="!bg-hollywood-700 disabled:!bg-hollywood-400 !text-white !rounded-lg !mt-3"
           >
           Add to cart ({selectedRows.length})
         </Button> 
-        <Button 
+        {/* <Button 
           variant="default" 
           onClick={handleDownloadSelectedCSV}
           disabled={selectedRows.length === 0} 
           className="!bg-hollywood-700 disabled:!bg-hollywood-400 !text-white !rounded-lg !mt-3"
           >
          Download CSV
-        </Button> 
+        </Button>  */}
             </div>
       </div>
 
@@ -577,22 +595,38 @@ export const ProductItem = ({ data, quantity, onQuantityChange, onRemove }) => {
 const StatsCount = ({productsCount,warehouseCount}) => {
   return(
       <div className='grid grid-cols-2 md:grid-cols-5 gap-4 '>
-          <div className='rounded-lg shadow-lg bg-white'>
-<p className='bg-hollywood-700 text-white p-2 font-semibold rounded-t-lg'>Warehouse</p>
+            <div className='rounded-lg  text-white'>
+{/* <p className='bg-hollywood-700 text-white p-2 font-semibold rounded-t-lg'>Product</p> */}
 <div className='p-2'>
 
-<p className='text-3xl font-semibold text-slate-400 '>{warehouseCount}</p>
-<p className='text-sm font-semibold text-slate-400'>last 30 days</p>
+<div className='flex gap-2 items-center justify-center'>
+<p className='text-xl font-semibold  text-center'>{productsCount}</p>
+<div className='flex items-center gap-1 bg-green-200 text-xs text-green-700 p-1 rounded-lg'>
+  <ThumbsUp size={18}/>
+  100%
+</div>
+
+</div>
+<p className='text-sm font-semibold text-slate-400 text-center'>Products Live</p>
 </div>
           </div>
-          <div className='rounded-lg shadow-lg bg-white'>
-<p className='bg-hollywood-700 text-white p-2 font-semibold rounded-t-lg'>Product</p>
+
+           <div className='rounded-lg  text-white'>
+{/* <p className='bg-hollywood-700 text-white p-2 font-semibold rounded-t-lg'>Product</p> */}
 <div className='p-2'>
 
-<p className='text-3xl font-semibold text-slate-400 '>{productsCount}</p>
-<p className='text-sm font-semibold text-slate-400'>last 30 days</p>
+<div className='flex gap-2 items-center justify-center'>
+<p className='text-xl font-semibold  text-center'>{warehouseCount}</p>
+<div className='flex items-center gap-1 bg-green-200 text-xs text-green-700 p-1 rounded-lg'>
+  <ThumbsUp size={18}/>
+  100%
+</div>
+
+</div>
+<p className='text-sm font-semibold text-slate-400 text-center'>Warehouse Live</p>
 </div>
           </div>
+        
         </div>
   )
 }

@@ -16,11 +16,9 @@ const AuthLayout = () => {
 //     }
 //   }, [isAuthenticated, isLoading, navigate]);
   return (
-  <div className=" grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
-  <div className="hidden lg:block xl:col-span-2">
-    <Banner />
-  </div>
-  <div>
+  <div className="flex h-screen justify-center items-center bg-gradient-to-b from-hollywood-700 to-white">
+ 
+  <div className="bg-white rounded-lg shadow-2xl mx-2 md:mx-0 md:w-[60%] w-full">
     <Outlet />
   </div>
 </div>

@@ -5,7 +5,7 @@ import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { SquarePen, Trash, Plus, Search, Eye, ChevronDown } from 'lucide-react';
 import { useWarehouse } from '../../hooks/useWarehouse';
 import custAxios, { attachToken } from '../../configs/axios.config';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useProducts } from '../../hooks/useProducts';
 import { changeOrderStatus, useOrders } from '../../hooks/useOrder';
 import moment from 'moment';
@@ -196,10 +196,9 @@ return (
            src={element?.images?.length > 0 ? element?.images[0] : "https://images.unsplash.com/photo-1521223890158-f9f7c3d5d504?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8amFja2V0fGVufDB8fDB8fHww"}
             alt={element.name} 
           />
-          <p title={element.name} className='text-md font-semibold line-clamp-2'>
-
-          {element.name}
-          </p>
+          <Link to={`http://amazon.com/dp/${element.asin}`} target='_blank' title={element.name} className='text-md font-semibold line-clamp-2 hover:text-hollywood-600'>
+                     {element.name}
+                   </Link>
           </div>
           </Table.Td>
       <Table.Td>{element.brand}</Table.Td>

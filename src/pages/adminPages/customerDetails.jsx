@@ -248,7 +248,7 @@ const CustomerDetails = () => {
             </div>
             <p>{item?.qnt}  x </p>
             <p>{item?.unitPrice} </p>
-            <p>= ${item?.qnt * item?.unitPrice?.split("$")[1]}</p>
+            <p>= ${(item?.qnt * item?.unitPrice?.split("$")[1]).toFixed(2)}</p>
                 </div>
     )
 })}

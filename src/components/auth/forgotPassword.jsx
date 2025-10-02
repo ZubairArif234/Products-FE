@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useForgotPassword } from "../../hooks/useForgotPassword";
 // import { useColorScheme } from "../../contexts/ColorSchemeContext";
 import { cn } from "../../utils/cn";
+import DashboardLogo from "../../assets/logo.png"
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
@@ -34,8 +35,8 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="px-2 md:px-20 py-10 flex flex-col justify-start h-screen">
-      <div className="flex gap-4 items-center justify-center">
+     <div className="px-2 py-10 md:px-30 md:py-20 flex flex-col justify-between h-2/3 rounded-lg shadow-2xl  ">
+     {/* <div className="flex gap-4 items-center justify-center">
         <p className="text-md text-slate-600">Don't have an account?</p>
         <Link to={"/signup"}>
           <Button
@@ -47,10 +48,16 @@ const ForgotPassword = () => {
             Sign up
           </Button>
         </Link>
-      </div>
-      <div className="mt-36">
-        <div className="mb-10">
-          <p
+      </div> */}
+      <div className="">
+        <div className="mb-10 flex justify-center">
+            <img
+                                     src={DashboardLogo}
+                                     alt="Default Dashboard Logo"
+                                     className="aspect-auto"
+                                     width={200}
+                                   />
+          {/* <p
             className={cn(
               "my-4 text-center text-2xl font-medium bg-gradient-to-r from-[#050505] to-[#767676] bg-clip-text text-transparent",
               isDark
@@ -62,34 +69,47 @@ const ForgotPassword = () => {
             <span className="bg-gradient-to-r from-[#6D62C3] to-[#9086E2] bg-clip-text text-transparent">
               Password
             </span>
-          </p>
-          <p className="font-extralight text-md text-slate-500 mx-6 text-center my-2">
+          </p> */}
+          {/* <p className="font-extralight text-md text-slate-500 mx-6 text-center my-2">
             Welcome to Primewell, please enter your email address below to
             receive the OTP.
-          </p>
+          </p> */}
         </div>
 
         <form
           className="flex flex-col gap-4"
           onSubmit={form.onSubmit(handleSubmit)}
         >
+           <label className="flex items-center justify-end gap-4">
+            <p className=" hidden md:block">Email</p>
+
           <TextInput
-            size="md"
-            radius="md"
+            size="sm"
+            radius="sm"
+             className="md:w-[80%] w-full"
             placeholder="Email Address"
             {...form.getInputProps("email")}
           />
+
+          </label>
+
+ <div className="flex text-slate-700 justify-start md:justify-end items-center text-sm">
+            <p>Don't have an account? <Link to={"/signup"} className="text-hollywood-700 font-semibold">Signup</Link></p>
+</div>
+
+ <div className="mt-8 flex justify-center">
 
           <Button
             type="submit"
             size="md"
             radius="md"
-            w="100%"
+            w="60%"
             className="!font-medium !bg-hollywood-700 "
             loading={isPending}
           >
             Send OTP
           </Button>
+          </div>
         </form>
       </div>
     </div>

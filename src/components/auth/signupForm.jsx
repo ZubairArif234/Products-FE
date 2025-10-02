@@ -12,6 +12,7 @@ import { useForm } from "@mantine/form";
 import { useSignup } from "../../hooks/useSignup";
 // import { useColorScheme } from "../../contexts/ColorSchemeContext";
 import { cn } from "../../utils/cn";
+import DashboardLogo from "../../assets/logo.png"
 
 const SignupForm = () => {
   const navigate = useNavigate();
@@ -54,8 +55,8 @@ const SignupForm = () => {
   };
 
   return (
-    <div className="px-2 md:px-20 py-10 flex flex-col justify-between h-screen">
-      <div className="flex gap-4 items-center justify-center">
+    <div className="px-2 py-10 md:px-30 md:py-20 flex flex-col justify-between h-2/3 rounded-lg shadow-2xl ">
+     {/* <div className="flex gap-4 items-center justify-center">
         <p
           className={cn(
             "text-md",
@@ -74,10 +75,16 @@ const SignupForm = () => {
             Sign in
           </Button>
         </Link>
-      </div>
+      </div> */}
       <div>
-        <div className="mb-10">
-          <p className="my-4 text-center text-2xl ">
+        <div className="mb-10 flex justify-center">
+           <img
+                                     src={DashboardLogo}
+                                     alt="Default Dashboard Logo"
+                                     className="aspect-auto"
+                                     width={200}
+                                   />
+          {/* <p className="my-4 text-center text-2xl ">
             <span
               className={cn(
                 "font-medium bg-gradient-to-r from-[#050505] to-[#767676] bg-clip-text text-transparent",
@@ -101,40 +108,59 @@ const SignupForm = () => {
             >
               Account
             </span>
-          </p>
-          <p className="font-extralight text-sm text-slate-500 mx-6 text-center ">
+          </p> */}
+          {/* <p className="font-extralight text-sm text-slate-500 mx-6 text-center ">
             Welcome to Primewell, please enter sign up details
-          </p>
+          </p> */}
         </div>
 
         <form
           onSubmit={form.onSubmit(handleSubmit)}
           className="flex flex-col gap-4"
         >
+           <label className="flex items-center justify-end gap-4">
+            <p className=" hidden md:block">Full name</p>
           <TextInput
-            size="md"
-            radius="md"
+            size="sm"
+            radius="sm"
+             className="md:w-[80%] w-full"
             placeholder="Full Name"
             {...form.getInputProps("fullName")}
           />
+          </label>
+           <label className="flex items-center justify-end gap-4">
+            <p className=" hidden md:block">Email</p>
           <TextInput
-            size="md"
-            radius="md"
+             size="sm"
+            radius="sm"
+             className="md:w-[80%] w-full"
             placeholder="Email Address"
             {...form.getInputProps("email")}
           />
+          </label>
+           <label className="flex items-center justify-end gap-4">
+            <p className=" hidden md:block">Password</p>
           <PasswordInput
-            size="md"
-            radius="md"
+            size="sm"
+            radius="sm"
+             className="md:w-[80%] w-full"
             placeholder="Password"
             {...form.getInputProps("password")}
           />
+          </label>
+           <label className="flex items-center justify-end gap-4">
+            <p className=" hidden md:block">Re-Password</p>
           <PasswordInput
-            size="md"
-            radius="md"
+           size="sm"
+            radius="sm"
+             className="md:w-[80%] w-full"
             placeholder="Confirm"
             {...form.getInputProps("confirmPassword")}
           />
+          </label>
+          <div className="flex flex-wrap justify-between items-center">
+
+        
           <Checkbox
             color="#0391A5"
             label={
@@ -159,17 +185,21 @@ const SignupForm = () => {
             }
             {...form.getInputProps("terms")}
           />
-          {/* <p className="text-cyan-700 font-medium text-center">Forgot the password?</p> */}
+          <p className="text-slate-700 text-sm">ALready have an account? <Link to={"/"} className="text-hollywood-700 font-semibold">Login</Link></p>
+     </div>
+       <div className="mt-8 flex justify-center">
+
           <Button
             type="submit"
             size="md"
             radius="md"
-            w="100%"
+            w="60%"
             className="!font-medium !bg-hollywood-700"
             // loading={isPending}
           >
             Sign up
           </Button>
+          </div>
         </form>
 
         {/* <Divider my="lg" size="md" label="OR" labelPosition="center" />

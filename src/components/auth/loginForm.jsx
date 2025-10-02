@@ -6,6 +6,7 @@ import { useForm } from "@mantine/form";
 import { useLogin } from "../../hooks/useLogin";
 // import { useColorScheme } from "../../contexts/ColorSchemeContext";
 import { cn } from "../../utils/cn";
+import DashboardLogo from "../../assets/logo.png"
 
 const LoginForm = () => {
   const [role, setRole] = useState("user");
@@ -58,8 +59,8 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="px-2 md:px-20 py-10 flex flex-col justify-between h-screen ">
-      <div className="flex gap-4 items-center justify-center">
+    <div className="px-2 py-10 md:px-30 md:py-20 flex flex-col justify-between h-2/3 rounded-lg shadow-2xl ">
+      {/* <div className="flex gap-4 items-center justify-center">
         <p
           className={cn(
             "text-md",
@@ -78,11 +79,11 @@ const LoginForm = () => {
             Sign up
           </Button>
         </Link>
-      </div>
+      </div> */}
       
       <div>
-        <div className="mb-10">
-          <p className="my-4 text-center text-2xl font-medium ">
+        <div className="mb-10 flex justify-center">
+          {/* <p className="my-4 text-center text-2xl font-medium ">
             <span
               className={cn(
                 " bg-gradient-to-r from-[#050505] to-[#767676] bg-clip-text text-transparent",
@@ -100,11 +101,17 @@ const LoginForm = () => {
             >
               Primewell
             </span>
-          </p>
-          <p className="font-extralight text-sm text-slate-600 mx-6 text-center my-2">
+          </p> */}
+           <img
+                           src={DashboardLogo}
+                           alt="Default Dashboard Logo"
+                           className="aspect-auto"
+                           width={200}
+                         />
+          {/* <p className="font-extralight text-sm text-slate-600 mx-6 text-center my-2">
             Welcome to Primewell, please enter login details below to using the
             app.
-          </p>
+          </p> */}
         </div>
         {/* <div className="flex justify-between items-center">
           <p>Select role :</p>
@@ -129,37 +136,53 @@ const LoginForm = () => {
         </div> */}
         <form
           onSubmit={form.onSubmit(handleSubmit)}
-          className="flex flex-col gap-4"
+          className="flex flex-col gap-4 "
         >
+          <label className="flex items-center justify-end gap-4">
+            <p className=" hidden md:block">Email</p>
+
           <TextInput
-            size="md"
-            radius="md"
+            size="sm"
+            radius="sm"
+            className="md:w-[80%] w-full"
             placeholder="Email Address"
             {...form.getInputProps("email")}
-          />
+            />
+            </label>
+              <label className="flex items-center justify-end gap-4">
+            <p className=" hidden md:block"s>Password</p>
           <PasswordInput
-            size="md"
-            radius="md"
+              size="sm"
+            radius="sm"
+            className="md:w-[80%] w-full"
             placeholder="Password"
             {...form.getInputProps("password")}
           />
+          </label>
+          <div className="flex flex-wrap text-slate-700 justify-between items-center text-sm">
+            <p>Don't have an account? <Link to={"/signup"} className="text-hollywood-700 font-semibold">Signup</Link></p>
+
           <Link
             to={"/forgot-password"}
-            className="text-hollywood-500 font-medium text-center"
-          >
+            className="text-hollywood-500 font-medium text-sm text-end"
+            >
             Forgot the password?
           </Link>
+            </div>
+
+<div className="mt-8 flex justify-center">
 
           <Button
             type="submit"
             size="md"
             radius="md"
-            w="100%"
+            w="60%"
             className="!font-medium !bg-hollywood-700"
             loading={isPending}
-          >
+            >
             Login
           </Button>
+            </div>
         </form>
 
         {/* <Divider my="lg" size="md" label="OR" labelPosition="center" /> */}

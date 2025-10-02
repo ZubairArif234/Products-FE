@@ -74,11 +74,11 @@ const DashboardLayout = () => {
          
         </div>
       ) : ( */}
-        <div className="bg-slate-100   duration-700 h-screen py-3 ">
+        <div className="bg-white   duration-700 h-screen py-3 ">
           {/* <Sidebar opened={opened} toggle={toggle} /> */}
           <div
             className={cn(
-              " bg-slate-100 duration-700 mx-auto    ",
+              " bg-white duration-700 mx-auto    ",
             
             )}
           >
