@@ -1,7 +1,7 @@
-import { Button, Group, Input, NumberInput, Radio, Select, Stepper, Table, TextInput } from '@mantine/core'
+import { ActionIcon, Button, Flex, Group, Input, NumberInput, Radio, Select, Stepper, Table, TextInput } from '@mantine/core'
 import React, { useState, useEffect } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom';
-import { ChevronDown, Minus, Plus, Trash } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { ChevronDown, Minus, Plus, Trash, Undo2 } from 'lucide-react';
 import { useForm } from '@mantine/form';
 import { createOrder } from '../../hooks/useOrder';
 import custAxios, { attachToken } from '../../configs/axios.config';
@@ -164,6 +164,10 @@ const Checkout = () => {
   return (
     <div className='py-5 md:px-20 px-2  rounded-lg '>
     <div className="p-5 bg-white rounded-lg shadow-md">
+     <Link to={"/dashboard"}>
+      <Button  className="!bg-hollywood-700 !text-white !rounded-lg"><Undo2 className='me-2' size={18}/> Add more products</Button>
+     </Link>
+      <p className='text-xl font-semibold text-center mb-4'>Review Your Purchase Order</p>
       <Stepper color={"#154d72"} active={active} onStepClick={setActive} allowNextStepsSelect={false}>
         <Stepper.Step label="Review Cart">
           <StepOne 
@@ -195,9 +199,9 @@ const Checkout = () => {
         </Stepper.Completed>
       </Stepper>
 
-      <Group justify="end" mt="xl">
+      <Group justify="space-between" mt="xl">
         {active > 0 && (
-          <Button variant="default" onClick={prevStep}>Back</Button>
+          <Button variant="default" onClick={prevStep}>Previous</Button>
         )}
         {active < 5 && (
           <Button 
@@ -205,7 +209,7 @@ const Checkout = () => {
             onClick={nextStep}
             loading={isPending}
           >
-            {active === 4 ? 'Submit Order' : 'Next step'}
+            {active === 4 ? 'Submit Order' : 'Next '}
           </Button>
         )}
       </Group>
@@ -249,12 +253,21 @@ const StepOne = ({ selectedItems, setSelectedItems, itemQuantities, setItemQuant
     return (
       <Table.Tr key={element.id || i}>
         <Table.Td>
-          <Trash size={20} 
+          {/* <Trash size={20} 
             className='text-red-500 cursor-pointer hover:text-red-700' 
-            onClick={() => removeFromCart(element._id)}/>
+            onClick={() => removeFromCart(element._id)}/> */}
+             <ActionIcon
+                        variant="outline" color='gray' aria-label="Remove Item" size={"md"}>
+            
+                    <Trash 
+                      size={15} 
+                      className='text-gray-700 cursor-pointer ' 
+                      onClick={() => removeFromCart(element._id)}
+                    />
+                    </ActionIcon>
         </Table.Td>
         <Table.Td>
-          <div className='flex items-center gap-3'>
+          <div className='flex items-center gap-3 '>
             <img 
               className='h-14 w-14 aspect-square object-contain bg-slate-200 rounded' 
               src={element?.images?.length > 0 ? element?.images[0] : "https://images.unsplash.com/photo-1521223890158-f9f7c3d5d504?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8amFja2V0fGVufDB8fDB8fHww"}
@@ -267,12 +280,13 @@ const StepOne = ({ selectedItems, setSelectedItems, itemQuantities, setItemQuant
           </div>
         </Table.Td>
         <Table.Td>{element.brand}</Table.Td>
+        <Table.Td>{basePrice}</Table.Td>
         <Table.Td>
           <div className='flex gap-3 items-center justify-between bg-slate-200 p-1 rounded-md'>
             <Minus
               size={15} 
               onClick={() => quantity > 1 && updateQuantity(element?._id, quantity - 1)} 
-              className='text-white bg-hollywood-700 w-6 h-6 rounded-md p-1 cursor-pointer hover:bg-purple-600'
+              className='text-white bg-hollywood-700 w-6 h-6 rounded-md p-1 cursor-pointer hover:bg-hollywood-600'
             />
             <NumberInput hideControls size='sm' className=" w-14 text-center" value={quantity} onChange={(value)=>updateQuantity(element?._id,value)}/>
                    
@@ -280,11 +294,10 @@ const StepOne = ({ selectedItems, setSelectedItems, itemQuantities, setItemQuant
             <Plus 
               size={15} 
               onClick={() => updateQuantity(element?._id, quantity + 1)} 
-              className='text-white bg-hollywood-700 w-6 h-6 rounded-md p-1 cursor-pointer hover:bg-purple-600'
+              className='text-white bg-hollywood-700 w-6 h-6 rounded-md p-1 cursor-pointer hover:bg-hollywood-600'
             />
           </div>
         </Table.Td>
-        <Table.Td>{basePrice}</Table.Td>
         <Table.Td>${totalPrice}</Table.Td>
       </Table.Tr>
     );
@@ -306,8 +319,8 @@ const StepOne = ({ selectedItems, setSelectedItems, itemQuantities, setItemQuant
               <Table.Th/>
               <Table.Th>Product Name</Table.Th>
               <Table.Th>Brand</Table.Th>
-              <Table.Th>Quantity</Table.Th>
               <Table.Th>Unit Price</Table.Th>
+              <Table.Th>Quantity</Table.Th>
               <Table.Th>Total Price</Table.Th>
             </Table.Tr>
           </Table.Thead>
@@ -315,9 +328,9 @@ const StepOne = ({ selectedItems, setSelectedItems, itemQuantities, setItemQuant
         </Table>
       </Table.ScrollContainer>
       
-      <div className="mt-4 text-right">
+      {/* <div className="mt-4 text-right">
         <h3 className="text-lg font-semibold">Cart Total: ${cartTotal}</h3>
-      </div>
+      </div> */}
     </div>
   )
 }
@@ -325,7 +338,8 @@ const StepOne = ({ selectedItems, setSelectedItems, itemQuantities, setItemQuant
 const StepTwo = ({form}) => {
     
   return (
-    <div className='w-2/3 mx-auto py-8'>
+    <div className='w-2/3 mx-auto py-8 border border-slate-300 rounded-lg px-4'>
+      <p className='text-2xl font-semibold my-4'>Preference</p>
       <form  className="flex flex-col gap-4">
         {/* <TextInput
                    size="sm"
@@ -369,8 +383,9 @@ const StepTwo = ({form}) => {
 const StepThree = ({form}) => {
    
     return(
-         <div className='w-2/3 mx-auto py-8'>
-      <form onSubmit={form.onSubmit(()=>console.log("hi"))} className="grid grid-cols-2 gap-4">
+        <div className='w-2/3 mx-auto py-8 border border-slate-300 rounded-lg px-4'>
+      <p className='text-2xl font-semibold my-4'>Client Details</p>
+     <form onSubmit={form.onSubmit(()=>console.log("hi"))} className="grid grid-cols-2 gap-4">
         <TextInput
         label="First name"
                     size="sm"
@@ -434,8 +449,9 @@ const StepThree = ({form}) => {
 const StepFour = ({form}) => {
     
     return(
-         <div className='w-2/3 mx-auto py-8'>
-      <form onSubmit={form.onSubmit(()=>console.log("hi"))} className="grid grid-cols-2 gap-4">
+         <div className='w-2/3 mx-auto py-8 border border-slate-300 rounded-lg px-4'>
+      <p className='text-2xl font-semibold my-4'>Billing Address</p>
+    <form onSubmit={form.onSubmit(()=>console.log("hi"))} className="grid grid-cols-2 gap-4">
         <TextInput
         label="Street"
                     size="sm"
@@ -515,20 +531,20 @@ console.log(totalQuantity); // e.g. 3
             </p>
           </div>
         </Table.Td>
-        <Table.Td>{element.brand}</Table.Td>
+        {/* <Table.Td>{element.brand}</Table.Td> */}
         <Table.Td>
           <div className='flex gap-4 items-center justify-between bg-slate-200 p-1 rounded-md'>
             <Minus
               size={15} 
               onClick={() => quantity > 1 && updateQuantity(element?._id, quantity - 1)} 
-              className='text-white bg-hollywood-700 w-6 h-6 rounded-md p-1 cursor-pointer hover:bg-purple-600'
+              className='text-white bg-hollywood-700 w-6 h-6 rounded-md p-1 cursor-pointer hover:bg-hollywood-600'
             />
             <NumberInput hideControls size='sm' className=" w-14 text-center" value={quantity} onChange={(value)=>updateQuantity(element?._id,value)}/>
              
             <Plus 
               size={15} 
               onClick={() => updateQuantity(element?._id, quantity + 1)} 
-              className='text-white bg-hollywood-700 w-6 h-6 rounded-md p-1 cursor-pointer hover:bg-purple-600'
+              className='text-white bg-hollywood-700 w-6 h-6 rounded-md p-1 cursor-pointer hover:bg-hollywood-600'
             />
           </div>
         </Table.Td>
@@ -553,7 +569,7 @@ console.log(totalQuantity); // e.g. 3
           <Table.Thead>
             <Table.Tr>
               <Table.Th>Product Name</Table.Th>
-              <Table.Th>Brand</Table.Th>
+              {/* <Table.Th>Brand</Table.Th> */}
               <Table.Th>Quantity</Table.Th>
               <Table.Th>Unit Price</Table.Th>
               <Table.Th>Total Price</Table.Th>

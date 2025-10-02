@@ -1,6 +1,6 @@
 import { Button, Table, Checkbox,Drawer, Divider, TextInput, Select,Modal, Loader, Pagination } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { ChevronDown, FileAxis3d, Minus, Plus, Upload, CheckCircle2, X, Search, SquarePen, Trash } from 'lucide-react';
+import { ChevronDown, FileAxis3d, Minus, Plus, Upload, CheckCircle2, X, Search, SquarePen, Trash, ThumbsUp } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { createProductsByCSV, useProducts } from '../../hooks/useProducts';
@@ -12,7 +12,7 @@ const ProductManagement = () => {
     title: "",
     warehouse: "",
     page: 1,
-    limit: 6,
+    limit: "5",
   });
   const userData = userGetData()
     const {products, isPending} = useProducts(filters)
@@ -145,6 +145,18 @@ const ProductManagement = () => {
     <Table.Tr key={i} className={selectedRows.includes(element.id) ? '!bg-hollywood-700/80 text-white' : undefined}>
       
       <Table.Td>
+            <div className='flex border border-slate-300 rounded-lg p-2 justify-center gap-2 items-center'>
+           
+           <p className='font-semibold'>
+             {element.brand}
+            </p>
+<div className='text-slate-500'>
+  <p>Updated</p>
+  <p>1/2/2020</p>
+</div>
+            </div>
+            </Table.Td>
+      <Table.Td>
         <div className='flex items-center gap-2 capitalize'>
            <img 
             className='h-14 w-14 aspect-square object-contain bg-slate-200 rounded' 
@@ -156,7 +168,6 @@ const ProductManagement = () => {
           </Link>
           </div>
           </Table.Td>
-      <Table.Td>{element.brand}</Table.Td>
       <Table.Td>{element.price}</Table.Td>
       <Table.Td>{element.mqc}</Table.Td>
       <Table.Td>{element.upc}</Table.Td>
@@ -204,6 +215,14 @@ const handleUpload = () => {
   // close();
 };
 
+const handlePageLimit = (value) => {
+  setFilters((prev) => ({
+    ...prev,
+    limit: value,
+    page: 1,
+  }));
+};
+
 //   const productData =aync () => {
 //     const apiKeyId = "8c7b051f-b0ad-4e70-9280-652f4b09c721";
 //   const apiKeySecret = "eba2d5e86af48563553159bdb996a55439719c243b3325cab30c9aee467866ccb976b0807a98d44421389fddae7ca5aeff136c0a4154a290c3370e3cf9fe2d4c";
@@ -226,16 +245,20 @@ const handleUpload = () => {
 
 //   },[])
   return (
-    <div className="py-5 md:px-20 px-2   rounded-lg shadow-md">
-      <div>
-        <p className='text-3xl mb-4 capitalize'>Welcome ,<span className='ms-2 text-hollywood-700 font-bold'>
-           {userData?.name}
+    <div className="py-5    rounded-lg shadow-md">
+      <div className=' bg-gradient-to-r from-hollywood-700 via-hollywood-700  to-white py-12 px-2 md:px-20'>
+      {/* <LoaderCircle size={80}  className='text-white'/> */}
+       <div>
+
+        <p className='text-3xl mb-4 capitalize text-white'>Welcome ,<span className='ms-2 '>
+           {userData?.name}!
           </span>
            </p>
-      <StatsCount productsCount={products?.pagination?.total} warehouseCount={warehouse?.warehouses?.length} />
-      </div>
+           <StatsCount productsCount={products?.pagination?.total} warehouseCount={warehouse?.warehouses?.length} />
+       </div>
+       </div>
       <Divider my={20}/>
-      <div className='bg-white p-2 rounded-lg shadow-lg'>
+      <div className='bg-white p-2 '>
 
         <div className=''>
           <p className="font-bold text-hollywood-700 text-lg">Products</p>
@@ -294,8 +317,8 @@ const handleUpload = () => {
             <Table.Thead>
               <Table.Tr>
                 {/* <Table.Th /> */}
-                <Table.Th>Product Name</Table.Th>
                 <Table.Th>Brand</Table.Th>
+                <Table.Th>Product Name</Table.Th>
                 <Table.Th>Price</Table.Th>
                 <Table.Th>MOQ</Table.Th>
                 <Table.Th>UPC</Table.Th>
@@ -310,8 +333,22 @@ const handleUpload = () => {
             <Table.Tbody>{rows}</Table.Tbody>
           </Table>
         </Table.ScrollContainer>
-        <div className='flex justify-end mt-4'>
-        <Pagination color='#255b7f' total={products?.pagination?.totalPages/6}  value={filters.page}
+         <div className='flex justify-between mt-4 flex-wrap'>
+
+<div className='flex items-center gap-2'>
+  <Select
+  className='w-18'
+  rightSection={<ChevronDown size={18} />}
+      placeholder="Items per page"
+      onChange={handlePageLimit}
+      value={filters.limit}
+      data={["5","10","15","20"]}
+
+  />
+  <p className='text-slate-600 text-sm'>items per page</p>
+</div>
+
+        <Pagination color='#255b7f' total={products?.pagination?.totalPages/filters.limit}  value={filters.page}
   onChange={(page) => setFilters((prev) => ({ ...prev, page }))}  mt="sm" />
         </div>
          </div>
@@ -401,22 +438,38 @@ export const ProductItem = ({ data, quantity, onQuantityChange, onRemove }) => {
 const StatsCount = ({productsCount,warehouseCount}) => {
   return(
       <div className='grid grid-cols-2 md:grid-cols-5 gap-4 '>
-          <div className='rounded-lg shadow-lg bg-white'>
-<p className='bg-hollywood-700 text-white p-2 font-semibold rounded-t-lg'>Warehouse</p>
+            <div className='rounded-lg  text-white'>
+{/* <p className='bg-hollywood-700 text-white p-2 font-semibold rounded-t-lg'>Product</p> */}
 <div className='p-2'>
 
-<p className='text-3xl font-semibold text-slate-400 '>{warehouseCount}</p>
-<p className='text-sm font-semibold text-slate-400'>last 30 days</p>
+<div className='flex gap-2 items-center justify-center'>
+<p className='text-xl font-semibold  text-center'>{productsCount}</p>
+<div className='flex items-center gap-1 bg-green-200 text-xs text-green-700 p-1 rounded-lg'>
+  <ThumbsUp size={18}/>
+  100%
+</div>
+
+</div>
+<p className='text-sm font-semibold text-slate-400 text-center'>Products Live</p>
 </div>
           </div>
-          <div className='rounded-lg shadow-lg bg-white'>
-<p className='bg-hollywood-700 text-white p-2 font-semibold rounded-t-lg'>Product</p>
+
+           <div className='rounded-lg  text-white'>
+{/* <p className='bg-hollywood-700 text-white p-2 font-semibold rounded-t-lg'>Product</p> */}
 <div className='p-2'>
 
-<p className='text-3xl font-semibold text-slate-400 '>{productsCount}</p>
-<p className='text-sm font-semibold text-slate-400'>last 30 days</p>
+<div className='flex gap-2 items-center justify-center'>
+<p className='text-xl font-semibold  text-center'>{warehouseCount}</p>
+<div className='flex items-center gap-1 bg-green-200 text-xs text-green-700 p-1 rounded-lg'>
+  <ThumbsUp size={18}/>
+  100%
+</div>
+
+</div>
+<p className='text-sm font-semibold text-slate-400 text-center'>Warehouse Live</p>
 </div>
           </div>
+        
         </div>
   )
 }

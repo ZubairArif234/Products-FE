@@ -1,15 +1,83 @@
 import { Button, Table, Checkbox, Drawer, Divider, TextInput, Select, Loader, Modal } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { ChevronDown, Eye, Minus, Plus, Search, SquarePen, Trash } from 'lucide-react';
+import { ChevronDown, Eye, Minus, Play, Plus, Search, SquarePen, Trash } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useProducts } from '../../hooks/useProducts';
 import { userGetData } from '../../services/hooks';
 import { useMyOrders, useOrders } from '../../hooks/useOrder';
 import moment from 'moment/moment';
+import { cn } from '../../utils/cn';
 
 const ShippingOrders = () => {
-    
+     const prepServiceText =[
+    {
+      id:1,
+bold:"If you selected prep",
+text:"for your Purchase Order, please upload FNSKU labels after paying your invoice."
+
+    },
+    {
+      id:2,
+bold:"Wait,",
+text:"Please allow 10-40 bussiness days for our warehouse to pick,prep, & pack your order. Once packed, the warehouse will post dimensions & you will be notified via email once dimensions are added to the portal."
+
+    },
+    {
+      id:3,
+bold:"You will use the dimensions",
+text:"to create a shipment & generate shipment labels via Seller Central You will then upload those labels & the warehouse will dispatch your shipment."
+
+    },
+  ]
+
+  const noPrepText = [
+    {
+      id:1,
+bold:"If you did not select prep",
+text:"no action is required after paying your invoice."
+
+    },
+    {
+      id:2,
+bold:"Wait,",
+text:"Please allow 10-14 business days for our warehouse to pick your order & post dimensions. You will be notified via email once dimensions are added to the portal."
+
+    },
+     {
+      id:3,
+bold:"You will use the dimensions",
+text:"to generate shipment labels to you/your warehouse , via your preferred carrier (UPS Fedex, USPS etc). You will then upload those labels & the warehouse will dispatch your shipment."
+
+    },
+  ]
+
+  const shipmentText = [
+    {
+      id:1,
+      status:"Upload FNSKU",
+      bold:"Upload",
+      text:"FNSKU labels for the warehouse to affix to your products."
+    },
+    {
+      id:2,
+      status:"Await Warehouse Dims",
+      bold:"Now",
+      text:"wait for the warehouse to provide dimensions for your products."
+    },
+    {
+      id:3,
+      status:"Upload Shipping Labels",
+      bold:"Our",
+      text:"warehouse has costed dimensions, please use the dimensions to create a shipment & upload labels to the portal."
+    },
+    {
+      id:4,
+      status:"Awaiting Pickup",
+      bold:"We've",
+      text:"received your shipping labels and your products will be picked up by the desihnated carrier."
+    },
+  ]
    const [filters, setFilters] = useState({
       title: "",
       status:"shipped",
@@ -27,7 +95,8 @@ const ShippingOrders = () => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [itemQuantities, setItemQuantities] = useState({});
   const [totalPrice, setTotalPrice] = useState(0);
-
+ const [openedHelp, { open:openHelp, close:closeHelp }] = useDisclosure(false);
+  
   const products = [
   {
     id: 1,
@@ -177,12 +246,20 @@ console.log(singleOrder);
   }));
 };
   return (
-    <div className="py-5 md:px-20 px-2  ">
+    <div className="py-5  px-2 ">
       
-      <div className='bg-white p-2 rounded-lg shadow-lg'>
+      <div className='bg-white p-2 '>
 
-        <div className=''>
+        <div className='flex justify-between items-center'>
           <p className="font-bold text-hollywood-700 text-lg">Shipped Orders</p>
+          <Button
+          variant="default" 
+         w={250}
+         onClick={openHelp}
+          className="!bg-hollywood-700 disabled:!bg-hollywood-400 !text-white !rounded-lg !mt-3"
+          >
+         Help
+        </Button> 
           {/* <p className="text-sm text-gray-500">There are {elements.length} products</p> */}
         </div>
       <div className='flex justify-between items-center'>
@@ -226,6 +303,95 @@ console.log(singleOrder);
       </div>
 
       </div>
+      <Modal size={"2xl"} opened={openedHelp} onClose={closeHelp} centered title="Shipping Hub Assistance">
+            <div className="grid grid-cols-2 gap-4">
+      {/* prep service */}
+              <div className="border-hollywood-700 border-1 rounded-lg p-4">
+      <p className="text-hollywood-800 text-xl text-center mb-4"><b className="me-2">
+         Prep
+        </b>
+          Service</p>
+      
+      <div>
+      {prepServiceText?.map((item)=>{
+        return(
+          <div key={item?.id} className="flex items-start gap-3">
+            <p className="w-7 h-7 rounded-full flex justify-center items-center font-semibold border-2 border-hollywood-700 text-hollywood-700">{item?.id}</p>
+            <p className="w-[80%]"><b className="me-1">{item?.bold}</b>{item?.text}</p>
+          </div>
+      
+        )
+      })}
+      
+         
+      </div>
+              </div>
+      
+      {/* no prep */}
+              <div className="border-hollywood-700 border-1 rounded-lg p-4">
+      <p className="text-hollywood-800 text-xl text-center mb-4"><b className="me-2">
+         No
+        </b>
+          Prep</p>
+      
+      <div>
+        {noPrepText?.map((item)=>{
+          return(
+      
+          <div key={item?.id} className="flex items-start gap-3">
+           <p className="w-7 h-7 rounded-full flex justify-center items-center font-semibold border-2 border-hollywood-700 text-hollywood-700">{item?.id}</p>
+            <p className="w-[80%]"><b className="me-1">{item?.bold}</b>{item?.text}</p>
+          </div>
+          )
+        })}
+      
+      
+        
+      </div>
+              </div>
+      
+      {/* shipment statuses */}
+              <div className="border-hollywood-700 border-1 rounded-lg p-4">
+      <p className="text-hollywood-800 text-xl text-center mb-4"><b className="me-2">
+         Shipment
+        </b>
+          Statuses</p>
+      
+      <div>
+        {shipmentText?.map((item)=>{
+          return(
+      
+          <div key={item?.id} className="flex items-center gap-3 mb-2">
+            <p className={cn(item?.id % 2 ? "bg-red-600" : "bg-gray-500","w-[50%] text-center text-white px-4 py-1 rounded-full")}>{item?.status}</p>
+            <p className="w-[50%]"><b className="me-1">{item?.bold}</b>{item?.text}</p>
+          </div>
+      
+          )
+        })}
+      
+        
+      </div>
+              </div>
+          
+          {/* Watch video */}
+          <div>
+      
+          
+              <div className="border-hollywood-700 border-1 rounded-lg p-4">
+      {/* <p className="text-hollywood-800 text-xl text0center"><b className="me-2">
+         No
+        </b>
+          Prep</p> */}
+      
+      <div className="flex flex-col gap-2">
+      <Play/>
+        <p className="text-hollywood-700 font-bold">Creating A shipment For Amazon FBA & Uploading Labels to the Portal</p>
+        <Link className="mt-4 font-bold">Click to Watch</Link>
+      </div>
+      </div>
+              </div>
+            </div>
+            </Modal>
 
      <Modal opened={opened} onClose={close} centered title="Order Details">
         <div className='capitalize'>

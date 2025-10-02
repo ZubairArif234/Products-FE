@@ -154,9 +154,9 @@ const CustomerManagement = () => {
   }));
 };
   return (
-    <div className="py-5 md:px-20 px-2 ">
+    <div className="py-5  px-2 ">
       
-      <div className='bg-white p-2 rounded-lg shadow-lg'>
+      <div className='bg-white p-2 '>
 
         <div className=''>
           <p className="font-bold text-hollywood-700 text-lg">Customers</p>

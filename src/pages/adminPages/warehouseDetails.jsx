@@ -239,17 +239,19 @@ return (
     </Table.Tr>
   ));
   return (
-    <div className="py-5 md:px-20 px-2 rounded-lg ">
+    <div className="py-5 px-2">
       <div className='flex items-center justify-between'>
         <div>
-          <p className='text-3xl mb-1 capitalize'>{warehouseState?.name}</p>
+            <p className="font-bold text-hollywood-700 text-lg">{warehouseState?.name}</p>
+         
+          {/* <p className='text-3xl mb-1 capitalize'>{warehouseState?.name}</p> */}
           <p className='text-sm text-slate-500'>{warehouseState?.description}</p>
         </div>
         {/* <Button onClick={onAdd} leftSection={<Plus size={16}/>} className='!bg-hollywood-700 !text-white !rounded-lg'>Add warehouse</Button> */}
       </div>
       {/* <Divider my={20}/> */}
 
-<div className='bg-white p-3 rounded-lg shadow-lg mt-4'>
+<div className='bg-white p-3  mt-4'>
 
       <Tabs defaultValue="products">
       <Tabs.List>

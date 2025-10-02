@@ -153,17 +153,19 @@ const WarehouseManagements = () => {
   const isBusy = isPending || createMutation.isPending || updateMutation.isPending || deleteMutation.isPending;
 
   return (
-    <div className="py-5 md:px-20 px-2 rounded-lg ">
+    <div className="py-5 px-2">
       <div className='flex items-center justify-between'>
         <div>
-          <p className='text-3xl mb-1'>Warehouses</p>
-          <p className='text-sm text-slate-500'>Manage your warehouses</p>
+           <p className="font-bold text-hollywood-700 text-lg">Warehouse</p>
+         
+          {/* <p className='text-3xl mb-1'>Warehouses</p>
+          <p className='text-sm text-slate-500'>Manage your warehouses</p> */}
         </div>
         <Button onClick={onAdd} leftSection={<Plus size={16}/>} className='!bg-hollywood-700 !text-white !rounded-lg'>Add warehouse</Button>
       </div>
-      <Divider my={20}/>
+      {/* <Divider my={20}/> */}
 
-      <div className='bg-white p-3 rounded-lg shadow-lg'>
+      <div className='bg-white '>
         {/* <div className='flex justify-between items-center mb-3'>
           <TextInput placeholder='Search warehouse' value={filters.title} onChange={(e) => handleSearch(e.target.value)} leftSection={<Search size={18}/>} />
         </div> */}

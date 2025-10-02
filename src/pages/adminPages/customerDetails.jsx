@@ -163,12 +163,14 @@ const CustomerDetails = () => {
   }));
 };
   return (
-    <div className="py-5 md:px-20 px-2  ">
+    <div className="py-5  px-2  ">
        <div className='my-4 '>
-          <p className='text-3xl mb-1 capitalize'>{state?.data?.name}</p>
+         <p className="font-bold capitalize text-hollywood-700 text-lg">{state?.data?.name}</p>
+         
+          {/* <p className='text-3xl mb-1 capitalize'>{state?.data?.name}</p> */}
           <p className='text-sm text-slate-500'>{state?.data?.email}</p>
         </div>
-      <div className='bg-white p-2 rounded-lg shadow-lg'>
+      <div className='bg-white p-2 '>
 
         <div className=''>
           <p className="font-bold text-hollywood-700 text-lg">Order</p>

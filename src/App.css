@@ -30,3 +30,9 @@
 .hollywood-gradient {
   background: linear-gradient(135deg, var(--color-hollywood-400), var(--color-hollywood-600));
 }
+
+.mantine-Stepper-step{
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 5px !important;
+}

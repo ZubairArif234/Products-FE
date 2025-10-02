@@ -278,20 +278,20 @@ if (role == item?.role){
         className={cn(
           "font-medium",
           isActive
-            ? "text-hollywood-700"
-            : "text-slate-400 group-hover:text-hollywood-700"
+            ? "text-hollywood-600"
+            : "text-slate-400 group-hover:text-hollywood-600"
         )}
       >
         {item?.label}
       </Link>
-      <div
+      {/* <div
         className={cn(
           "underlined h-1 w-10 absolute rounded-full",
           isActive
             ? "bg-hollywood-600"
             : "bg-transparent group-hover:bg-hollywood-500"
         )}
-      />
+      /> */}
     </div>
   );
 }
@@ -308,7 +308,7 @@ if (role == item?.role){
         >
           {colorScheme === "light" ? <FaMoon size={18} /> : <FaSun size={18} />}
         </ActionIcon> */}
-<HelpCircle size={20} onClick={open} className="text-slate-500 cursor-pointer"/>
+{/* <HelpCircle size={20} onClick={open} className="text-slate-500 cursor-pointer"/> */}
 <Modal size={"2xl"} opened={openedHelp} onClose={close} centered title="Shipping Hub Assistance">
       <div className="grid grid-cols-2 gap-4">
 {/* prep service */}

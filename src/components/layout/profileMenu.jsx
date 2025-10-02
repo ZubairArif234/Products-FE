@@ -45,7 +45,17 @@ const ProfileMenu = () => {
     <div className="cursor-pointer">
       <Menu shadow="md" width={200} radius={10} position="bottom-end">
         <Menu.Target>
+          <div className="flex gap-2 items-center">
+<div className="md:block hidden">
+  <p className="text-end font-semibold capitalize text-sm">
+    {userData?.name}
+  </p>
+  <p className="text-end text-slate-500 text-sm">
+    {userData?.email}
+  </p>
+</div>
           <Avatar size={"lg"} src={profilePic} alt="no image here" />
+          </div>
         </Menu.Target>
 
         <Menu.Dropdown>

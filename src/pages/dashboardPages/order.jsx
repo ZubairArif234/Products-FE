@@ -203,12 +203,13 @@ console.log(singleOrder);
   }));
 };
   return (
-    <div className="py-5 md:px-20 px-2  ">
+     <div className="py-5   px-2 ">
+    
       
-      <div className='bg-white p-2 rounded-lg shadow-lg'>
+      <div className='bg-white p-2 rounded-lg '>
 
         <div className=''>
-          <p className="font-bold text-hollywood-700 text-lg">Order</p>
+          <p className="font-bold text-hollywood-700 text-lg">Purchase order & Invoice</p>
           {/* <p className="text-sm text-gray-500">There are {elements.length} products</p> */}
         </div>
       <div className='flex justify-between items-center'>
