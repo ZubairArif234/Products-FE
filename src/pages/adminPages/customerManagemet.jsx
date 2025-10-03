@@ -1,6 +1,6 @@
 import { Button, Table, Checkbox, Drawer, Divider, TextInput, Select, Loader, Modal } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { ChevronDown, Eye, Minus, Plus, Search, SquarePen, Trash } from 'lucide-react';
+import { ChevronDown, Eye, Mail, Minus, Phone, Plus, Search, SquarePen, Trash } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useProducts } from '../../hooks/useProducts';
@@ -15,7 +15,7 @@ const CustomerManagement = () => {
       title: "",
       orderId: "",
       page: 1,
-      limit: 6,
+      limit: 1000,
     });
       const {user} = useUsers(filters)
       const {orders, isPending} = useOrders(filters)
@@ -200,55 +200,15 @@ const CustomerManagement = () => {
           </Table>
         </Table.ScrollContainer>:
         <div className='my-20 flex flex-col justify-center items-center'>
-<p className='text-xl font-semibold'>No Orders Found</p>
-<p className='text-sm text-slate-400'>There are no order based on the search</p>
+<p className='text-xl font-semibold'>No Customer Found</p>
+<p className='text-sm text-slate-400'>There are no customer based on the search</p>
         </div>
         }
       </div>
 
       </div>
 
-     <Modal opened={opened} onClose={close} centered title="Order Details">
-        <div className='capitalize'>
-            <div className='mb-2 text-md text-slate-700'>
-                <p>Client Name : {singleOrder?.clientDetails?.firstName + " " + singleOrder?.clientDetails?.lastName}</p>
-                <p> Email : {singleOrder?.clientDetails?.email}</p>
-                <p> Phone : {singleOrder?.clientDetails?.phone}</p>
-            </div>
-
-            <div>
-                <p className='text-lg  text-slate-500'>Item Purchased</p>
-                <div className=' max-h-[250px] overflow-auto'>
-
-{singleOrder?.products?.map((item,i)=>{
-    return(
-
-                <div key={i} className='flex justify-between items-center  border-b-1 p-2 border-slate-200 '>
-                    <div className='flex gap-2 items-center'>
-
-                    <img 
-            className='h-10 w-10 aspect-square object-contain bg-slate-200 rounded' 
-            src={item?.product?.images?.length > 0 ? item?.product?.images[0] : "https://images.unsplash.com/photo-1521223890158-f9f7c3d5d504?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8amFja2V0fGVufDB8fDB8fHww"}
-           
-            />
-            <p className='line-clamp-1 w-28' title={item?.product?.name}>{item?.product?.name}</p>
-            
-            </div>
-            <p>{item?.qnt}  x </p>
-            <p>{item?.unitPrice} </p>
-            <p>= ${(item?.qnt * item?.unitPrice?.split("$")[1]).toFixed(2)}</p>
-                </div>
-    )
-})}
-                </div>
-            </div>
-
-            <div className=' mt-4 text-end'>
-                <p className='text-md text-slate-600'>Tax : ${singleOrder?.tax}</p>
-                <p className='text-xl '>Total Price : ${singleOrder?.totalPrice}</p>
-            </div>
-        </div>
-        </Modal>
+     
     </div>
   );
 };

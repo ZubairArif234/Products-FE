@@ -40,7 +40,7 @@ const Products = () => {
    const [filters, setFilters] = useState({
       title: "",
       page: 1,
-      limit: "5",
+      limit: "20",
     });
       const {products, isPending} = useProducts(filters)
       
@@ -217,15 +217,15 @@ return sum + basePrice * quantity;
             </div>
       </Table.Td>
           <Table.Td>
-            <div className='flex border border-slate-300 rounded-lg p-2 justify-center gap-2 items-center'>
+            <div className='flex  rounded-lg p-2 justify-start gap-2 items-center'>
            
            <p className='font-semibold'>
              {element.brand}
             </p>
-<div className='text-slate-500'>
+{/* <div className='text-slate-500'>
   <p>Updated</p>
   <p>1/2/2020</p>
-</div>
+</div> */}
             </div>
             </Table.Td>
       <Table.Td>
@@ -491,9 +491,9 @@ const handleDownloadAllCSV = () => {
             <Table.Tbody>{rows}</Table.Tbody>
           </Table>
         </Table.ScrollContainer>
-        <div className='flex justify-between mt-4 flex-wrap'>
+        <div className='flex justify-end mt-4 flex-wrap'>
 
-<div className='flex items-center gap-2'>
+{/* <div className='flex items-center gap-2'>
   <Select
   className='w-18'
   rightSection={<ChevronDown size={18} />}
@@ -504,7 +504,7 @@ const handleDownloadAllCSV = () => {
 
   />
   <p className='text-slate-600 text-sm'>items per page</p>
-</div>
+</div> */}
 
         <Pagination color='#255b7f' total={products?.pagination?.totalPages/filters.limit}  value={filters.page}
   onChange={(page) => setFilters((prev) => ({ ...prev, page }))}  mt="sm" />
@@ -564,7 +564,7 @@ const handleDownloadAllCSV = () => {
             </div>
             <div className="flex justify-end gap-2 items-center mb-2">
               <p className="text-lg font-semibold">Total Price:</p>
-              <p className="text-xl font-bold ">${totalPrice}</p>
+              <p className="text-xl font-bold ">${totalPrice.toFixed(2)}</p>
             </div>
             <div className='flex justify-end'>
 
@@ -643,27 +643,24 @@ export const ProductItem = ({ data, quantity, onQuantityChange, onRemove }) => {
           className='text-white bg-hollywood-700 w-6 h-6 rounded-md p-1 cursor-pointer hover:bg-purple-600'
         />
       </div> */}
-      <p className="font-semibold w-14">${(Number(data?.basePrice) * quantity).toFixed(2)}</p>
+      <p className="font-semibold text-end">${(Number(data?.basePrice) * quantity).toFixed(2)}</p>
     </div>
   );
 };
 
 const StatsCount = ({productsCount,warehouseCount}) => {
   return(
-      <div className='grid grid-cols-2 md:grid-cols-5 gap-4 '>
+      <div className='grid grid-cols-2 md:grid-cols-6 gap-4 '>
             <div className='rounded-lg  text-white'>
 {/* <p className='bg-hollywood-700 text-white p-2 font-semibold rounded-t-lg'>Product</p> */}
 <div className='p-2'>
 
-<div className='flex gap-2 items-center justify-center'>
-<p className='text-xl font-semibold  text-center'>{productsCount}</p>
-<div className='flex items-center gap-1 bg-green-200 text-xs text-green-700 p-1 rounded-lg'>
-  <ThumbsUp size={18}/>
-  100%
-</div>
+<div className='flex gap-2 items-center justify-start'>
+<p className='text-xl font-semibold  text-start'>{productsCount}</p>
+
 
 </div>
-<p className='text-sm font-semibold text-slate-400 text-center'>Products Live</p>
+<p className='text-sm font-semibold text-slate-400'>Products Live</p>
 </div>
           </div>
 
@@ -671,15 +668,12 @@ const StatsCount = ({productsCount,warehouseCount}) => {
 {/* <p className='bg-hollywood-700 text-white p-2 font-semibold rounded-t-lg'>Product</p> */}
 <div className='p-2'>
 
-<div className='flex gap-2 items-center justify-center'>
-<p className='text-xl font-semibold  text-center'>{warehouseCount}</p>
-<div className='flex items-center gap-1 bg-green-200 text-xs text-green-700 p-1 rounded-lg'>
-  <ThumbsUp size={18}/>
-  100%
-</div>
+<div className='flex gap-2 items-center justify-start'>
+<p className='text-xl font-semibold  text-start'>{warehouseCount}</p>
+
 
 </div>
-<p className='text-sm font-semibold text-slate-400 text-center'>Warehouse Live</p>
+<p className='text-sm font-semibold text-slate-400'>Warehouse Live</p>
 </div>
           </div>
         
