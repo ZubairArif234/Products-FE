@@ -311,7 +311,7 @@ console.log(singleOrder);
             {singleOrder?.preference?.prepRequired !== "No Prep" && (
               <div className="flex justify-between text-slate-600">
                 <span>Prep Charges</span>
-                <span>${totalQuantity.toFixed(2)}</span>
+                <span>${totalQuantity?.toFixed(2)}</span>
               </div>
             )}
             <div className="border-t border-slate-300 pt-2 mt-2">

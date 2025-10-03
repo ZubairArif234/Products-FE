@@ -7,6 +7,7 @@ import { useProducts } from '../../hooks/useProducts';
 import { userGetData } from '../../services/hooks';
 import { useWarehouse } from '../../hooks/useWarehouse';
 import DashboardLogo from "../../assets/logo.png"
+import { applyRoiCap, toNum } from '../../utils/helper';
 
 export const calculateMetrics = (product) => {
     console.log(product , "products in calculate");
@@ -174,23 +175,12 @@ return sum + basePrice * quantity;
 
 
   const rows = products?.products?.map((element, i) => {
-  let basePrice = Number(element.price?.split("$")[1]) || 0;
-  let amazonBb = Number(element.amazonBb) || 0;
-  let amazonFees = Number(element.amazonFees) || 0;
-
-  // initial profit, margin, roi
-  let profit = amazonBb - (basePrice + amazonFees);
-  let margin = amazonBb > 0 ? ((profit / amazonBb) * 100) : 0;
-  let roi = basePrice > 0 ? ((profit / basePrice) * 100) : 0;
-
-  // check ROI cap
-  if (roi > 40) {
-    const exceedingPercent = roi - 40;
-    basePrice = basePrice * (1 + exceedingPercent / 100); // increase price
-    profit = amazonBb - (basePrice + amazonFees); // recalc profit
-    margin = amazonBb > 0 ? ((profit / amazonBb) * 100) : 0;
-    roi = basePrice > 0 ? ((profit / basePrice) * 100) : 0;
-  }
+   const basePrice0 = toNum(element.price);
+        const amazonBb = toNum(element.amazonBb);
+        const amazonFees = toNum(element.amazonFees);
+      
+        const { basePrice, profit, margin, roi } = applyRoiCap(basePrice0, amazonBb, amazonFees);
+      
 
   return (
     <Table.Tr

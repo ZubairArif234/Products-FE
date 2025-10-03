@@ -9,6 +9,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useProducts } from '../../hooks/useProducts';
 import { changeOrderStatus, useOrders } from '../../hooks/useOrder';
 import moment from 'moment';
+import { applyRoiCap, toNum } from '../../utils/helper';
 
 const PAGE_SIZE = 10;
 
@@ -168,23 +169,12 @@ const WarehouseDetails = () => {
 
 
   const rows = products?.products?.map((element, i) => {
-     let basePrice = Number(element.price?.split("$")[1]) || 0;
-  let amazonBb = Number(element.amazonBb) || 0;
-  let amazonFees = Number(element.amazonFees) || 0;
-
-  // initial profit, margin, roi
-  let profit = amazonBb - (basePrice + amazonFees);
-  let margin = ((profit / amazonBb) * 100);
-  let roi = ((profit / basePrice) * 100);
-
-  // check ROI cap
-  if (roi > 40) {
-    const exceedingPercent = roi - 40;
-    basePrice = basePrice * (1 + exceedingPercent / 100); // increase price
-    profit = amazonBb - (basePrice + amazonFees); // recalc profit
-    margin = ((profit / amazonBb) * 100);
-    roi = ((profit / basePrice) * 100);
-  }
+     const basePrice0 = toNum(element.price);
+      const amazonBb = toNum(element.amazonBb);
+      const amazonFees = toNum(element.amazonFees);
+    
+      const { basePrice, profit, margin, roi } = applyRoiCap(basePrice0, amazonBb, amazonFees);
+    
 return (
 
     <Table.Tr key={i} >
@@ -202,7 +192,7 @@ return (
           </div>
           </Table.Td>
       <Table.Td>{element.brand}</Table.Td>
-      <Table.Td>{element.price}</Table.Td>
+      <Table.Td>{basePrice}</Table.Td>
       <Table.Td>{element.mqc}</Table.Td>
       <Table.Td>{element.upc}</Table.Td>
       <Table.Td>{element.asin}</Table.Td>
