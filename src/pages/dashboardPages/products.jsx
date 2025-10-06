@@ -48,9 +48,9 @@ await custAxios.get("http://localhost:8001/product/update-product")
     }
   }
 
-  useEffect(()=>{
-updateProducts()
-  },[])
+//   useEffect(()=>{
+// updateProducts()
+//   },[])
  const location = useLocation();
 const { selectedItems = [] } = location.state || {};
    const [filters, setFilters] = useState({
