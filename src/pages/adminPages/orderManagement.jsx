@@ -238,8 +238,8 @@ const totalQuantity = singleOrder?.products.reduce((sum, item) => sum + item.qnt
             <p className='line-clamp-1 w-28' title={item?.product?.name}>{item?.product?.name}</p>
             </div>
             <p>{item?.qnt}  x </p>
-            <p>{item?.unitPrice} </p>
-            <p>= ${(item?.qnt * item?.unitPrice?.split("$")[1]).toFixed(2)}</p>
+            <p>{Number(item?.product?.price)?.toFixed(2)} </p>
+            <p>= ${(item?.qnt * Number(item?.product?.price)).toFixed(2)}</p>
                 </div>
     )
 })}

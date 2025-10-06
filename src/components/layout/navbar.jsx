@@ -264,12 +264,14 @@ text:"to generate shipment labels to you/your warehouse , via your preferred car
         </div>
       </div> */}
       <div>
+        <Link to={"/"}>
           <img
                  src={DashboardLogo}
                  alt="Default Dashboard Logo"
                  className="aspect-auto"
                  width={150}
-               />
+                 />
+                 </Link>
       </div>
 
       <div className="md:flex gap-4 justify-center col-span-2 hidden">

@@ -170,15 +170,16 @@ const rows = products?.products?.map((element, i) => {
         </div>
       </Table.Td>
 
-      <Table.Td>${basePrice.toFixed(2)}</Table.Td>
+       <Table.Td>${Number(element?.price).toFixed(2)}</Table.Td>
       <Table.Td>{element.mqc}</Table.Td>
       <Table.Td>{element.upc}</Table.Td>
       <Table.Td>{element.asin}</Table.Td>
-      <Table.Td>${amazonBb.toFixed(2)}</Table.Td>
-      <Table.Td>${amazonFees.toFixed(2)}</Table.Td>
-      <Table.Td style={{ color: profit < 0 ? "red" : "green" }}>${profit.toFixed(2)}</Table.Td>
-      <Table.Td>{margin.toFixed(2)}%</Table.Td>
-      <Table.Td>{roi.toFixed(2)}%</Table.Td>
+      <Table.Td>${Number(element?.amazonBb).toFixed(2)}</Table.Td>
+      <Table.Td>${Number(element?.amazonFees).toFixed(2)}</Table.Td>
+      <Table.Td style={{ color: element?.profit < 0 ? "red" : "green" }}>${Number(element?.profit)?.toFixed(2)}</Table.Td>
+      <Table.Td>{Number(element?.margin).toFixed(2)}%</Table.Td>
+      <Table.Td>{Number(element?.roi).toFixed(2)}%</Table.Td>
+    
     </Table.Tr>
   );
 });

@@ -174,12 +174,12 @@ useEffect(() => {
   const total = selectedRows.reduce((sum, item) => {
     if (!item) return sum;
     const quantity = itemQuantities[item._id] || Number(item?.mqc) || 1;
-    const { basePrice } = calculateMetrics(item);
-    return sum + basePrice * quantity;
+    // const { basePrice } = calculateMetrics(item);
+    return sum + item?.price * quantity;
   }, 0);
 
   setTotalPrice(total);
-}, [selectedRows, itemQuantities]);
+}, [selectedRows]);
 
 
 // ✅ Function to update item quantity
@@ -199,6 +199,7 @@ const removeFromCart = (itemId) => {
     return newQuantities;
   });
 };
+console.log(itemQuantities);
 
   const totalQuantity = Object.values(itemQuantities).reduce(
   (sum, qty) => sum + qty,
@@ -207,17 +208,11 @@ const removeFromCart = (itemId) => {
 
 
   const rows = products?.products?.map((element, i) => {
-   const basePrice0 = toNum(element.price);
-        const amazonBb = toNum(element.amazonBb);
-        const amazonFees = toNum(element.amazonFees);
-      
-        const { basePrice, profit, margin, roi } = applyRoiCap(basePrice0, amazonBb, amazonFees);
-      
-
+   
   return (
     <Table.Tr
       key={i}
-      className={selectedRows.some((row) => row._id === element._id) ? '!bg-hollywood-700/80 text-white' : undefined}
+      className={selectedRows.some((row) => row._id === element._id) ? '!bg-hollywood-700/60 text-white' : undefined}
     >
       <Table.Td>
         <div className='flex items-center gap-2 w-full'>
@@ -266,15 +261,15 @@ const removeFromCart = (itemId) => {
           </Link>
         </div>
       </Table.Td>
-      <Table.Td>${basePrice.toFixed(2)}</Table.Td>
+      <Table.Td>${Number(element?.price).toFixed(2)}</Table.Td>
       <Table.Td>{element.mqc}</Table.Td>
       <Table.Td>{element.upc}</Table.Td>
       <Table.Td>{element.asin}</Table.Td>
-      <Table.Td>${amazonBb.toFixed(2)}</Table.Td>
-      <Table.Td>${amazonFees.toFixed(2)}</Table.Td>
-      <Table.Td style={{ color: profit < 0 ? "red" : "green" }}>${profit.toFixed(2)}</Table.Td>
-      <Table.Td>{margin.toFixed(2)}%</Table.Td>
-      <Table.Td>{roi.toFixed(2)}%</Table.Td>
+      <Table.Td>${Number(element?.amazonBb).toFixed(2)}</Table.Td>
+      <Table.Td>${Number(element?.amazonFees).toFixed(2)}</Table.Td>
+      <Table.Td style={{ color: element?.profit < 0 ? "red" : "green" }}>${Number(element?.profit)?.toFixed(2)}</Table.Td>
+      <Table.Td>{Number(element?.margin).toFixed(2)}%</Table.Td>
+      <Table.Td>{Number(element?.roi).toFixed(2)}%</Table.Td>
     </Table.Tr>
   );
 });
@@ -565,12 +560,10 @@ const handleDownloadAllCSV = () => {
   // const product = products?.products?.find(el => el._id === rowId);
   // if (!product) return null;
   
-  const { basePrice, profit, margin, roi } = calculateMetrics(product);
-
   return (
     <ProductItem 
       key={i} 
-      data={{ ...product, basePrice, profit, margin, roi }} 
+      data={{ ...product,  }} 
       quantity={itemQuantities[product?._id] || 1}
       onQuantityChange={(newQuantity) => updateQuantity(product?._id, newQuantity)}
       onRemove={() => removeFromCart(product?._id)}
@@ -623,7 +616,6 @@ export default Products;
 
 export const ProductItem = ({ data, quantity, onQuantityChange, onRemove }) => {
 
- const price = data?.price?.split("$")[1]
 
   const mqcValue = Number(String(data?.mqc).replace(/,/g, "")) || 1;
   return (
@@ -668,7 +660,7 @@ export const ProductItem = ({ data, quantity, onQuantityChange, onRemove }) => {
           className='text-white bg-hollywood-700 w-6 h-6 rounded-md p-1 cursor-pointer hover:bg-purple-600'
         />
       </div> */}
-      <p className="font-semibold text-end">${(Number(data?.basePrice) * quantity).toFixed(2)}</p>
+      <p className="font-semibold text-end">${(Number(data?.price) * quantity).toFixed(2)}</p>
     </div>
   );
 };

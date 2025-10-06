@@ -88,7 +88,7 @@ const Checkout = () => {
           // Calculate total cart value
           const cartTotal = cartItems.reduce((total, item) => {
             const quantity = itemQuantities[item._id] || 1;
-            return total + (item.price?.split("$")[1] * quantity);
+            return total + (+item?.price * quantity);
           }, 0);
 
           const payload = {
@@ -253,8 +253,8 @@ const StepOne = ({ selectedItems, setSelectedItems, itemQuantities, setItemQuant
   const rows = selectedItems.map((element, i) => {
      const mqcValue = Number(String(element?.mqc).replace(/,/g, "")) || 1;
     const quantity = itemQuantities[element._id] || 1;
-    const { basePrice } = calculateMetrics(element);
-    const totalPrice = (basePrice * quantity).toFixed(2);
+   
+    const totalPrice = (+element?.price * quantity).toFixed(2);
 
     return (
       <Table.Tr key={element.id || i}>
@@ -285,8 +285,8 @@ const StepOne = ({ selectedItems, setSelectedItems, itemQuantities, setItemQuant
             </p>
           </div>
         </Table.Td>
-        <Table.Td>{element.brand}</Table.Td>
-        <Table.Td>{basePrice?.toFixed(2)}</Table.Td>
+        <Table.Td>${element.brand}</Table.Td>
+        <Table.Td>{Number(element?.price)?.toFixed(2)}</Table.Td>
         <Table.Td>
           
            <div  className='w-[120px]'>
@@ -521,7 +521,7 @@ console.log(totalQuantity); // e.g. 3
   const rows = selectedItems.map((element, i) => {
      const mqcValue = Number(String(element?.mqc).replace(/,/g, "")) || 1;
     const quantity = itemQuantities[element._id] || 1;
-    const totalPrice = (element.price?.split("$")[1] * quantity).toFixed(2);
+    const totalPrice = (+element.price * quantity).toFixed(2);
 
     return (
       <Table.Tr key={element._id || i}>
@@ -559,7 +559,7 @@ console.log(totalQuantity); // e.g. 3
                      
                     </div>
         </Table.Td>
-        <Table.Td>${element.price?.split("$")[1]}</Table.Td>
+        <Table.Td>${Number(element?.price)?.toFixed(2)}</Table.Td>
         <Table.Td>${totalPrice}</Table.Td>
       </Table.Tr>
     );
@@ -568,7 +568,7 @@ console.log(totalQuantity); // e.g. 3
   // Calculate total cart value
   const cartTotal = selectedItems.reduce((total, item) => {
     const quantity = itemQuantities[item._id] || 1;
-    return total + (item.price?.split("$")[1] * quantity);
+    return total + (+item?.price * quantity);
   }, 0).toFixed(2);
 
     return(
