@@ -276,7 +276,7 @@ const StepOne = ({ selectedItems, setSelectedItems, itemQuantities, setItemQuant
           <div className='flex items-center gap-3 '>
             <img 
               className='h-14 w-14 aspect-square object-contain bg-slate-200 rounded' 
-              src={element?.images?.length > 0 ? element?.images[0] : "https://images.unsplash.com/photo-1521223890158-f9f7c3d5d504?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8amFja2V0fGVufDB8fDB8fHww"}
+              src={element?.images?.length > 0 ? element?.images[0] : null}
               alt={element.name} 
             />
             <p className='line-clamp-1' title={element.name}>

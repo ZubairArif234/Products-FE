@@ -252,7 +252,7 @@ console.log(itemQuantities);
             src={
               element?.images?.length > 0
                 ? element?.images[0]
-                : "https://images.unsplash.com/photo-1521223890158-f9f7c3d5d504?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8amFja2V0fGVufDB8fDB8fHww"
+                : null
             }
             alt={element.name}
           />
@@ -633,7 +633,7 @@ export const ProductItem = ({ data, quantity, onQuantityChange, onRemove }) => {
         <div className='flex gap-3 items-center w-[95%]'>
           <img 
             className='h-14 w-14 aspect-square object-contain bg-slate-200 rounded' 
-            src={data?.images?.length > 0 ? data?.images[0] : "https://images.unsplash.com/photo-1521223890158-f9f7c3d5d504?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8amFja2V0fGVufDB8fDB8fHww"}
+            src={data?.images?.length > 0 ? data?.images[0] : null}
             alt={data.name} 
           />
           <div className='w-[50%]'>
