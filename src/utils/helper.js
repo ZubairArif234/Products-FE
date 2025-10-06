@@ -15,13 +15,11 @@ export const calcMetrics = (basePrice, amazonBb, amazonFees) => {
 // Caps ROI to 40% by setting basePrice' = (amazonBb - amazonFees) / 1.4
  export const applyRoiCap = (basePrice0, amazonBb, amazonFees) => {
   let { basePrice, profit, margin, roi } = calcMetrics(basePrice0, amazonBb, amazonFees);
-
   if (basePrice > 0 && roi > 40) {
-    const S = amazonBb - amazonFees;                 // net revenue before cost
-    const cappedBase = S / 1.4;                      // ensures roi === 40%
-    const basePrice2 = Math.max(basePrice0, cappedBase); // never decrease cost
-    ({ basePrice, profit, margin, roi } = calcMetrics(basePrice2, amazonBb, amazonFees));
+    // Calculate what the new base price should be to achieve exactly 40% ROI
+    const S = amazonBb - amazonFees;              // Net revenue
+    basePrice = S / 1.4;                          // This gives exactly 40% ROI
+    ({ profit, margin, roi } = calcMetrics(basePrice, amazonBb, amazonFees));
   }
-
   return { basePrice, profit, margin, roi };
 };

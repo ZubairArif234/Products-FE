@@ -2,12 +2,13 @@ import { Button, Table, Checkbox, Drawer, Divider, TextInput, Select, Loader, Pa
 import { useDisclosure } from '@mantine/hooks';
 import { ChevronDown, Cloud, CloudHailIcon, LoaderCircle, Minus, Plus, Search, ShoppingCart, SquarePen, Tag, ThumbsUp, Trash } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useProducts } from '../../hooks/useProducts';
 import { userGetData } from '../../services/hooks';
 import { useWarehouse } from '../../hooks/useWarehouse';
 import DashboardLogo from "../../assets/logo.png"
 import { applyRoiCap, toNum } from '../../utils/helper';
+import custAxios from '../../configs/axios.config';
 
 export const calculateMetrics = (product) => {
     console.log(product , "products in calculate");
@@ -38,6 +39,20 @@ export const calculateMetrics = (product) => {
 };
 
 const Products = () => {
+
+  const updateProducts = async () => {
+    try{
+await custAxios.get("http://localhost:8001/product/update-product")
+    }catch(err){
+      console.log("err",err)
+    }
+  }
+
+  useEffect(()=>{
+updateProducts()
+  },[])
+ const location = useLocation();
+const { selectedItems = [] } = location.state || {};
    const [filters, setFilters] = useState({
       title: "",
       page: 1,
@@ -49,11 +64,14 @@ const Products = () => {
       const userData = userGetData()
       
       const [opened, { open, close }] = useDisclosure(false);
-      const [selectedRows, setSelectedRows] = useState([]);
+      const [selectedRows, setSelectedRows] = useState(selectedItems || []);
       const [itemQuantities, setItemQuantities] = useState({});
       const [totalPrice, setTotalPrice] = useState(0);
       const [activePage, setActivePage] = useState(1);
-      console.log(activePage,"activePage");
+
+
+
+      
 
   const elements = [
   {
@@ -138,35 +156,49 @@ const Products = () => {
   }
 ];
 
-  // Calculate total price whenever itemQuantities changes
-  useEffect(() => {
-    const total = selectedRows.reduce((sum, rowId) => {
-      const item = products?.products?.find(el => el._id === rowId);
-      const quantity = itemQuantities[rowId] || 1;
+useEffect(() => {
+  // ✅ Ensure all selected items have a quantity in state
+ setItemQuantities(prev => {
+  const updated = { ...prev };
+  selectedRows.forEach(item => {
+    if (!updated[item._id]) {
+      // ✅ Remove commas and convert to number
+      const mqcValue = Number(String(item?.mqc).replace(/,/g, "")) || 1;
+      updated[item._id] = mqcValue;
+    }
+  });
+  return updated;
+});
+
+  // ✅ Calculate total price
+  const total = selectedRows.reduce((sum, item) => {
     if (!item) return sum;
-const { basePrice } = calculateMetrics(item);
-return sum + basePrice * quantity;
-    }, 0);
-    setTotalPrice(total);
-  }, [selectedRows, itemQuantities]);
+    const quantity = itemQuantities[item._id] || Number(item?.mqc) || 1;
+    const { basePrice } = calculateMetrics(item);
+    return sum + basePrice * quantity;
+  }, 0);
 
-  // Function to update item quantity
-  const updateQuantity = (itemId, newQuantity) => {
-    setItemQuantities(prev => ({
-      ...prev,
-      [itemId]: newQuantity
-    }));
-  };
+  setTotalPrice(total);
+}, [selectedRows, itemQuantities]);
 
-  // Function to remove item from cart
-  const removeFromCart = (itemId) => {
-    setSelectedRows(prev => prev.filter(id => id !== itemId));
-    setItemQuantities(prev => {
-      const newQuantities = { ...prev };
-      delete newQuantities[itemId];
-      return newQuantities;
-    });
-  };
+
+// ✅ Function to update item quantity
+const updateQuantity = (itemId, newQuantity) => {
+  setItemQuantities(prev => ({
+    ...prev,
+    [itemId]: newQuantity
+  }));
+};
+
+// ✅ Function to remove item from cart
+const removeFromCart = (itemId) => {
+  setSelectedRows(prev => prev.filter(item => item?._id !== itemId));
+  setItemQuantities(prev => {
+    const newQuantities = { ...prev };
+    delete newQuantities[itemId];
+    return newQuantities;
+  });
+};
 
   const totalQuantity = Object.values(itemQuantities).reduce(
   (sum, qty) => sum + qty,
@@ -185,24 +217,24 @@ return sum + basePrice * quantity;
   return (
     <Table.Tr
       key={i}
-      className={selectedRows.includes(element._id) ? '!bg-hollywood-700/80 text-white' : undefined}
+      className={selectedRows.some((row) => row._id === element._id) ? '!bg-hollywood-700/80 text-white' : undefined}
     >
       <Table.Td>
         <div className='flex items-center gap-2 w-full'>
 
 
-        <Checkbox
-          color='#154d72'
-          aria-label="Select row"
-          checked={selectedRows.includes(element._id)}
-          onChange={(event) =>
-            setSelectedRows(
-              event.currentTarget.checked
-                ? [...selectedRows, element._id]
-                : selectedRows.filter((id) => id !== element._id)
-              )
-            }
-            />
+       <Checkbox
+  color="#154d72"
+  aria-label="Select row"
+  checked={selectedRows.some((row) => row._id === element._id)} 
+  onChange={(event) =>
+    setSelectedRows(
+      event.currentTarget.checked
+        ? [...selectedRows, element] 
+        : selectedRows.filter((row) => row._id !== element._id) 
+    )
+  }
+/>
         <Badge color="green" w={"80"} > Active</Badge>
             </div>
       </Table.Td>
@@ -529,19 +561,19 @@ const handleDownloadAllCSV = () => {
     </div>
         <div className='border-1 border-slate-300'> 
 
-       {selectedRows.length > 0 && selectedRows.map((rowId) => {
-  const product = products?.products?.find(el => el._id === rowId);
-  if (!product) return null;
+       {selectedRows.length > 0 && selectedRows.map((product,i) => {
+  // const product = products?.products?.find(el => el._id === rowId);
+  // if (!product) return null;
   
   const { basePrice, profit, margin, roi } = calculateMetrics(product);
 
   return (
     <ProductItem 
-      key={rowId} 
+      key={i} 
       data={{ ...product, basePrice, profit, margin, roi }} 
-      quantity={itemQuantities[rowId] || 1}
-      onQuantityChange={(newQuantity) => updateQuantity(rowId, newQuantity)}
-      onRemove={() => removeFromCart(rowId)}
+      quantity={itemQuantities[product?._id] || 1}
+      onQuantityChange={(newQuantity) => updateQuantity(product?._id, newQuantity)}
+      onRemove={() => removeFromCart(product?._id)}
     />
   );
 })}
@@ -558,17 +590,20 @@ const handleDownloadAllCSV = () => {
             </div>
             <div className='flex justify-end'>
 
-            <Link to="/dashboard/checkout"   state={{
-              selectedItems: selectedRows.map((rowId) => ({
-                ...products?.products?.find((el) => el._id === rowId),
-                quantity: itemQuantities[rowId] || 1,
-              })),
-              totalPrice,
-            }}>
-            <Button className='!bg-hollywood-700 mt-10 !text-white !rounded-lg w-full'>
-              Continue 
-            </Button>
-            </Link>
+           <Link
+  to="/dashboard/checkout"
+  state={{
+    selectedItems: selectedRows.map(item => ({
+      ...item,
+      quantity: itemQuantities[item._id] || 1,
+    })),
+    totalPrice,
+  }}
+>
+  <Button className='!bg-hollywood-700 mt-10 !text-white !rounded-lg w-full'>
+    Continue
+  </Button>
+</Link>
     </div>
           </div>
         )}
@@ -587,10 +622,10 @@ const handleDownloadAllCSV = () => {
 export default Products;
 
 export const ProductItem = ({ data, quantity, onQuantityChange, onRemove }) => {
- console.log(data , "data");
+
  const price = data?.price?.split("$")[1]
- console.log(price , "price");
- 
+
+  const mqcValue = Number(String(data?.mqc).replace(/,/g, "")) || 1;
   return (
     <div className='flex justify-between gap-4 items-start border-b border-gray-300 p-3'>
       <div className='flex gap-3 items-center'>
@@ -613,10 +648,10 @@ export const ProductItem = ({ data, quantity, onQuantityChange, onRemove }) => {
             <p className='text-md font-semibold line-clamp-1' title={data.name}>{data.name}</p>
            <div className='flex mt-1 items-center rounded-lg border border-slate-300'>
 <div className='bg-slate-200 py-2.5 px-2 rounded-l-lg'><p className='text-xs'>Quantity</p></div>
-            <NumberInput    size='sm' className=" !text-end " variant='white' value={quantity} onChange={onQuantityChange}/>
+            <NumberInput min={mqcValue}   size='sm' className=" !text-end " variant='white' value={quantity} onChange={onQuantityChange}/>
            </div>
        
-            {/* <p className='text-sm text-gray-500'>{data.brand}</p> */}
+           
           </div>
         </div>
       </div>

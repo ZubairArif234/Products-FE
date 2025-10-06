@@ -11,7 +11,7 @@ import { calculateMetrics } from './products';
 const Checkout = () => {
   const location = useLocation();
   const { selectedItems } = location.state || {};
-  console.log(selectedItems, location?.state?.selectedItems, "selectedItem");
+  console.log( location?.state );
   // const [ isPending,setIsPending] = useState(false)
   const [active, setActive] = useState(0);
   const navigate = useNavigate()
@@ -164,7 +164,12 @@ const Checkout = () => {
   return (
     <div className='py-5 md:px-20 px-2  rounded-lg '>
     <div className="p-5 bg-white rounded-lg shadow-md">
-     <Link to={"/dashboard"}>
+     <Link to={"/dashboard"}  state={{
+    selectedItems: cartItems.map(item => ({
+      ...item,
+      quantity: itemQuantities[item._id] || 1,
+    }))
+  }}>
       <Button  className="!bg-hollywood-700 !text-white !rounded-lg"><Undo2 className='me-2' size={18}/> Add more products</Button>
      </Link>
       <p className='text-xl font-semibold text-center mb-4'>Review Your Purchase Order</p>
@@ -199,7 +204,7 @@ const Checkout = () => {
         </Stepper.Completed>
       </Stepper>
 
-      <Group justify="space-between" mt="xl">
+      <Group justify="end" mt="xl">
         {active > 0 && (
           <Button variant="default" onClick={prevStep}>Previous</Button>
         )}
@@ -246,6 +251,7 @@ const StepOne = ({ selectedItems, setSelectedItems, itemQuantities, setItemQuant
   }
 
   const rows = selectedItems.map((element, i) => {
+     const mqcValue = Number(String(element?.mqc).replace(/,/g, "")) || 1;
     const quantity = itemQuantities[element._id] || 1;
     const { basePrice } = calculateMetrics(element);
     const totalPrice = (basePrice * quantity).toFixed(2);
@@ -280,23 +286,18 @@ const StepOne = ({ selectedItems, setSelectedItems, itemQuantities, setItemQuant
           </div>
         </Table.Td>
         <Table.Td>{element.brand}</Table.Td>
-        <Table.Td>{basePrice}</Table.Td>
+        <Table.Td>{basePrice?.toFixed(2)}</Table.Td>
         <Table.Td>
-          <div className='flex gap-3 items-center justify-between bg-slate-200 p-1 rounded-md'>
-            <Minus
-              size={15} 
-              onClick={() => quantity > 1 && updateQuantity(element?._id, quantity - 1)} 
-              className='text-white bg-hollywood-700 w-6 h-6 rounded-md p-1 cursor-pointer hover:bg-hollywood-600'
-            />
-            <NumberInput hideControls size='sm' className=" w-14 text-center" value={quantity} onChange={(value)=>updateQuantity(element?._id,value)}/>
-                   
-            {/* <p className="min-w-[20px] text-center">{quantity}</p> */}
-            <Plus 
-              size={15} 
-              onClick={() => updateQuantity(element?._id, quantity + 1)} 
-              className='text-white bg-hollywood-700 w-6 h-6 rounded-md p-1 cursor-pointer hover:bg-hollywood-600'
-            />
-          </div>
+          
+           <div  className='w-[120px]'>
+                      {/* <p className='text-md font-semibold line-clamp-1' title={element.name}>{element.name}</p> */}
+                     <div className='flex mt-1 items-center rounded-lg border border-slate-300'>
+          <div className='bg-slate-200 py-2.5 px-2 rounded-l-lg'><p className='text-xs'>Qnt</p></div>
+                      <NumberInput min={mqcValue}   size='sm' className=" !text-end " variant='white' value={quantity} onChange={(value)=>updateQuantity(element?._id,value)}/>
+                     </div>
+                 
+                     
+                    </div>
         </Table.Td>
         <Table.Td>${totalPrice}</Table.Td>
       </Table.Tr>
@@ -518,6 +519,7 @@ const StepFive = ({ selectedItems, form, itemQuantities, setItemQuantities }) =>
 console.log(totalQuantity); // e.g. 3
 
   const rows = selectedItems.map((element, i) => {
+     const mqcValue = Number(String(element?.mqc).replace(/,/g, "")) || 1;
     const quantity = itemQuantities[element._id] || 1;
     const totalPrice = (element.price?.split("$")[1] * quantity).toFixed(2);
 
@@ -533,7 +535,7 @@ console.log(totalQuantity); // e.g. 3
         </Table.Td>
         {/* <Table.Td>{element.brand}</Table.Td> */}
         <Table.Td>
-          <div className='flex gap-4 items-center justify-between bg-slate-200 p-1 rounded-md'>
+          {/* <div className='flex gap-4 items-center justify-between bg-slate-200 p-1 rounded-md'>
             <Minus
               size={15} 
               onClick={() => quantity > 1 && updateQuantity(element?._id, quantity - 1)} 
@@ -546,7 +548,16 @@ console.log(totalQuantity); // e.g. 3
               onClick={() => updateQuantity(element?._id, quantity + 1)} 
               className='text-white bg-hollywood-700 w-6 h-6 rounded-md p-1 cursor-pointer hover:bg-hollywood-600'
             />
-          </div>
+          </div> */}
+            <div className='w-[120px]'>
+                      {/* <p className='text-md font-semibold line-clamp-1' title={element.name}>{element.name}</p> */}
+                     <div className='flex mt-1 items-center rounded-lg border border-slate-300'>
+          <div className='bg-slate-200 py-2.5 px-2 rounded-l-lg'><p className='text-xs'>Qnt</p></div>
+                      <NumberInput min={mqcValue}   size='sm' className=" !text-end " variant='white' value={quantity} onChange={(value)=>updateQuantity(element?._id,value)}/>
+                     </div>
+                 
+                     
+                    </div>
         </Table.Td>
         <Table.Td>${element.price?.split("$")[1]}</Table.Td>
         <Table.Td>${totalPrice}</Table.Td>

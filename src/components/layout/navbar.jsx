@@ -187,7 +187,14 @@ text:"to generate shipment labels to you/your warehouse , via your preferred car
     role: "admin",
   },
   {
-    id: 18,
+    id: 20,
+    label: "History",
+    link: "/admin/history",
+    type: "route",
+    role: "admin",
+  },
+  {
+    id: 21,
     label: "Orders",
     link: "/admin/orders",
     type: "route",
@@ -201,7 +208,7 @@ text:"to generate shipment labels to you/your warehouse , via your preferred car
     role: "admin",
   },
   {
-    id: 19,
+    id: 22,
     label: "Customers",
     link: "/admin/customer",
     type: "route",

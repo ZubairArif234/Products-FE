@@ -23,6 +23,7 @@ import CustomerManagement from "../pages/adminPages/customerManagemet";
 import CustomerDetails from "../pages/adminPages/customerDetails";
 import PaymentSuccess from "../pages/dashboardPages/paymentSuccess";
 import PaymentFailed from "../pages/dashboardPages/paymentFailed";
+import HistoryManagement from "../pages/adminPages/hiatoryManagement";
 
 const Router = () => {
   return (
@@ -55,6 +56,7 @@ const Router = () => {
 
         <Route path="/admin" element={<AdminRoute Component={ProductManagement} />} />
         <Route path="/admin/orders" element={<AdminRoute Component={OrdersManagement} />} />
+        <Route path="/admin/history" element={<AdminRoute Component={HistoryManagement} />} />
         <Route path="/admin/warehouse" element={<AdminRoute Component={WarehouseManagements} />} />
         <Route path="/admin/warehouse-details" element={<AdminRoute Component={WarehouseDetails
         } />} />
