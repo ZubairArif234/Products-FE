@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useVerifyEmail } from "../../hooks/useVerifyEmail";
 
+import DashboardLogo from "../../assets/logo.png"
 const EmailVerification = () => {
   const navigate = useNavigate();
   const { email } = useParams();

@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import custAxios from "../configs/axios.config";
 import { toast } from "sonner";
+import { errorMessage, successMessage } from "../lib/toast";
 
 export const useLogin = () => {
   return useMutation({
@@ -17,14 +18,13 @@ console.log(res.data);
       } else {
         console.log("Response structure:", JSON.stringify(res.data));
       }
-
       return res.data;
     },
 
     onError: (error) => {
       console.error("Login error:", error);
       // Check for email verification error
-      toast.error(error.response.data.message);
+      errorMessage(error.response.data.message);
       throw error;
     },
   });
