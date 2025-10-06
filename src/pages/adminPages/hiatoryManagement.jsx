@@ -232,8 +232,8 @@ const totalQuantity = singleOrder?.products.reduce((sum, item) => sum + item.qnt
                 
                 </div>:
         <div className='my-20 flex flex-col justify-center items-center'>
-<p className='text-xl font-semibold'>No Orders Found</p>
-<p className='text-sm text-slate-400'>There are no order based on the search</p>
+<p className='text-xl font-semibold'>No History Found</p>
+<p className='text-sm text-slate-400'>There are no history based on the search</p>
         </div>
         }
       </div>
