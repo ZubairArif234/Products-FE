@@ -185,7 +185,7 @@ const SignupForm = () => {
             }
             {...form.getInputProps("terms")}
           />
-          <p className="text-slate-700 text-sm">ALready have an account? <Link to={"/"} className="text-hollywood-700 font-semibold">Login</Link></p>
+          <p className="text-slate-700 text-sm">Already have an account? <Link to={"/"} className="text-hollywood-700 font-semibold">Login</Link></p>
      </div>
        <div className="mt-8 flex justify-center">
 

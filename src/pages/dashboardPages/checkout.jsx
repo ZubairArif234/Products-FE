@@ -122,9 +122,9 @@ const Checkout = () => {
               prepRequired: form?.values?.prepRequired,
             },
             
-            tax: "10.89", // You can calculate this dynamically
-            totalPrice: (cartTotal + 10.89 + totalQuantity).toFixed(2), // Adding tax
-            total: (cartTotal + 10.89 + totalQuantity).toFixed(2) // Adding tax
+            // You can calculate this dynamically
+            totalPrice: (cartTotal  + totalQuantity).toFixed(2), // Adding tax
+            total: (cartTotal  + totalQuantity).toFixed(2) // Adding tax
           };
 
           console.log("Order payload:", payload);
@@ -645,14 +645,14 @@ console.log(totalQuantity); // e.g. 3
 
           <p>Prep Charges : ${totalQuantity }</p>
         )}
-        <p>Tax : $10.89</p>
+       
          {form?.values?.prepRequired != "No Prep" ? (
 
-          <p className='text-xl font-semibold'>Total Price : ${(parseFloat(cartTotal) + 10.89 + totalQuantity).toFixed(2)} </p>
+          <p className='text-xl font-semibold'>Total Price : ${(parseFloat(cartTotal)  + totalQuantity).toFixed(2)} </p>
         ):
         (
 
-        <p className='text-xl font-semibold'>Total Price : ${(parseFloat(cartTotal) + 10.89 ).toFixed(2)} </p>
+        <p className='text-xl font-semibold'>Total Price : ${(parseFloat(cartTotal) ).toFixed(2)} </p>
         )}
     </div>
     </div>

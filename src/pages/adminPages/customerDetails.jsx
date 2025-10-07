@@ -265,14 +265,11 @@ const CustomerDetails = () => {
             <div className="flex justify-between text-slate-600">
               <span>Subtotal</span>
               <span>
-                ${(parseFloat(singleOrder?.totalPrice) - parseFloat(singleOrder?.tax) - 
+                ${(parseFloat(singleOrder?.totalPrice)  - 
                   (singleOrder?.preference?.prepRequired !== "No Prep" ? totalQuantity : 0)).toFixed(2)}
               </span>
             </div>
-            <div className="flex justify-between text-slate-600">
-              <span>Tax</span>
-              <span>${singleOrder?.tax}</span>
-            </div>
+           
             {singleOrder?.preference?.prepRequired !== "No Prep" && (
               <div className="flex justify-between text-slate-600">
                 <span>Prep Charges</span>
