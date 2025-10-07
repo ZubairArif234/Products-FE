@@ -140,11 +140,13 @@ const totalQuantity = singleOrder?.products.reduce((sum, item) => sum + item.qnt
           >
             {element?.product?.name}
           </Link></Table.Td>
+      <Table.Td>${Number(element?.prevPrice || 0)?.toFixed(2)}</Table.Td>
       <Table.Td>${Number(element?.prevAmazonFees || 0)?.toFixed(2)}</Table.Td>
       <Table.Td>${Number(element?.prevAmazonBb || 0)?.toFixed(2)}</Table.Td>
       <Table.Td>{Number(element?.prevMargin || 0)?.toFixed(2)}%</Table.Td>
       <Table.Td>${Number(element?.prevProfit || 0)?.toFixed(2)}</Table.Td>
       <Table.Td>{Number(element?.prevRoi || 0)?.toFixed(2)}%</Table.Td>
+      <Table.Td>${Number(element?.latestPrice || 0)?.toFixed(2)}</Table.Td>
       <Table.Td>${Number(element?.latestAmazonFees || 0)?.toFixed(2)}</Table.Td>
       <Table.Td>${Number(element?.latestAmazonBb || 0)?.toFixed(2)}</Table.Td>
       <Table.Td>{Number(element?.latestMargin || 0)?.toFixed(2)}%</Table.Td>
@@ -193,11 +195,13 @@ const totalQuantity = singleOrder?.products.reduce((sum, item) => sum + item.qnt
                 {/* <Table.Th /> */}
                 {/* <Table.Th>Id</Table.Th> */}
                 <Table.Th>Product Name</Table.Th>
+                <Table.Th>Prev Price</Table.Th>
                 <Table.Th>Prev Amazon Fees</Table.Th>
                 <Table.Th>Prev Amazon Bb</Table.Th>
                 <Table.Th>Prev Margin</Table.Th>
                 <Table.Th>Prev Profit</Table.Th>
                 <Table.Th>Prev Roi</Table.Th>
+                <Table.Th>Latest Price</Table.Th>
                 <Table.Th>Latest Amazon Fees</Table.Th>
                 <Table.Th>Latest Amazon Bb</Table.Th>
                 <Table.Th>Latest Margin</Table.Th>
