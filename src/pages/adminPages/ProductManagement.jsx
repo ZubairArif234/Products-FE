@@ -197,7 +197,7 @@ const handleWarehouse = (value) => {
     page: 1,
   }));
 };
-const handleUpload = () => {
+const handleUpload = async () => {
   const validationErrors = {};
   if (!selectedWarehouse) {
     validationErrors.warehouse = "Please select a warehouse";
@@ -213,8 +213,16 @@ const handleUpload = () => {
   const formData = new FormData();
   formData.append("warehouse", selectedWarehouse);
   formData.append("file", file);
-  mutateAsync(formData);
-  // close();
+
+  const res= await mutateAsync(formData);
+  console.log(res);
+  
+  if (
+    res
+  ){
+
+    close();
+  }
 };
 
 const handlePageLimit = (value) => {

@@ -57,6 +57,7 @@ const { selectedItems = [] } = location.state || {};
       title: "",
       page: 1,
       limit: "20",
+      profitable:true
     });
       const {products, isPending} = useProducts(filters)
       
@@ -209,69 +210,72 @@ console.log(itemQuantities);
 
   const rows = products?.products?.map((element, i) => {
    
-  return (
-    <Table.Tr
-      key={i}
-      className={selectedRows.some((row) => row._id === element._id) ? '!bg-hollywood-700/60 text-white' : undefined}
-    >
-      <Table.Td>
-        <div className='flex items-center gap-2 w-full'>
+    // if (element?.profit > 0){
 
-
-       <Checkbox
-  color="#154d72"
-  aria-label="Select row"
-  checked={selectedRows.some((row) => row._id === element._id)} 
-  onChange={(event) =>
-    setSelectedRows(
-      event.currentTarget.checked
-        ? [...selectedRows, element] 
-        : selectedRows.filter((row) => row._id !== element._id) 
-    )
-  }
-/>
-        <Badge color="green" w={"80"} > Active</Badge>
-            </div>
-      </Table.Td>
+      return (
+        <Table.Tr
+          key={i}
+          className={selectedRows.some((row) => row._id === element._id) ? '!bg-hollywood-700/60 text-white' : undefined}
+        >
           <Table.Td>
-            <div className='flex  rounded-lg p-2 justify-start gap-2 items-center'>
-           
-           <p className='font-semibold'>
-             {element.brand}
-            </p>
-{/* <div className='text-slate-500'>
-  <p>Updated</p>
-  <p>1/2/2020</p>
-</div> */}
+            <div className='flex items-center gap-2 w-full'>
+    
+    
+           <Checkbox
+      color="#154d72"
+      aria-label="Select row"
+      checked={selectedRows.some((row) => row._id === element._id)} 
+      onChange={(event) =>
+        setSelectedRows(
+          event.currentTarget.checked
+            ? [...selectedRows, element] 
+            : selectedRows.filter((row) => row._id !== element._id) 
+        )
+      }
+    />
+            <Badge color="green" w={"80"} > Active</Badge>
+                </div>
+          </Table.Td>
+              <Table.Td>
+                <div className='flex  rounded-lg p-2 justify-start gap-2 items-center'>
+               
+               <p className='font-semibold'>
+                 {element.brand}
+                </p>
+    {/* <div className='text-slate-500'>
+      <p>Updated</p>
+      <p>1/2/2020</p>
+    </div> */}
+                </div>
+                </Table.Td>
+          <Table.Td>
+            <div className='flex items-center gap-2 capitalize'>
+              <img
+                className='h-14 w-14 aspect-square object-contain bg-slate-200 rounded'
+                src={
+                  element?.images?.length > 0
+                    ? element?.images[0]
+                    : null
+                }
+                alt={element.name}
+              />
+              <Link to={`http://amazon.com/dp/${element.asin}`} target='_blank' title={element.name} className='text-md font-semibold line-clamp-3 hover:text-hollywood-600'>
+                {element.name}
+              </Link>
             </div>
-            </Table.Td>
-      <Table.Td>
-        <div className='flex items-center gap-2 capitalize'>
-          <img
-            className='h-14 w-14 aspect-square object-contain bg-slate-200 rounded'
-            src={
-              element?.images?.length > 0
-                ? element?.images[0]
-                : null
-            }
-            alt={element.name}
-          />
-          <Link to={`http://amazon.com/dp/${element.asin}`} target='_blank' title={element.name} className='text-md font-semibold line-clamp-3 hover:text-hollywood-600'>
-            {element.name}
-          </Link>
-        </div>
-      </Table.Td>
-      <Table.Td>${Number(element?.price).toFixed(2)}</Table.Td>
-      <Table.Td>{element.mqc}</Table.Td>
-      <Table.Td>{element.upc}</Table.Td>
-      <Table.Td>{element.asin}</Table.Td>
-      <Table.Td>${Number(element?.amazonBb).toFixed(2)}</Table.Td>
-      <Table.Td>${Number(element?.amazonFees).toFixed(2)}</Table.Td>
-      <Table.Td style={{ color: element?.profit < 0 ? "red" : "green" }}>${Number(element?.profit)?.toFixed(2)}</Table.Td>
-      <Table.Td>{Number(element?.margin).toFixed(2)}%</Table.Td>
-      <Table.Td>{Number(element?.roi).toFixed(2)}%</Table.Td>
-    </Table.Tr>
-  );
+          </Table.Td>
+          <Table.Td>${Number(element?.price).toFixed(2)}</Table.Td>
+          <Table.Td>{element.mqc}</Table.Td>
+          <Table.Td>{element.upc}</Table.Td>
+          <Table.Td>{element.asin}</Table.Td>
+          <Table.Td>${Number(element?.amazonBb).toFixed(2)}</Table.Td>
+          <Table.Td>${Number(element?.amazonFees).toFixed(2)}</Table.Td>
+          <Table.Td style={{ color: element?.profit < 0 ? "red" : "green" }}>${Number(element?.profit)?.toFixed(2)}</Table.Td>
+          <Table.Td>{Number(element?.margin).toFixed(2)}%</Table.Td>
+          <Table.Td>{Number(element?.roi).toFixed(2)}%</Table.Td>
+        </Table.Tr>
+      );
+    // }
 });
 
 
