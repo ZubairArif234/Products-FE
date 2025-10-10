@@ -220,7 +220,8 @@ const handleUpload = async () => {
   if (
     res
   ){
-
+setFile(null)
+setSelectedWarehouse(null)
     close();
   }
 };
@@ -358,7 +359,7 @@ const handlePageLimit = (value) => {
   <p className='text-slate-600 text-sm'>items per page</p>
 </div> */}
 
-        <Pagination color='#255b7f' total={products?.pagination?.total/filters.limit}  value={filters.page}
+        <Pagination color='#255b7f' total={products?.pagination?.totalPages}  value={filters.page}
   onChange={(page) => setFilters((prev) => ({ ...prev, page }))}  mt="sm" />
         </div>
          </div>
@@ -393,7 +394,7 @@ const handlePageLimit = (value) => {
       <EnhancedUpload value={file} onChange={setFile} error={errors.file}/>
 
       <div className='flex justify-end'>
-        <Button loading={isCreateProductPending} onClick={handleUpload} className="!bg-hollywood-700 disabled:!bg-purple-300 !text-white !rounded-lg !mt-3"
+        <Button loading={isCreateProductPending }  onClick={handleUpload} className="!bg-hollywood-700 disabled:!bg-hollywood-500/80 !text-white !rounded-lg !mt-3"
         >Upload</Button>
       </div>
       </div>

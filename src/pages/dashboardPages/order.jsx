@@ -1,4 +1,4 @@
-import { Button, Table, Checkbox, Drawer, Divider, TextInput, Select, Loader, Modal, Tooltip } from '@mantine/core';
+import { Button, Table, Checkbox, Drawer, Divider, TextInput, Select, Loader, Modal, Tooltip, Badge } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { BadgeDollarSign, ChevronDown, Eye, Mail, Minus, Phone, Plus, Search, SquarePen, Trash } from 'lucide-react';
 import { useState, useEffect } from 'react';
@@ -183,10 +183,13 @@ console.log(singleOrder);
          <Eye onClick={()=>{setSingleOrder(element); open()}} size={15} className='hover:text-green-500 cursor-pointer' />
            </Tooltip>
         {element.status == "pending" && (
+          
+          // <BadgeDollarSign onClick={()=>handlePayNow(element)}  size={15} className='hover:text-green-500 cursor-pointer' title="Pay now"/>
           <Tooltip label="Pay now" withArrow>
-
-          <BadgeDollarSign onClick={()=>handlePayNow(element)}  size={15} className='hover:text-green-500 cursor-pointer' title="Pay now"/>
-          </Tooltip>
+          <Button  className='!bg-hollywood-700'  onClick={()=>handlePayNow(element)}>
+            Pay
+          </Button>
+             </Tooltip>
         )}
 
         </div>
@@ -258,7 +261,7 @@ console.log(singleOrder);
 
       </div>
 
-     <Modal opened={opened} onClose={close} centered title="Order Details">
+     <Modal opened={opened} onClose={close} centered  title="Order Details">
         <div className='capitalize'>
             <div className='mb-2 text-md text-slate-700'>
                 <p className='font-semibold text-lg'> {singleOrder?.clientDetails?.firstName + " " + singleOrder?.clientDetails?.lastName}</p>
@@ -281,7 +284,13 @@ console.log(singleOrder);
             src={item?.product?.images?.length > 0 ? item?.product?.images[0] : null}
            
             />
+            <div>
+              {item?.isDeleted && (
+
+<Badge size='sm' color='red'>Old</Badge>
+              )}
             <p className='line-clamp-1 w-28' title={item?.product?.name}>{item?.product?.name}</p>
+            </div>
             </div>
             <p>{item?.qnt}  x </p>
             <p>${Number(item?.product?.price).toFixed(2)} </p>

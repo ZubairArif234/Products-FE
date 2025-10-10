@@ -1,4 +1,4 @@
-import { Button, Table, Checkbox, Drawer, Divider, TextInput, Select, Loader, Modal } from '@mantine/core';
+import { Button, Table, Checkbox, Drawer, Divider, TextInput, Select, Loader, Modal, Badge } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { ChevronDown, Eye, Mail, Minus, Phone, Plus, Search, SquarePen, Trash } from 'lucide-react';
 import { useState, useEffect } from 'react';
@@ -234,9 +234,13 @@ const totalQuantity = singleOrder?.products.reduce((sum, item) => sum + item.qnt
             className='h-10 w-10 aspect-square object-contain bg-slate-200 rounded' 
             src={item?.product?.images?.length > 0 ? item?.product?.images[0] : null}
            
-            />
+            /> <div>
+{item?.isDeleted && (
+
+<Badge size='sm' color='red'>Old</Badge>
+              )}
             <p className='line-clamp-1 w-28' title={item?.product?.name}>{item?.product?.name}</p>
-            </div>
+            </div></div>
             <p>{item?.qnt}  x </p>
             <p>{Number(item?.product?.price)?.toFixed(2)} </p>
             <p>= ${(item?.qnt * Number(item?.product?.price)).toFixed(2)}</p>
