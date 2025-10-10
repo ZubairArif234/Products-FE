@@ -23,3 +23,14 @@ export const calcMetrics = (basePrice, amazonBb, amazonFees) => {
   }
   return { basePrice, profit, margin, roi };
 };
+
+export function debounce(fn, delay = 300) {
+  let timeoutId;
+
+  return (...args) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      fn(...args);
+    }, delay);
+  };
+}

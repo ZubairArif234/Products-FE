@@ -3,7 +3,7 @@ import { useDisclosure } from '@mantine/hooks';
 import { ChevronDown, Cloud, CloudHailIcon, LoaderCircle, Minus, Plus, Search, ShoppingCart, SquarePen, Tag, ThumbsUp, Trash } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { useProducts } from '../../hooks/useProducts';
+import { useAllProducts, useProducts } from '../../hooks/useProducts';
 import { userGetData } from '../../services/hooks';
 import { useWarehouse } from '../../hooks/useWarehouse';
 import DashboardLogo from "../../assets/logo.png"
@@ -57,10 +57,15 @@ const { selectedItems = [] } = location.state || {};
       title: "",
       page: 1,
       limit: "20",
-      profitable:true
+      profitable:true,
+      proper:true
     });
       const {products, isPending} = useProducts(filters)
+      const {products:allProduct, isPending:isAllPending} = useAllProducts()
       
+      console.log(allProduct);
+      
+
     const {warehouse, isPending:isPendingWarehouse} = useWarehouse({})
       const userData = userGetData()
       
@@ -279,7 +284,7 @@ console.log(itemQuantities);
 });
 
 
-  const handleSearch = (value) => {
+  const handleSearch =  (value) => {
   setFilters((prev) => ({
     ...prev,
     title: value,   // update title
@@ -312,10 +317,10 @@ const handlePageLimit = (value) => {
 
 const convertToCSV = (data) => {
   if (!data || data.length === 0) return '';
-  
+
   const headers = [
     'Product Name',
-    'Brand', 
+    'Brand',
     'Price',
     'MOQ',
     'UPC',
@@ -326,30 +331,31 @@ const convertToCSV = (data) => {
     'Margin',
     'ROI',
   ];
-  
-  const csvContent = [
-    headers.join(','), 
-    ...data.map(product => {
-      const { basePrice, profit, margin, roi } = calculateMetrics(product);
 
-      return [
-        `"${product.name || ''}"`,
-        `"${product.brand || ''}"`,
-        `"$${basePrice.toFixed(2)}"`,
-        `"${product.mqc || ''}"`,
-        `"${product.upc || ''}"`,
-        `"${product.asin || ''}"`,
-        `"$${Number(product.amazonBb || 0).toFixed(2)}"`,
-        `"$${Number(product.amazonFees || 0).toFixed(2)}"`,
-        `"$${profit.toFixed(2)}"`,
-        `"${margin.toFixed(2)}%"`,
-        `"${roi.toFixed(2)}%"`,
-      ].join(',');
-    })
-  ].join('\n');
-  
-  return csvContent;
+  // Helper to safely quote fields
+  const safeValue = (value) => {
+    if (value === null || value === undefined) return '""';
+    const str = String(value).replace(/"/g, '""'); // escape double quotes
+    return `"${str}"`; // wrap with quotes
+  };
+
+  const rows = data.map((product) => [
+    safeValue(product.name || ''),
+    safeValue(product.brand || ''),
+    safeValue(`$${Number(product.price || 0).toFixed(2)}`),
+    safeValue(product.mqc || ''),
+    safeValue(product.upc || ''),
+    safeValue(product.asin || ''),
+    safeValue(`$${Number(product.amazonBb || 0).toFixed(2)}`),
+    safeValue(`$${Number(product.amazonFees || 0).toFixed(2)}`),
+    safeValue(`$${Number(product.profit || 0).toFixed(2)}`),
+    safeValue(`${Number(product.margin || 0).toFixed(2)}%`),
+    safeValue(`${Number(product.roi || 0).toFixed(2)}%`),
+  ]);
+
+  return [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
 };
+
 
 
 // Function to download CSV file
@@ -368,37 +374,32 @@ const downloadCSV = (csvContent, filename) => {
   }
 };
 
-// Function to handle CSV download for selected products
 const handleDownloadSelectedCSV = () => {
   if (selectedRows.length === 0) {
-    // Show notification that no products are selected
     alert('Please select products to download');
     return;
   }
-  
-  // Get selected products data
-  const selectedProducts = products?.products?.filter(product => 
-    selectedRows.includes(product._id)
-  );
-  
-  const csvContent = convertToCSV(selectedProducts);
+
+  // selectedRows already holds full product objects
+  const csvContent = convertToCSV(selectedRows);
   const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
   const filename = `selected-products-${timestamp}.csv`;
-  
+
   downloadCSV(csvContent, filename);
 };
 
-// Function to handle CSV download for all products
+// === Function to handle CSV download for all products ===
 const handleDownloadAllCSV = () => {
-  if (!products?.products || products.products.length === 0) {
+  const allProducts = allProduct?.products || [];
+  if (allProducts.length === 0) {
     alert('No products available to download');
     return;
   }
-  
-  const csvContent = convertToCSV(products.products);
+
+  const csvContent = convertToCSV(allProducts);
   const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
   const filename = `all-products-${timestamp}.csv`;
-  
+
   downloadCSV(csvContent, filename);
 };
   return (
@@ -448,6 +449,16 @@ const handleDownloadAllCSV = () => {
           className="!border-1  !border-slate-300 !bg-transparent  !rounded-sm "
           >
          Download CSV
+        </Button> 
+
+         <Button 
+         disabled={isAllPending}
+          color='dark'
+           variant="transparent"
+          onClick={handleDownloadAllCSV}
+          className="!border-1  !border-slate-300 !bg-transparent  !rounded-sm "
+          >
+         Download All
         </Button> 
         </div>
         <div className='flex gap-4 items-center'>

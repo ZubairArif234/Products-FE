@@ -20,6 +20,22 @@ queryKey: ["products", filters],
   return { products: data, ...rest };
 };
 
+export const useAllProducts = () => {
+  const { data, ...rest } = useQuery({
+    queryFn: async () => {
+      attachToken();
+      const data = await custAxios.get("/product/download");
+
+      return data?.data?.data;
+    },
+queryKey: ["allProducts"],
+    staleTime: 10 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    retry: true,
+  });
+  return { products: data, ...rest };
+};
+
 export const createProductsByCSV = () => {
   const queryClient = useQueryClient();
   return useMutation({

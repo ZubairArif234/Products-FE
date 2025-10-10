@@ -282,7 +282,7 @@ return (
          </Table>
        </Table.ScrollContainer>
        <div className='flex justify-end mt-4'>
-       <Pagination color='#255b7f' total={products?.pagination?.totalPages/6}  value={filters.page}
+       <Pagination color='#255b7f' total={products?.pagination?.total/filters?.limit}  value={filters.page}
  onChange={(page) => setFilters((prev) => ({ ...prev, page }))}  mt="sm" />
        </div>
         </div>

@@ -285,8 +285,8 @@ const StepOne = ({ selectedItems, setSelectedItems, itemQuantities, setItemQuant
             </p>
           </div>
         </Table.Td>
-        <Table.Td>${element.brand}</Table.Td>
-        <Table.Td>{Number(element?.price)?.toFixed(2)}</Table.Td>
+        <Table.Td>{element.brand}</Table.Td>
+        <Table.Td>${Number(element?.price)?.toFixed(2)}</Table.Td>
         <Table.Td>
           
            <div  className='w-[120px]'>
