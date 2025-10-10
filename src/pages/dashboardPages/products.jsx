@@ -394,7 +394,7 @@ const handleDownloadAllCSV = async () => {
   try {
     setIsAllPending(true)
     // Fetch all products from the mutation
-    const allProducts = await mutateAsync();
+    const allProducts = await mutateAsync(filters);
 
 
     if (!allProducts || allProducts?.products.length === 0) {

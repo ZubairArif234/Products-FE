@@ -38,9 +38,11 @@ queryKey: ["products", filters],
 
 export const useAllProducts = () => {
   return useMutation({
-    mutationFn: async () => {
+    mutationFn: async (filters) => {
       attachToken();
-      const res = await custAxios.get("/product/download");
+      const res = await custAxios.get("/product/download",{
+        params:filters
+      });
       return res?.data?.data;
     },
     onError: (error) => {
