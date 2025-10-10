@@ -20,20 +20,33 @@ queryKey: ["products", filters],
   return { products: data, ...rest };
 };
 
-export const useAllProducts = () => {
-  const { data, ...rest } = useQuery({
-    queryFn: async () => {
-      attachToken();
-      const data = await custAxios.get("/product/download");
+// export const useAllProducts = () => {
+//   const { data, ...rest } = useQuery({
+//     queryFn: async () => {
+//       attachToken();
+//       const data = await custAxios.get("/product/download");
 
-      return data?.data?.data;
+//       return data?.data?.data;
+//     },
+// queryKey: ["allProducts"],
+//     staleTime: 10 * 60 * 1000,
+//     refetchOnWindowFocus: false,
+//     retry: true,
+//   });
+//   return { products: data, ...rest };
+// };
+
+export const useAllProducts = () => {
+  return useMutation({
+    mutationFn: async () => {
+      attachToken();
+      const res = await custAxios.get("/product/download");
+      return res?.data?.data;
     },
-queryKey: ["allProducts"],
-    staleTime: 10 * 60 * 1000,
-    refetchOnWindowFocus: false,
-    retry: true,
+    onError: (error) => {
+      errorMessage(error?.response?.data?.message || "Failed to fetch products");
+    },
   });
-  return { products: data, ...rest };
 };
 
 export const createProductsByCSV = () => {

@@ -61,9 +61,10 @@ const { selectedItems = [] } = location.state || {};
       proper:true
     });
       const {products, isPending} = useProducts(filters)
-      const {products:allProduct, isPending:isAllPending} = useAllProducts()
-      
-      console.log(allProduct);
+      // const {products:allProduct, isPending:isAllPending} = useAllProducts()
+     const [isAllPending , setIsAllPending] = useState(false)
+      const { mutateAsync } = useAllProducts();
+         
       
 
     const {warehouse, isPending:isPendingWarehouse} = useWarehouse({})
@@ -389,19 +390,35 @@ const handleDownloadSelectedCSV = () => {
 };
 
 // === Function to handle CSV download for all products ===
-const handleDownloadAllCSV = () => {
-  const allProducts = allProduct?.products || [];
-  if (allProducts.length === 0) {
-    alert('No products available to download');
-    return;
+const handleDownloadAllCSV = async () => {
+  try {
+    setIsAllPending(true)
+    // Fetch all products from the mutation
+    const allProducts = await mutateAsync();
+
+
+    if (!allProducts || allProducts?.products.length === 0) {
+      alert("No products available to download");
+      return;
+    }
+
+    // Convert to CSV
+    const csvContent = convertToCSV(allProducts?.products);
+    const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+    const filename = `all-products-${timestamp}.csv`;
+
+    // Download file
+    downloadCSV(csvContent, filename);
+    setIsAllPending(false)
+  } catch (error) {
+    console.error("Error downloading products:", error);
+    setIsAllPending(false)
+  }finally{
+    setIsAllPending(false)
+
   }
-
-  const csvContent = convertToCSV(allProducts);
-  const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
-  const filename = `all-products-${timestamp}.csv`;
-
-  downloadCSV(csvContent, filename);
 };
+
   return (
     <div className="py-5    rounded-lg shadow-md">
       <div className=' bg-gradient-to-r from-hollywood-700 via-hollywood-700  to-white py-12 px-2 md:px-20'>
