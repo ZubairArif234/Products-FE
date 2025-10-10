@@ -256,7 +256,12 @@ return (
       </Tabs.List>
 
       <Tabs.Panel value="products">
-    {
+    {isPendingProducts ?
+      <div className='my-20 flex justify-center'>
+
+            <Loader color="#255b7f" />
+        </div>
+    :
         products?.products?.length > 0  ?
         <div>
 
@@ -296,6 +301,7 @@ return (
 
       <Tabs.Panel value="orders">
        {
+        
          orders?.orders?.length > 0  ?
          <Table.ScrollContainer minWidth={500} type="native">
            <Table>

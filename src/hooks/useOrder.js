@@ -15,7 +15,7 @@ console.log(data?.data , "order output") ;
     },
 queryKey: ["orders"],
     // staleTime: Infinity,
-    refetchOnWindowFocus: false,
+    // refetchOnWindowFocus: false,
     retry: true,
   });
   return { orders: data, ...rest };
@@ -33,7 +33,7 @@ export const useMyOrders = (filters) => {
     },
 queryKey: ["order", filters],
     // staleTime: Infinity,
-    refetchOnWindowFocus: false,
+    // refetchOnWindowFocus: false,
     retry: true,
   });
   return { orders: data, ...rest };

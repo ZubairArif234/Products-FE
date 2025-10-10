@@ -395,69 +395,75 @@ console.log(singleOrder);
             </Modal>
 
      <Modal opened={opened} onClose={close} centered title="Order Details">
-       <div className='capitalize'>
-                  <div className='mb-2 text-md text-slate-700'>
-                      <p className='font-semibold text-lg'> {singleOrder?.clientDetails?.firstName + " " + singleOrder?.clientDetails?.lastName}</p>
-                      <p className='text-sm text-slate-400 flex items-center gap-2'> <Mail size={16}/>  {singleOrder?.clientDetails?.email}</p>
-                      <p className='text-sm text-slate-400 flex items-center gap-2'> <Phone size={16}/> {singleOrder?.clientDetails?.phone}</p>
-                  </div>
-      
-                  <div>
-                      <p className='font-semibold text-slate-500'>Items</p>
-                      <div className='border border-slate-200 rounded-lg my-2 p-2 max-h-[250px] overflow-auto'>
-      
-      {singleOrder?.products?.map((item,i)=>{
-          return(
-      
-                      <div key={i} className='flex justify-between items-center  border-b-1 p-2 border-slate-200 '>
-                          <div className='flex gap-2 items-center'>
-      
-                           <img 
-                  className='h-10 w-10 aspect-square object-contain bg-slate-200 rounded' 
-                  src={item?.product?.images?.length > 0 ? item?.product?.images[0] : "https://images.unsplash.com/photo-1521223890158-f9f7c3d5d504?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8amFja2V0fGVufDB8fDB8fHww"}
-                 
-                  />
-                  <p className='line-clamp-1 w-28' title={item?.product?.name}>{item?.product?.name}</p>
-                  </div>
-                  <p>{item?.qnt}  x </p>
-                  <p>{item?.unitPrice} </p>
-                  <p>= ${(item?.qnt * item?.unitPrice?.split("$")[1]).toFixed(2)}</p>
-                      </div>
-          )
-      })}
-                      </div>
-                  </div>
-      
-                 
-      
-      
-                   <div>
-                <div className="bg-slate-50 rounded-lg p-4 space-y-2">
+        <div className='capitalize'>
+                <div className='mb-2 text-md text-slate-700'>
+                    <p className='font-semibold text-lg'> {singleOrder?.clientDetails?.firstName + " " + singleOrder?.clientDetails?.lastName}</p>
+                    <p className='text-sm text-slate-400 flex items-center gap-2'> <Mail size={16}/>  {singleOrder?.clientDetails?.email}</p>
+                    <p className='text-sm text-slate-400 flex items-center gap-2'> <Phone size={16}/> {singleOrder?.clientDetails?.phone}</p>
+                </div>
+    
+                <div>
+                    <p className='font-semibold text-slate-500'>Items</p>
+                    <div className='border border-slate-200 rounded-lg my-2 p-2 max-h-[250px] overflow-auto'>
+    
+    {singleOrder?.products?.map((item,i)=>{
+        return(
+    
+                    <div key={i} className='flex justify-between items-center  border-b-1 p-2 border-slate-200 '>
+                        <div className='flex gap-2 items-center'>
+    
+                         <img 
+                className='h-10 w-10 aspect-square object-contain bg-slate-200 rounded' 
+                src={item?.product?.images?.length > 0 ? item?.product?.images[0] : null}
+               
+                />
+                <div>
+                  {item?.isDeleted && (
+    
+    <Badge size='sm' color='red'>Old</Badge>
+                  )}
+                <p className='line-clamp-1 w-28' title={item?.product?.name}>{item?.product?.name}</p>
+                </div>
+                </div>
+                <p>{item?.qnt}  x </p>
+                <p>${Number(item?.product?.price).toFixed(2)} </p>
+                <p>= ${(item?.qnt * item?.product?.price).toFixed(2)}</p>
+                    </div>
+        )
+    })}
+                    </div>
+                </div>
+    
+               
+    
+    
+                 <div>
+              <div className="bg-slate-50 rounded-lg p-4 space-y-2">
+                <div className="flex justify-between text-slate-600">
+                  <span>Subtotal</span>
+                  <span>
+                    ${(parseFloat(singleOrder?.totalPrice) -
+                      (singleOrder?.preference?.prepRequired !== "No Prep" ? totalQuantity : 0)).toFixed(2)}
+                  </span>
+                </div>
+                
+                {singleOrder?.preference?.prepRequired !== "No Prep" && (
                   <div className="flex justify-between text-slate-600">
-                    <span>Subtotal</span>
-                    <span>
-                      ${(parseFloat(singleOrder?.totalPrice) -  
-                        (singleOrder?.preference?.prepRequired !== "No Prep" ? totalQuantity : 0)).toFixed(2)}
+                    <span>Prep Charges</span>
+                    <span>${totalQuantity?.toFixed(2)}</span>
+                  </div>
+                )}
+                <div className="border-t border-slate-300 pt-2 mt-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-lg font-semibold text-slate-800">Total</span>
+                    <span className="text-2xl font-bold text-slate-900">
+                      ${singleOrder?.totalPrice}
                     </span>
                   </div>
-                  
-                  {singleOrder?.preference?.prepRequired !== "No Prep" && (
-                    <div className="flex justify-between text-slate-600">
-                      <span>Prep Charges</span>
-                      <span>${totalQuantity?.toFixed(2)}</span>
-                    </div>
-                  )}
-                  <div className="border-t border-slate-300 pt-2 mt-2">
-                    <div className="flex justify-between items-center">
-                      <span className="text-lg font-semibold text-slate-800">Total</span>
-                      <span className="text-2xl font-bold text-slate-900">
-                        ${singleOrder?.totalPrice}
-                      </span>
-                    </div>
-                  </div>
-                  </div>
-                  </div>
-              </div>
+                </div>
+                </div>
+                </div>
+            </div>
         </Modal>
     </div>
   );
