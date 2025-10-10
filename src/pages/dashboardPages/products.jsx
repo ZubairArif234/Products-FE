@@ -470,6 +470,7 @@ const handleDownloadAllCSV = async () => {
 
          <Button 
          disabled={isAllPending}
+         loading={isAllPending}
           color='dark'
            variant="transparent"
           onClick={handleDownloadAllCSV}
