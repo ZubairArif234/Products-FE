@@ -1,6 +1,6 @@
 import { Button, Table, Checkbox, Drawer, Divider, TextInput, Select, Loader, Pagination, Input, NumberInput, ActionIcon, Badge } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { ChevronDown, Cloud, CloudHailIcon, LoaderCircle, Minus, Plus, Search, ShoppingCart, SquarePen, Tag, ThumbsUp, Trash } from 'lucide-react';
+import { ChevronDown, Cloud, CloudHailIcon, LoaderCircle, Minus, Plus, Search, ShoppingCart, Sparkles, SquarePen, Tag, ThumbsUp, Trash } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAllProducts, useProducts } from '../../hooks/useProducts';
@@ -421,16 +421,30 @@ const handleDownloadAllCSV = async () => {
 
   return (
     <div className="py-5    rounded-lg shadow-md">
-      <div className=' bg-gradient-to-r from-hollywood-700 via-hollywood-700  to-white py-12 px-2 md:px-20'>
+      <div className=' bg-gradient-to-r from-hollywood-700 via-hollywood-700 flex justify-between items-center   to-white py-12 px-2 md:px-20'>
       {/* <LoaderCircle size={80}  className='text-white'/> */}
        <div>
 
-        <p className='text-3xl mb-4 capitalize text-white'>Welcome ,<span className='ms-2 '>
+        <p className='text-4xl mb-4 capitalize text-white'>Welcome ,<span className='ms-2 '>
            {userData?.name}!
           </span>
            </p>
            <StatsCount productsCount={products?.pagination?.total} warehouseCount={warehouse?.warehouses?.length} />
        </div>
+<Link to={"https://launch.apexapplications.io/"} target='_blank'>
+       <div className='cursor-pointer flex gap-2 items-end  bg-gradient-to-r from-blue-400 to bg-blue-500 p-6 rounded-lg '>
+<div>
+
+        <span className='bg-hollywood-900 text-white text-sm px-2 py-1  rounded-xl '>Sponsor</span>
+        <p className="text-2xl font-bold text-hollywood-900  mt-2">Amazon Seller</p>
+        <p className='text-hollywood-900 font-semibold '>Claim Free Items</p>
+        <p className="text-sm text-hollywood-900 underline-offset-1 underline ">Click here</p>
+</div>
+        <div>
+          <Sparkles size={45} className='text-hollywood-900'/>
+        </div>
+       </div>
+</Link>
      
       </div>
       <Divider my={20}/>
