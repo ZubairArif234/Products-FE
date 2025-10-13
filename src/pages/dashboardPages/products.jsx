@@ -432,16 +432,16 @@ const handleDownloadAllCSV = async () => {
            <StatsCount productsCount={products?.pagination?.total} warehouseCount={warehouse?.warehouses?.length} />
        </div>
 <Link to={"https://launch.apexapplications.io/"} target='_blank'>
-       <div className='cursor-pointer flex gap-2 items-end  bg-gradient-to-r from-blue-400 to bg-blue-500 p-6 rounded-lg '>
+       <div className='cursor-pointer flex gap-2 items-end  bg-gradient-to-r from-hollywood-700 to bg-hollywood-800  p-6 rounded-lg '>
 <div>
 
-        <span className='bg-hollywood-900 text-white text-sm px-2 py-1  rounded-xl '>Sponsor</span>
-        <p className="text-2xl font-bold text-hollywood-900  mt-2">Amazon Seller</p>
-        <p className='text-hollywood-900 font-semibold '>Claim Free Items</p>
-        <p className="text-sm text-hollywood-900 underline-offset-1 underline ">Click here</p>
+        <span className='bg-white text-hollywood-700 text-sm px-2 py-1  rounded-xl '>Sponsor</span>
+        <p className="text-2xl font-bold text-white  mt-2">Amazon Seller</p>
+        <p className='text-white font-semibold '>Claim Free Items</p>
+        <p className="text-sm text-white underline-offset-1 underline ">Click here</p>
 </div>
         <div>
-          <Sparkles size={45} className='text-hollywood-900'/>
+          <Sparkles size={45} className='text-white'/>
         </div>
        </div>
 </Link>
