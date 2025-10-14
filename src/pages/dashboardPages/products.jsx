@@ -1,4 +1,4 @@
-import { Button, Table, Checkbox, Drawer, Divider, TextInput, Select, Loader, Pagination, Input, NumberInput, ActionIcon, Badge } from '@mantine/core';
+import { Button, Table, Checkbox, Drawer, Divider, TextInput, Select, Loader, Pagination, Input, NumberInput, ActionIcon, Badge, Tooltip } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { ChevronDown, Cloud, CloudHailIcon, LoaderCircle, Minus, Plus, Search, ShoppingCart, Sparkles, SquarePen, Tag, ThumbsUp, Trash } from 'lucide-react';
 import { useState, useEffect } from 'react';
@@ -239,7 +239,16 @@ console.log(itemQuantities);
         )
       }
     />
+    <div>
+
             <Badge color="green" w={"80"} > Active</Badge>
+            {element?.asin == "B0DZX7D27V" && (
+<Tooltip label="Brand Authorization">
+                          
+              <Badge color="blue" w={"130"} className=' !text-[8px]' > Brand Authorization</Badge>
+              </Tooltip>
+            )}
+    </div>
                 </div>
           </Table.Td>
               <Table.Td>
