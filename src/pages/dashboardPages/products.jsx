@@ -421,7 +421,7 @@ const handleDownloadAllCSV = async () => {
 
   return (
     <div className="py-5    rounded-lg shadow-md">
-      <div className=' bg-gradient-to-r from-hollywood-700 via-hollywood-700 flex justify-between items-center   to-white py-12 px-2 md:px-20'>
+      <div className=' bg-gradient-to-r from-hollywood-700 via-hollywood-700 flex flex-wrap justify-between items-center   to-white py-12 px-2 md:px-20'>
       {/* <LoaderCircle size={80}  className='text-white'/> */}
        <div>
 
@@ -432,13 +432,13 @@ const handleDownloadAllCSV = async () => {
            <StatsCount productsCount={products?.pagination?.total} warehouseCount={warehouse?.warehouses?.length} />
        </div>
 <Link to={"https://launch.apexapplications.io/"} target='_blank'>
-       <div className='cursor-pointer flex gap-2 items-end  bg-gradient-to-r from-hollywood-700 to bg-hollywood-800  p-6 rounded-lg '>
+       <div className='cursor-pointer flex gap-2 items-end w-[340px]  bg-gradient-to-r from-hollywood-700 to bg-hollywood-800  p-6 rounded-lg '>
 <div>
 
         <span className='bg-white text-hollywood-700 text-sm px-2 py-1  rounded-xl '>Sponsor</span>
-        <p className="text-2xl font-bold text-white  mt-2">Amazon Seller</p>
-        <p className='text-white font-semibold '>Claim Free Items</p>
-        <p className="text-sm text-white underline-offset-1 underline ">Click here</p>
+        <p className="text-xl font-bold text-white  mt-2">1,200+ Sellers Run on Apex</p>
+        <p className='text-white font-semibold '>All your reviews, profits, and restocks in one place.</p>
+        <p className="text-sm text-white underline-offset-1 underline ">Get Started →</p>
 </div>
         <div>
           <Sparkles size={45} className='text-white'/>
