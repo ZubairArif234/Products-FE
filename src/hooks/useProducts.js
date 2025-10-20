@@ -70,3 +70,23 @@ export const createProductsByCSV = () => {
     },
   });
 };
+
+export const updateAllProducts = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async () => {
+      attachTokenWithFormAxios();
+      const res = await formAxios.get(`/product/update-product`);
+      return res?.data;
+    },
+    onSuccess: (data) => {
+      if (data?.success) {
+        successMessage("Products updated successfully");
+        queryClient.invalidateQueries("products");
+      }
+    },
+    onError: (error) => {
+      errorMessage(error?.response?.data?.message);
+    },
+  });
+};

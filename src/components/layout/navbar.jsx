@@ -264,7 +264,7 @@ text:"to generate shipment labels to you/your warehouse , via your preferred car
         </div>
       </div> */}
       <div>
-        <Link to={"/"}>
+        <Link to={role == "admin" ? "/admin" : "/"}>
           <img
                  src={DashboardLogo}
                  alt="Default Dashboard Logo"

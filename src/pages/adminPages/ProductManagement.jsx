@@ -3,7 +3,7 @@ import { useDisclosure } from '@mantine/hooks';
 import { ChevronDown, FileAxis3d, Minus, Plus, Upload, CheckCircle2, X, Search, SquarePen, Trash, ThumbsUp } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { createProductsByCSV, useProducts } from '../../hooks/useProducts';
+import { createProductsByCSV, updateAllProducts, useProducts } from '../../hooks/useProducts';
 import { useWarehouse } from '../../hooks/useWarehouse';
 import { userGetData } from '../../services/hooks';
 import { applyRoiCap, toNum } from '../../utils/helper';
@@ -22,6 +22,7 @@ const ProductManagement = () => {
    
   
    const { isPending: isCreateProductPending, mutateAsync } = createProductsByCSV();
+   const { isPending: isUpdateProductPending, mutateAsync:updateProducts } = updateAllProducts();
    const [opened, { open, close }] = useDisclosure(false);
    const [selectedRows, setSelectedRows] = useState([]);
   const [itemQuantities, setItemQuantities] = useState({});
@@ -302,6 +303,15 @@ const handlePageLimit = (value) => {
           >
           Add to cart ({selectedRows.length})
         </Button>  */}
+        <Button 
+          variant="default" 
+          onClick={updateProducts}
+          loading={isUpdateProductPending}
+          // disabled={selectedRows.length === 0} 
+          className="!bg-hollywood-700 disabled:!bg-hollywood-300 !text-white !rounded-lg !mt-3"
+          >
+         Update Products
+        </Button> 
         <Button 
           variant="default" 
           onClick={open}
