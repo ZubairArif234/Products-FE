@@ -177,6 +177,9 @@ useEffect(() => {
   return updated;
 });
 
+},[selectedRows])
+
+useEffect(() => {
   // ✅ Calculate total price
   const total = selectedRows.reduce((sum, item) => {
     if (!item) return sum;
@@ -186,7 +189,7 @@ useEffect(() => {
   }, 0);
 
   setTotalPrice(total);
-}, [selectedRows]);
+}, [selectedRows , itemQuantities]);
 
 
 // ✅ Function to update item quantity
